@@ -3,11 +3,7 @@
 
 #include "struct_typedef.h"
 
-
 extern void laser_on(void);
 extern void laser_off(void);
 
 #endif
-
-
-

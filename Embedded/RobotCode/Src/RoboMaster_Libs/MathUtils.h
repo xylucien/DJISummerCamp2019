@@ -6,4 +6,4 @@ typedef struct Twist2D {
   float w;
 } Twist2D;
 
-extern void rotateTwist2D(float, Twist2D*, Twist2D*);
+extern void rotateTwist2D(float, Twist2D *, Twist2D *);

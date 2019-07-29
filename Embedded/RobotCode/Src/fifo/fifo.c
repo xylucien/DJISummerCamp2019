@@ -14,21 +14,21 @@
 //! Copyright (c) 2013 Cedar MIT License
 //!
 //! Permission is hereby granted, free of charge, to any person obtaining a copy
-//! of this software and associated documentation files (the "Software"), to deal
-//! in the Software without restriction, including without limitation the rights to
-//! use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-//! the Software, and to permit persons to whom the Software is furnished to do so,
-//! subject to the following conditions:
+//! of this software and associated documentation files (the "Software"), to
+//! deal in the Software without restriction, including without limitation the
+//! rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//! sell copies of the Software, and to permit persons to whom the Software is
+//! furnished to do so, subject to the following conditions:
 //!
-//! The above copyright notice and this permission notice shall be included in all
-//! copies or substantial portions of the Software.
+//! The above copyright notice and this permission notice shall be included in
+//! all copies or substantial portions of the Software.
 //!
 //! THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //! IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //! FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 //! AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//! FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //! IN THE SOFTWARE.
 ///
 //******************************************************************************************
@@ -42,13 +42,12 @@
 #ifdef NDEBUG
 #define ASSERT(x)
 #else
-#define ASSERT(x)                                     \
-  do                                                  \
-  {                                                   \
-    if (!(x))                                         \
-      printf("[assert]: %s, %d", __FILE__, __LINE__); \
-    while (!(x))                                      \
-      ;                                               \
+#define ASSERT(x)                                                              \
+  do {                                                                         \
+    if (!(x))                                                                  \
+      printf("[assert]: %s, %d", __FILE__, __LINE__);                          \
+    while (!(x))                                                               \
+      ;                                                                        \
   } while (0)
 #endif
 
@@ -58,19 +57,20 @@
 //******************************************************************************************
 //
 //! \brief  Create An New FIFO Instance(in Single Mode).
-//! This function allocate enought room for N blocks fifo elements, then return the pointer
-//! of FIFO.
+//! This function allocate enought room for N blocks fifo elements, then return
+//! the pointer of FIFO.
 //!
 //! \param  [in] uint_cnt is count of fifo elements.
-//! \retval The Pointer of FIFO instance, return NULL is failure to allocate memory.
+//! \retval The Pointer of FIFO instance, return NULL is failure to allocate
+//! memory.
 //!
-//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+//! have <stdlib.h>
 //!            Header file before use this function.
 //! \note   -# Functions FIFO_Create and FIFO_Destory must be used in pairs.
 //!
 //******************************************************************************************
-fifo_s_t *fifo_s_create(int uint_cnt)
-{
+fifo_s_t *fifo_s_create(int uint_cnt) {
   fifo_s_t *p_fifo = NULL;  //!< FIFO Pointer
   char *p_base_addr = NULL; //!< Memory Base Address
 
@@ -79,15 +79,13 @@ fifo_s_t *fifo_s_create(int uint_cnt)
 
   //! Allocate Memory for pointer of new FIFO Control Block
   p_fifo = (fifo_s_t *)malloc(sizeof(fifo_s_t));
-  if (NULL == p_fifo)
-  {
+  if (NULL == p_fifo) {
     //! Allocate Failure, exit now
     return (NULL);
   }
   //! Allocate Memory for pointer of new FIFO
   p_base_addr = malloc(uint_cnt);
-  if (NULL == p_base_addr)
-  {
+  if (NULL == p_base_addr) {
     //! Allocate Failure, exit now
     free(p_fifo);
     return (NULL);
@@ -106,12 +104,12 @@ fifo_s_t *fifo_s_create(int uint_cnt)
 //! \param  [in] p_fifo is the pointer of FIFO instance
 //! \retval None.
 //!
-//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+//! have <stdlib.h>
 //!            Header file before use this function.
 //
 //******************************************************************************************
-void fifo_s_destroy(fifo_s_t *p_fifo)
-{
+void fifo_s_destroy(fifo_s_t *p_fifo) {
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_fifo->p_start_addr);
@@ -131,13 +129,12 @@ void fifo_s_destroy(fifo_s_t *p_fifo)
 //! \brief  Initialize an static FIFO struct(in single mode).
 //!
 //! \param  [in] p_fifo is the pointer of valid FIFO instance.
-//! \param  [in] p_base_addr is the base address of pre-allocate memory, such as array.
-//! \param  [in] uint_cnt is count of fifo elements.
-//! \retval 0 if initialize successfully, otherwise return -1.
+//! \param  [in] p_base_addr is the base address of pre-allocate memory, such as
+//! array. \param  [in] uint_cnt is count of fifo elements. \retval 0 if
+//! initialize successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_s_init(fifo_s_t *p_fifo, void *p_base_addr, int uint_cnt)
-{
+int fifo_s_init(fifo_s_t *p_fifo, void *p_base_addr, int uint_cnt) {
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_base_addr);
@@ -164,21 +161,19 @@ int fifo_s_init(fifo_s_t *p_fifo, void *p_base_addr, int uint_cnt)
 //! \retval 0 if operate successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_s_put(fifo_s_t *p_fifo, char element)
-{
+int fifo_s_put(fifo_s_t *p_fifo, char element) {
   FIFO_CPU_SR_TYPE cpu_sr;
 
   //! Check input parameters.
   ASSERT(p_fifo);
 
-  //Interrupt off
+  // Interrupt off
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
-  if (0 == p_fifo->free_num)
-  {
+  if (0 == p_fifo->free_num) {
     //! Error, FIFO is full!
-      goto end;
+    goto end;
   }
 
   if (p_fifo->p_write_addr > p_fifo->p_end_addr)
@@ -189,12 +184,12 @@ int fifo_s_put(fifo_s_t *p_fifo, char element)
   p_fifo->free_num--;
   p_fifo->used_num++;
 
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 
   return (0);
 end:
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (-1);
 }
@@ -209,8 +204,7 @@ end:
 //! \retval the number of really write data, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_s_puts(fifo_s_t *p_fifo, char *p_source, int len)
-{
+int fifo_s_puts(fifo_s_t *p_fifo, char *p_source, int len) {
   FIFO_CPU_SR_TYPE cpu_sr;
 
   int retval;
@@ -218,19 +212,17 @@ int fifo_s_puts(fifo_s_t *p_fifo, char *p_source, int len)
   int len_from_start;
 
   ASSERT(p_fifo);
-  
-  //Interrupt Off;
+
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
-  if (NULL == p_source)
-  {
-      goto end;
+  if (NULL == p_source) {
+    goto end;
   }
 
-  if (0 == p_fifo->free_num)
-  {
-      goto end;
+  if (0 == p_fifo->free_num) {
+    goto end;
   }
 
   if (p_fifo->p_write_addr > p_fifo->p_end_addr)
@@ -239,13 +231,12 @@ int fifo_s_puts(fifo_s_t *p_fifo, char *p_source, int len)
   len = (len < p_fifo->free_num) ? len : p_fifo->free_num;
   len_to_end = p_fifo->p_end_addr - p_fifo->p_write_addr + 1;
 
-  if (len_to_end >= len) //no rollback
+  if (len_to_end >= len) // no rollback
   {
     len_to_end = len;
     memcpy(p_fifo->p_write_addr, p_source, len_to_end);
     p_fifo->p_write_addr += len_to_end;
-  }
-  else //rollback
+  } else // rollback
   {
     len_from_start = len - len_to_end;
     memcpy(p_fifo->p_write_addr, p_source, len_to_end);
@@ -257,12 +248,12 @@ int fifo_s_puts(fifo_s_t *p_fifo, char *p_source, int len)
   p_fifo->used_num += len;
   retval = len;
 
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 
   return retval;
 end:
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (-1);
 }
@@ -277,8 +268,7 @@ end:
 //! \retval the number of really write data, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_s_puts_noprotect(fifo_s_t *p_fifo, char *p_source, int len)
-{
+int fifo_s_puts_noprotect(fifo_s_t *p_fifo, char *p_source, int len) {
   int retval;
   int len_to_end;
   int len_from_start;
@@ -297,13 +287,12 @@ int fifo_s_puts_noprotect(fifo_s_t *p_fifo, char *p_source, int len)
   len = (len < p_fifo->free_num) ? len : p_fifo->free_num;
   len_to_end = p_fifo->p_end_addr - p_fifo->p_write_addr + 1;
 
-  if (len_to_end >= len) //no rollback
+  if (len_to_end >= len) // no rollback
   {
     len_to_end = len;
     memcpy(p_fifo->p_write_addr, p_source, len_to_end);
     p_fifo->p_write_addr += len_to_end;
-  }
-  else //rollback
+  } else // rollback
   {
     len_from_start = len - len_to_end;
     memcpy(p_fifo->p_write_addr, p_source, len_to_end);
@@ -327,15 +316,14 @@ int fifo_s_puts_noprotect(fifo_s_t *p_fifo, char *p_source, int len)
 //! \retval the data element of FIFO.
 //
 //******************************************************************************************
-char fifo_s_get(fifo_s_t *p_fifo)
-{
+char fifo_s_get(fifo_s_t *p_fifo) {
   FIFO_CPU_SR_TYPE cpu_sr;
   char retval = 0;
 
   //! Check input parameters.
   ASSERT(p_fifo);
 
-  //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
@@ -347,7 +335,7 @@ char fifo_s_get(fifo_s_t *p_fifo)
   p_fifo->p_read_addr++;
   p_fifo->free_num++;
   p_fifo->used_num--;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (retval);
 }
@@ -361,8 +349,7 @@ char fifo_s_get(fifo_s_t *p_fifo)
 //! \retval the number of really read data.
 //
 //******************************************************************************************
-int fifo_s_gets(fifo_s_t *p_fifo, char *p_dest, int len)
-{
+int fifo_s_gets(fifo_s_t *p_fifo, char *p_dest, int len) {
   FIFO_CPU_SR_TYPE cpu_sr;
   int retval;
   int len_to_end;
@@ -370,17 +357,15 @@ int fifo_s_gets(fifo_s_t *p_fifo, char *p_dest, int len)
 
   ASSERT(p_fifo);
 
-  //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
-  if (NULL == p_dest)
-  {
+  if (NULL == p_dest) {
     goto end;
   }
 
-  if (0 == p_fifo->used_num)
-  {
+  if (0 == p_fifo->used_num) {
     goto end;
   }
 
@@ -390,13 +375,12 @@ int fifo_s_gets(fifo_s_t *p_fifo, char *p_dest, int len)
   len = (len < p_fifo->used_num) ? len : p_fifo->used_num;
   len_to_end = p_fifo->p_end_addr - p_fifo->p_read_addr + 1;
 
-  if (len_to_end >= len) //no rollback
+  if (len_to_end >= len) // no rollback
   {
     len_to_end = len;
     memcpy(p_dest, p_fifo->p_read_addr, len_to_end);
     p_fifo->p_read_addr += len_to_end;
-  }
-  else //rollback
+  } else // rollback
   {
     len_from_start = len - len_to_end;
     memcpy(p_dest, p_fifo->p_read_addr, len_to_end);
@@ -407,12 +391,12 @@ int fifo_s_gets(fifo_s_t *p_fifo, char *p_dest, int len)
   p_fifo->free_num += len;
   p_fifo->used_num -= len;
   retval = len;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 
   return retval;
 end:
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (-1);
 }
@@ -426,8 +410,7 @@ end:
 //! \retval the number of really read data.
 //
 //******************************************************************************************
-int fifo_s_gets_noprotect(fifo_s_t *p_fifo, char *p_dest, int len)
-{
+int fifo_s_gets_noprotect(fifo_s_t *p_fifo, char *p_dest, int len) {
   int retval;
   int len_to_end;
   int len_from_start;
@@ -446,13 +429,12 @@ int fifo_s_gets_noprotect(fifo_s_t *p_fifo, char *p_dest, int len)
   len = (len < p_fifo->used_num) ? len : p_fifo->used_num;
   len_to_end = p_fifo->p_end_addr - p_fifo->p_read_addr + 1;
 
-  if (len_to_end >= len) //no rollback
+  if (len_to_end >= len) // no rollback
   {
     len_to_end = len;
     memcpy(p_dest, p_fifo->p_read_addr, len_to_end);
     p_fifo->p_read_addr += len_to_end;
-  }
-  else //rollback
+  } else // rollback
   {
     len_from_start = len - len_to_end;
     memcpy(p_dest, p_fifo->p_read_addr, len_to_end);
@@ -477,23 +459,20 @@ int fifo_s_gets_noprotect(fifo_s_t *p_fifo, char *p_dest, int len)
 //! \retval the data element of FIFO.
 //
 //******************************************************************************************
-char fifo_s_preread(fifo_s_t *p_fifo, int offset)
-{
+char fifo_s_preread(fifo_s_t *p_fifo, int offset) {
   char *tmp_read_addr;
 
   //! Check input parameters.
   ASSERT(p_fifo);
 
-  if (offset > p_fifo->used_num)
-  {
+  if (offset > p_fifo->used_num) {
     return 0;
-  }
-  else
-  {
+  } else {
     // Move Read Pointer to right position
     tmp_read_addr = p_fifo->p_read_addr + offset;
     if (tmp_read_addr > p_fifo->p_end_addr)
-      tmp_read_addr = tmp_read_addr - p_fifo->p_end_addr + p_fifo->p_start_addr - 1;
+      tmp_read_addr =
+          tmp_read_addr - p_fifo->p_end_addr + p_fifo->p_start_addr - 1;
 
     return *tmp_read_addr;
   }
@@ -505,8 +484,7 @@ char fifo_s_preread(fifo_s_t *p_fifo, int offset)
  *
  *
  */
-int fifo_s_prereads(fifo_s_t *p_fifo, char *p_dest, int offset, int len)
-{
+int fifo_s_prereads(fifo_s_t *p_fifo, char *p_dest, int offset, int len) {
   FIFO_CPU_SR_TYPE cpu_sr;
   int retval;
   char *tmp_read_addr;
@@ -515,7 +493,7 @@ int fifo_s_prereads(fifo_s_t *p_fifo, char *p_dest, int offset, int len)
 
   ASSERT(p_fifo);
 
-  //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
@@ -530,17 +508,17 @@ int fifo_s_prereads(fifo_s_t *p_fifo, char *p_dest, int offset, int len)
 
   tmp_read_addr = p_fifo->p_read_addr + offset;
   if (tmp_read_addr > p_fifo->p_end_addr)
-    tmp_read_addr = tmp_read_addr - p_fifo->p_end_addr + p_fifo->p_start_addr - 1;
+    tmp_read_addr =
+        tmp_read_addr - p_fifo->p_end_addr + p_fifo->p_start_addr - 1;
 
   len = (len < (p_fifo->used_num - offset)) ? len : (p_fifo->used_num - offset);
   len_to_end = p_fifo->p_end_addr - tmp_read_addr + 1;
 
-  if (len_to_end >= len) //no rollback
+  if (len_to_end >= len) // no rollback
   {
     len_to_end = len;
     memcpy(p_dest, tmp_read_addr, len_to_end);
-  }
-  else //rollback
+  } else // rollback
   {
     len_from_start = len - len_to_end;
     memcpy(p_dest, tmp_read_addr, len_to_end);
@@ -548,12 +526,12 @@ int fifo_s_prereads(fifo_s_t *p_fifo, char *p_dest, int offset, int len)
   }
 
   retval = len;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 
   return retval;
 end:
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (-1);
 }
@@ -568,8 +546,7 @@ end:
 //!         - Zero(false) if not empty.
 //
 //******************************************************************************************
-char fifo_s_isempty(fifo_s_t *p_fifo)
-{
+char fifo_s_isempty(fifo_s_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
   return (p_fifo->used_num ? 0 : 1);
@@ -585,8 +562,7 @@ char fifo_s_isempty(fifo_s_t *p_fifo)
 //!         - Zero(false) if not full.
 //
 //******************************************************************************************
-char fifo_s_isfull(fifo_s_t *p_fifo)
-{
+char fifo_s_isfull(fifo_s_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
   return (p_fifo->free_num ? 0 : 1);
@@ -601,8 +577,7 @@ char fifo_s_isfull(fifo_s_t *p_fifo)
 //! \retval The number of elements in FIFO.
 //
 //******************************************************************************************
-int fifo_s_used(fifo_s_t *p_fifo)
-{
+int fifo_s_used(fifo_s_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
   return p_fifo->used_num;
@@ -617,8 +592,7 @@ int fifo_s_used(fifo_s_t *p_fifo)
 //! \retval The number of elements in FIFO.
 //
 //******************************************************************************************
-int fifo_s_free(fifo_s_t *p_fifo)
-{
+int fifo_s_free(fifo_s_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
   return p_fifo->free_num;
@@ -633,14 +607,13 @@ int fifo_s_free(fifo_s_t *p_fifo)
 //! \retval 0 if success, -1 if failure.
 //
 //******************************************************************************************
-void fifo_s_flush(fifo_s_t *p_fifo)
-{
+void fifo_s_flush(fifo_s_t *p_fifo) {
   FIFO_CPU_SR_TYPE cpu_sr;
 
   //! Check input parameters.
   ASSERT(p_fifo);
   //! Initialize FIFO Control Block.
-  //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
@@ -648,18 +621,17 @@ void fifo_s_flush(fifo_s_t *p_fifo)
   p_fifo->used_num = 0;
   p_fifo->p_read_addr = p_fifo->p_start_addr;
   p_fifo->p_write_addr = p_fifo->p_start_addr;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 }
 
-int fifo_s_discard(fifo_s_t *p_fifo, int len)
-{
+int fifo_s_discard(fifo_s_t *p_fifo, int len) {
   FIFO_CPU_SR_TYPE cpu_sr;
   //! Check input parameters.
   char *tmp_index;
   ASSERT(p_fifo);
 
-  //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
@@ -672,7 +644,7 @@ int fifo_s_discard(fifo_s_t *p_fifo, int len)
   p_fifo->p_read_addr = tmp_index;
   p_fifo->free_num += len;
   p_fifo->used_num -= len;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 
   return len;
@@ -682,20 +654,21 @@ int fifo_s_discard(fifo_s_t *p_fifo, int len)
 //******************************************************************************************
 //
 //! \brief  Create An New FIFO Instance.
-//! This function allocate enought room for N blocks fifo elements, then return the pointer
-//! of FIFO.
+//! This function allocate enought room for N blocks fifo elements, then return
+//! the pointer of FIFO.
 //!
 //! \param  [in] UnitSize is fifo element size.
 //! \param  [in] UnitCnt is count of fifo elements.
-//! \retval The Pointer of FIFO instance, return NULL is failure to allocate memory.
+//! \retval The Pointer of FIFO instance, return NULL is failure to allocate
+//! memory.
 //!
-//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+//! have <stdlib.h>
 //!            Header file before use this function.
 //! \note   -# Functions FIFO_Create and FIFO_Destory must be used in pairs.
 //!
 //******************************************************************************************
-fifo_t *fifo_create(char unit_size, int unit_cnt)
-{
+fifo_t *fifo_create(char unit_size, int unit_cnt) {
   fifo_t *p_fifo = NULL;    //!< FIFO Pointer
   char *p_base_addr = NULL; //!< Memory Base Address
 
@@ -705,16 +678,14 @@ fifo_t *fifo_create(char unit_size, int unit_cnt)
 
   //! Allocate Memory for pointer of new FIFO Control Block.
   p_fifo = (fifo_t *)malloc(sizeof(fifo_t));
-  if (NULL == p_fifo)
-  {
+  if (NULL == p_fifo) {
     //! Allocate Failure, exit now.
     return (NULL);
   }
 
   //! Allocate memory for FIFO.
   p_base_addr = malloc(unit_size * unit_cnt);
-  if (NULL == p_base_addr)
-  {
+  if (NULL == p_base_addr) {
     //! Allocate Failure, exit now.
     free(p_fifo);
     return (NULL);
@@ -734,12 +705,12 @@ fifo_t *fifo_create(char unit_size, int unit_cnt)
 //! \param  [in] pFIFO is the pointer of FIFO instance
 //! \retval None.
 //!
-//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+//! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+//! have <stdlib.h>
 //!            Header file before use this function.
 //
 //******************************************************************************************
-void fifo_destory(fifo_t *p_fifo)
-{
+void fifo_destory(fifo_t *p_fifo) {
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_fifo->p_start_addr);
@@ -759,14 +730,13 @@ void fifo_destory(fifo_t *p_fifo)
 //! \brief  Initialize an static FIFO struct.
 //!
 //! \param  [in] pFIFO is the pointer of valid FIFO instance.
-//! \param  [in] pBaseAddr is the base address of pre-allocate memory, such as array.
-//! \param  [in] UnitSize is fifo element size.
-//! \param  [in] UnitCnt is count of fifo elements.
-//! \retval 0 if initialize successfully, otherwise return -1.
+//! \param  [in] pBaseAddr is the base address of pre-allocate memory, such as
+//! array. \param  [in] UnitSize is fifo element size. \param  [in] UnitCnt is
+//! count of fifo elements. \retval 0 if initialize successfully, otherwise
+//! return -1.
 //
 //******************************************************************************************
-int fifo_init(fifo_t *p_fifo, void *p_base_addr, char unit_size, int unit_cnt)
-{
+int fifo_init(fifo_t *p_fifo, void *p_base_addr, char unit_size, int unit_cnt) {
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_base_addr);
@@ -795,20 +765,18 @@ int fifo_init(fifo_t *p_fifo, void *p_base_addr, char unit_size, int unit_cnt)
 //! \retval 0 if operate successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_put(fifo_t *p_fifo, void *p_element)
-{
+int fifo_put(fifo_t *p_fifo, void *p_element) {
   //! Check input parameters.
   FIFO_CPU_SR_TYPE cpu_sr;
   ASSERT(p_fifo);
   ASSERT(p_element);
 
-    //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
   // Full ?
-  if (0 == p_fifo->free_num)
-  {
+  if (0 == p_fifo->free_num) {
     //! Error, FIFO is full!
     goto end;
   }
@@ -822,11 +790,11 @@ int fifo_put(fifo_t *p_fifo, void *p_element)
   p_fifo->p_write_addr += p_fifo->unit_size;
   p_fifo->free_num--;
   p_fifo->used_num++;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (0);
 end:
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (-1);
 }
@@ -841,15 +809,13 @@ end:
 //! \retval 0 if operate successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_put_noprotect(fifo_t *p_fifo, void *p_element)
-{
+int fifo_put_noprotect(fifo_t *p_fifo, void *p_element) {
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_element);
 
   // Full ?
-  if (0 == p_fifo->free_num)
-  {
+  if (0 == p_fifo->free_num) {
     //! Error, FIFO is full!
     return (-1);
   }
@@ -876,39 +842,36 @@ int fifo_put_noprotect(fifo_t *p_fifo, void *p_element)
 //! \retval 0 if operate successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_get(fifo_t *p_fifo, void *p_element)
-{
+int fifo_get(fifo_t *p_fifo, void *p_element) {
   FIFO_CPU_SR_TYPE cpu_sr;
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_element);
-  
-      //Interrupt Off;
+
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
   // Empty ?
-  if (0 == p_fifo->used_num)
-  {
+  if (0 == p_fifo->used_num) {
     //! Error, FIFO is Empty!
     goto end;
   }
 
   //! Copy Data
 
-  if (p_fifo->p_read_addr > p_fifo->p_end_addr)
-  {
+  if (p_fifo->p_read_addr > p_fifo->p_end_addr) {
     p_fifo->p_read_addr = p_fifo->p_start_addr;
   }
   memcpy(p_element, p_fifo->p_read_addr, p_fifo->unit_size);
   p_fifo->p_read_addr += p_fifo->unit_size;
   p_fifo->free_num++;
   p_fifo->used_num--;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (0);
 end:
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
   return (-1);
 }
@@ -923,22 +886,19 @@ end:
 //! \retval 0 if operate successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_get_noprotect(fifo_t *p_fifo, void *p_element)
-{
+int fifo_get_noprotect(fifo_t *p_fifo, void *p_element) {
   //! Check input parameters.
   ASSERT(p_fifo);
   ASSERT(p_element);
 
   // Empty ?
-  if (0 == p_fifo->used_num)
-  {
+  if (0 == p_fifo->used_num) {
     //! Error, FIFO is Empty!
     return (-1);
   }
 
   //! Copy Data
-  if (p_fifo->p_read_addr > p_fifo->p_end_addr)
-  {
+  if (p_fifo->p_read_addr > p_fifo->p_end_addr) {
     p_fifo->p_read_addr = p_fifo->p_start_addr;
   }
   memcpy(p_element, p_fifo->p_read_addr, p_fifo->unit_size);
@@ -960,8 +920,7 @@ int fifo_get_noprotect(fifo_t *p_fifo, void *p_element)
 //! \retval 0 if operate successfully, otherwise return -1.
 //
 //******************************************************************************************
-int fifo_pre_read(fifo_t *p_fifo, char offset, void *p_element)
-{
+int fifo_pre_read(fifo_t *p_fifo, char offset, void *p_element) {
   char *_pre_red_index = (void *)0;
 
   //! Check input parameters.
@@ -969,16 +928,15 @@ int fifo_pre_read(fifo_t *p_fifo, char offset, void *p_element)
   ASSERT(p_element);
 
   // OverFlow ?
-  if (offset >= p_fifo->used_num)
-  {
+  if (offset >= p_fifo->used_num) {
     return (-1);
   }
 
   // Move Read Pointer to right position
   _pre_red_index = p_fifo->p_read_addr + p_fifo->unit_size * offset;
-  while (_pre_red_index > p_fifo->p_end_addr)
-  {
-    _pre_red_index = _pre_red_index - p_fifo->p_end_addr + p_fifo->p_start_addr - 1;
+  while (_pre_red_index > p_fifo->p_end_addr) {
+    _pre_red_index =
+        _pre_red_index - p_fifo->p_end_addr + p_fifo->p_start_addr - 1;
   }
   //! Copy Data
   memcpy(p_element, _pre_red_index, p_fifo->unit_size);
@@ -996,8 +954,7 @@ int fifo_pre_read(fifo_t *p_fifo, char offset, void *p_element)
 //!         - Zero(false) if not empty.
 //
 //******************************************************************************************
-int fifo_is_empty(fifo_t *p_fifo)
-{
+int fifo_is_empty(fifo_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
 
@@ -1014,8 +971,7 @@ int fifo_is_empty(fifo_t *p_fifo)
 //!         - Zero(false) if not full.
 //
 //******************************************************************************************
-int fifo_is_full(fifo_t *p_fifo)
-{
+int fifo_is_full(fifo_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
 
@@ -1031,8 +987,7 @@ int fifo_is_full(fifo_t *p_fifo)
 //! \retval The number of elements in FIFO.
 //
 //******************************************************************************************
-int fifo_used(fifo_t *p_fifo)
-{
+int fifo_used(fifo_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
 
@@ -1048,8 +1003,7 @@ int fifo_used(fifo_t *p_fifo)
 //! \retval The number of elements in FIFO.
 //
 //******************************************************************************************
-int fifo_free(fifo_t *p_fifo)
-{
+int fifo_free(fifo_t *p_fifo) {
   //! Check input parameter.
   ASSERT(p_fifo);
 
@@ -1065,22 +1019,22 @@ int fifo_free(fifo_t *p_fifo)
 //! \retval 0 if success, -1 if failure.
 //
 //******************************************************************************************
-int fifo_flush(fifo_t *p_fifo)
-{
+int fifo_flush(fifo_t *p_fifo) {
   FIFO_CPU_SR_TYPE cpu_sr;
   //! Check input parameters.
   ASSERT(p_fifo);
 
   //! Initialize FIFO Control Block.
-  //Interrupt Off;
+  // Interrupt Off;
   cpu_sr = FIFO_GET_CPU_SR();
   FIFO_ENTER_CRITICAL();
 
-  p_fifo->free_num = (p_fifo->p_end_addr - p_fifo->p_start_addr) / (p_fifo->unit_size);
+  p_fifo->free_num =
+      (p_fifo->p_end_addr - p_fifo->p_start_addr) / (p_fifo->unit_size);
   p_fifo->used_num = 0;
   p_fifo->p_read_addr = p_fifo->p_start_addr;
   p_fifo->p_write_addr = p_fifo->p_start_addr;
-  //Interrupt On
+  // Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
 
   return (0);

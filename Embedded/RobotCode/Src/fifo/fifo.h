@@ -14,35 +14,34 @@
 //! Copyright (c) 2013 Cedar MIT License
 //!
 //! Permission is hereby granted, free of charge, to any person obtaining a copy
-//! of this software and associated documentation files (the "Software"), to deal
-//! in the Software without restriction, including without limitation the rights to
-//! use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-//! the Software, and to permit persons to whom the Software is furnished to do so,
-//! subject to the following conditions:
+//! of this software and associated documentation files (the "Software"), to
+//! deal in the Software without restriction, including without limitation the
+//! rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//! sell copies of the Software, and to permit persons to whom the Software is
+//! furnished to do so, subject to the following conditions:
 //!
-//! The above copyright notice and this permission notice shall be included in all
-//! copies or substantial portions of the Software.
+//! The above copyright notice and this permission notice shall be included in
+//! all copies or substantial portions of the Software.
 //!
 //! THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //! IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //! FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 //! AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//! FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //! IN THE SOFTWARE.
 ///
 //******************************************************************************************
 #ifndef __FIFO_H__
 #define __FIFO_H__
 #ifdef __cplusplus
-"C"
-{
+"C" {
 #endif
 
-#include <stdio.h>
 #include <stdint.h>
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
   //******************************************************************************************
   //!                           CONFIGURE MACRO
@@ -68,8 +67,7 @@
   //******************************************************************************************
 
   //! FIFO Memory Model (Single Byte Mode)
-  typedef struct
-  {
+  typedef struct {
     char *p_start_addr; //!< FIFO Memory Pool Start Address
     char *p_end_addr;   //!< FIFO Memory Pool End Address
     int free_num;       //!< The remain capacity of FIFO
@@ -79,8 +77,7 @@
   } fifo_s_t;
 
   //! FIFO Memory Model
-  typedef struct
-  {
+  typedef struct {
     char *p_start_addr; //!< FIFO Memory Pool Start Address
     char *p_end_addr;   //!< FIFO Memory Pool End Address
     int free_num;       //!< The remain capacity of FIFO
@@ -99,13 +96,15 @@
   //******************************************************************************************
   //
   //! \brief  Create An New FIFO Instance(in Single Mode).
-  //! This function allocate enought room for N blocks fifo elements, then return the pointer
-  //! of FIFO.
+  //! This function allocate enought room for N blocks fifo elements, then
+  //! return the pointer of FIFO.
   //!
   //! \param  [in] uint_cnt is count of fifo elements.
-  //! \retval The Pointer of FIFO instance, return NULL is failure to allocate memory.
+  //! \retval The Pointer of FIFO instance, return NULL is failure to allocate
+  //! memory.
   //!
-  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+  //! have <stdlib.h>
   //!            Header file before use this function.
   //! \note   -# Functions FIFO_Create and FIFO_Destory must be used in pairs.
   //!
@@ -120,7 +119,8 @@
   //! \param  [in] p_fifo is the pointer of FIFO instance
   //! \retval None.
   //!
-  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+  //! have <stdlib.h>
   //!            Header file before use this function.
   //
   //******************************************************************************************
@@ -133,9 +133,9 @@
   //! \brief  Initialize an static FIFO struct(in single mode).
   //!
   //! \param  [in] p_fifo is the pointer of valid FIFO instance.
-  //! \param  [in] p_base_addr is the base address of pre-allocate memory, such as array.
-  //! \param  [in] uint_cnt is count of fifo elements.
-  //! \retval 0 if initialize successfully, otherwise return -1.
+  //! \param  [in] p_base_addr is the base address of pre-allocate memory, such
+  //! as array. \param  [in] uint_cnt is count of fifo elements. \retval 0 if
+  //! initialize successfully, otherwise return -1.
   //
   //******************************************************************************************
   int fifo_s_init(fifo_s_t * p_fifo, void *p_base_addr, int uint_cnt);
@@ -242,14 +242,16 @@
   //******************************************************************************************
   //
   //! \brief  Create An New FIFO Instance.
-  //! This function allocate enought room for N blocks fifo elements, then return the pointer
-  //! of FIFO.
+  //! This function allocate enought room for N blocks fifo elements, then
+  //! return the pointer of FIFO.
   //!
   //! \param  [in] UnitSize is fifo element size.
   //! \param  [in] UnitCnt is count of fifo elements.
-  //! \retval The Pointer of FIFO instance, return NULL is failure to allocate memory.
+  //! \retval The Pointer of FIFO instance, return NULL is failure to allocate
+  //! memory.
   //!
-  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+  //! have <stdlib.h>
   //!            Header file before use this function.
   //! \note   -# Functions FIFO_Create and FIFO_Destory must be used in pairs.
   //!
@@ -264,7 +266,8 @@
   //! \param  [in] pFIFO is the pointer of FIFO instance
   //! \retval None.
   //!
-  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system have <stdlib.h>
+  //! \note   -# You must enable USE_MEMORY_ALLOC macro and ensure your system
+  //! have <stdlib.h>
   //!            Header file before use this function.
   //
   //******************************************************************************************
@@ -275,13 +278,14 @@
   //! \brief  Initialize an static FIFO struct.
   //!
   //! \param  [in] pFIFO is the pointer of valid FIFO instance.
-  //! \param  [in] pBaseAddr is the base address of pre-allocate memory, such as array.
-  //! \param  [in] UnitSize is fifo element size.
-  //! \param  [in] UnitCnt is count of fifo elements.
-  //! \retval 0 if initialize successfully, otherwise return -1.
+  //! \param  [in] pBaseAddr is the base address of pre-allocate memory, such as
+  //! array. \param  [in] UnitSize is fifo element size. \param  [in] UnitCnt is
+  //! count of fifo elements. \retval 0 if initialize successfully, otherwise
+  //! return -1.
   //
   //******************************************************************************************
-  int fifo_init(fifo_t * p_fifo, void *p_base_addr, char unit_size, int unit_cnt);
+  int fifo_init(fifo_t * p_fifo, void *p_base_addr, char unit_size,
+                int unit_cnt);
 
   //******************************************************************************************
   //

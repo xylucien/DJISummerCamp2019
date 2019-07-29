@@ -4,8 +4,7 @@
 MUTEX_DECLARE(mem_mutex);
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
-typedef struct _block_link
-{
+typedef struct _block_link {
   struct _block_link *next_free; /*<< The next free block in the list. */
   uint32_t block_size;           /*<< The size of the free block. */
 } block_link_t;
@@ -17,9 +16,9 @@ typedef struct _block_link
 
 /* The size of the structure placed at the beginning of each allocated memory
 block must by correctly byte aligned. */
-static const uint32_t STRUCT_SIZE = (sizeof(block_link_t) +
-                                     ((uint32_t)(BYTE_ALIGNMENT - 1))) &
-                                    ~((uint32_t)BYTE_ALIGNMENT_MASK);
+static const uint32_t STRUCT_SIZE =
+    (sizeof(block_link_t) + ((uint32_t)(BYTE_ALIGNMENT - 1))) &
+    ~((uint32_t)BYTE_ALIGNMENT_MASK);
 
 /* Allocate the memory for the heap. */
 static uint8_t heap[TOTAL_HEAP_SIZE];
@@ -60,13 +59,11 @@ static uint32_t block_allocated_bit = 0;
 
 /*-----------------------------------------------------------*/
 
-void *heap_malloc(uint32_t wanted_size)
-{
+void *heap_malloc(uint32_t wanted_size) {
   block_link_t *block, *prev_block, *new_block;
   void *reval = NULL;
 
-  if (mutex_init == 0)
-  {
+  if (mutex_init == 0) {
     mutex_init = 1;
     MUTEX_INIT(mem_mutex);
   }
@@ -75,8 +72,7 @@ void *heap_malloc(uint32_t wanted_size)
   {
     /* If this is the first call to malloc then the heap will require
         initialisation to setup the list of free blocks. */
-    if (end == NULL)
-    {
+    if (end == NULL) {
       heap_init();
     }
 
@@ -84,40 +80,35 @@ void *heap_malloc(uint32_t wanted_size)
         set.  The top bit of the block size member of the block_link_t structure
         is used to determine who owns the block - the application or the
         kernel, so it must be free. */
-    if ((wanted_size & block_allocated_bit) == 0)
-    {
+    if ((wanted_size & block_allocated_bit) == 0) {
       /* The wanted size is increased so it can contain a block_link_t
             structure in addition to the requested amount of bytes. */
-      if (wanted_size > 0)
-      {
+      if (wanted_size > 0) {
         wanted_size += STRUCT_SIZE;
 
         /* Ensure that blocks are always aligned to the required number
                 of bytes. */
-        if ((wanted_size & BYTE_ALIGNMENT_MASK) != 0x00)
-        {
+        if ((wanted_size & BYTE_ALIGNMENT_MASK) != 0x00) {
           /* Byte alignment required. */
           wanted_size += (BYTE_ALIGNMENT - (wanted_size & BYTE_ALIGNMENT_MASK));
           HEAP_ASSERT((wanted_size & BYTE_ALIGNMENT_MASK) == 0);
         }
       }
 
-      if ((wanted_size > 0) && (wanted_size <= free_bytes_remain))
-      {
+      if ((wanted_size > 0) && (wanted_size <= free_bytes_remain)) {
         /* Traverse the list from the start    (lowest address) block until
                 one    of adequate size is found. */
         prev_block = &start;
         block = start.next_free;
-        while ((block->block_size < wanted_size) && (block->next_free != NULL))
-        {
+        while ((block->block_size < wanted_size) &&
+               (block->next_free != NULL)) {
           prev_block = block;
           block = block->next_free;
         }
 
         /* If the end marker was reached then a block of adequate size
                 was    not found. */
-        if (block != end)
-        {
+        if (block != end) {
           /* Return the memory space pointed to - jumping over the
                     block_link_t structure at its start. */
           reval = (void *)(((uint8_t *)prev_block->next_free) + STRUCT_SIZE);
@@ -128,8 +119,7 @@ void *heap_malloc(uint32_t wanted_size)
 
           /* If the block is larger than required it can be split into
                     two. */
-          if ((block->block_size - wanted_size) > MINIMUM_BLOCK_SIZE)
-          {
+          if ((block->block_size - wanted_size) > MINIMUM_BLOCK_SIZE) {
             /* This block is to be split into two.  Create a new
                         block following the number of bytes requested. The void
                         cast is used to prevent byte alignment warnings from the
@@ -148,8 +138,7 @@ void *heap_malloc(uint32_t wanted_size)
 
           free_bytes_remain -= block->block_size;
 
-          if (free_bytes_remain < ever_free_bytes_remain)
-          {
+          if (free_bytes_remain < ever_free_bytes_remain) {
             ever_free_bytes_remain = free_bytes_remain;
           }
 
@@ -168,15 +157,13 @@ void *heap_malloc(uint32_t wanted_size)
 }
 /*-----------------------------------------------------------*/
 
-void heap_free(void *pv)
-{
+void heap_free(void *pv) {
   uint8_t *puc = (uint8_t *)pv;
   block_link_t *block;
 
   MUTEX_LOCK(mem_mutex);
 
-  if (pv != NULL)
-  {
+  if (pv != NULL) {
     /* The memory being freed will have an block_link_t structure immediately
         before it. */
     puc -= STRUCT_SIZE;
@@ -188,10 +175,8 @@ void heap_free(void *pv)
     HEAP_ASSERT((block->block_size & block_allocated_bit) != 0);
     HEAP_ASSERT(block->next_free == NULL);
 
-    if ((block->block_size & block_allocated_bit) != 0)
-    {
-      if (block->next_free == NULL)
-      {
+    if ((block->block_size & block_allocated_bit) != 0) {
+      if (block->next_free == NULL) {
         /* The block is being returned to the heap - it is no longer
                 allocated. */
         block->block_size &= ~block_allocated_bit;
@@ -208,20 +193,13 @@ void heap_free(void *pv)
 }
 /*-----------------------------------------------------------*/
 
-uint32_t heap_get_free(void)
-{
-  return free_bytes_remain;
-}
+uint32_t heap_get_free(void) { return free_bytes_remain; }
 /*-----------------------------------------------------------*/
 
-uint32_t heap_get_ever_free(void)
-{
-  return ever_free_bytes_remain;
-}
+uint32_t heap_get_ever_free(void) { return ever_free_bytes_remain; }
 /*-----------------------------------------------------------*/
 
-static void heap_init(void)
-{
+static void heap_init(void) {
   block_link_t *first_free_block;
   uint8_t *aligned_heap;
   uint32_t address;
@@ -230,8 +208,7 @@ static void heap_init(void)
   /* Ensure the heap starts on a correctly aligned boundary. */
   address = (uint32_t)heap;
 
-  if ((address & BYTE_ALIGNMENT_MASK) != 0)
-  {
+  if ((address & BYTE_ALIGNMENT_MASK) != 0) {
     address += (BYTE_ALIGNMENT - 1);
     address &= ~((uint32_t)BYTE_ALIGNMENT_MASK);
     total_heap_size -= address - (uint32_t)heap;
@@ -264,19 +241,19 @@ static void heap_init(void)
   free_bytes_remain = first_free_block->block_size;
 
   /* Work out the position of the top bit in a uint32_t variable. */
-  block_allocated_bit = ((uint32_t)1) << ((sizeof(uint32_t) * BITS_PER_BYTE) - 1);
+  block_allocated_bit = ((uint32_t)1)
+                        << ((sizeof(uint32_t) * BITS_PER_BYTE) - 1);
 }
 /*-----------------------------------------------------------*/
 
-static void insert_into_free_list(block_link_t *block_to_insert)
-{
+static void insert_into_free_list(block_link_t *block_to_insert) {
   block_link_t *iterator;
   uint8_t *puc;
 
   /* Iterate through the list until a block is found that has a higher address
     than the block being inserted. */
-  for (iterator = &start; iterator->next_free < block_to_insert; iterator = iterator->next_free)
-  {
+  for (iterator = &start; iterator->next_free < block_to_insert;
+       iterator = iterator->next_free) {
 
     /* Nothing to do here, just iterate to the right position. */
   }
@@ -284,8 +261,7 @@ static void insert_into_free_list(block_link_t *block_to_insert)
   /* Do the block being inserted, and the block it is being inserted after
     make a contiguous block of memory? */
   puc = (uint8_t *)iterator;
-  if ((puc + iterator->block_size) == (uint8_t *)block_to_insert)
-  {
+  if ((puc + iterator->block_size) == (uint8_t *)block_to_insert) {
     iterator->block_size += block_to_insert->block_size;
     block_to_insert = iterator;
   }
@@ -293,21 +269,15 @@ static void insert_into_free_list(block_link_t *block_to_insert)
   /* Do the block being inserted, and the block it is being inserted before
     make a contiguous block of memory? */
   puc = (uint8_t *)block_to_insert;
-  if ((puc + block_to_insert->block_size) == (uint8_t *)iterator->next_free)
-  {
-    if (iterator->next_free != end)
-    {
+  if ((puc + block_to_insert->block_size) == (uint8_t *)iterator->next_free) {
+    if (iterator->next_free != end) {
       /* Form one big block from the two blocks. */
       block_to_insert->block_size += iterator->next_free->block_size;
       block_to_insert->next_free = iterator->next_free->next_free;
-    }
-    else
-    {
+    } else {
       block_to_insert->next_free = end;
     }
-  }
-  else
-  {
+  } else {
     block_to_insert->next_free = iterator->next_free;
   }
 
@@ -315,21 +285,20 @@ static void insert_into_free_list(block_link_t *block_to_insert)
     before and the block after, then it's next_free pointer will have
     already been set, and should not be set here as that would make it point
     to itself. */
-  if (iterator != block_to_insert)
-  {
+  if (iterator != block_to_insert) {
     iterator->next_free = block_to_insert;
   }
 }
 
-void heap_print_block(void)
-{
+void heap_print_block(void) {
   uint32_t block_num = 0;
   block_link_t *block;
 
-  for (block = start.next_free; block != end; block = block->next_free)
-  {
+  for (block = start.next_free; block != end; block = block->next_free) {
     block_num++;
-    mem_printf("block num: %3d, block size: %d\n", block_num, block->block_size);
+    mem_printf("block num: %3d, block size: %d\n", block_num,
+               block->block_size);
   }
-  mem_printf("free: %4d  ever free: %d\n", heap_get_free(), heap_get_ever_free());
+  mem_printf("free: %4d  ever free: %d\n", heap_get_free(),
+             heap_get_ever_free());
 }

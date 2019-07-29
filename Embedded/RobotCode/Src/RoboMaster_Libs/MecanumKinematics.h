@@ -18,12 +18,12 @@ typedef struct MecanumPosition {
   float lastRanTime;
 } MecanumPosition;
 
-extern void mecanumKinematics(MecanumWheelValues*, float,
-                              Twist2D*);
+extern void mecanumKinematics(MecanumWheelValues *, float, Twist2D *);
 
-extern void mecanumInverseKinematics(Twist2D*, float, float, MecanumWheelValues*);
+extern void mecanumInverseKinematics(Twist2D *, float, float,
+                                     MecanumWheelValues *);
 
-extern void integrateVelocities(MecanumWheelValues*, float, float,
-                                float, MecanumPosition* position);
+extern void integrateVelocities(MecanumWheelValues *, float, float, float,
+                                MecanumPosition *position);
 
-extern void transformInputToFieldOriented(Twist2D*, float);
+extern void transformInputToFieldOriented(Twist2D *, float);
