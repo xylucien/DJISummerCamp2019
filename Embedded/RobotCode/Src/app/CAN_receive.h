@@ -56,7 +56,7 @@ typedef enum {
   CAN_PIT_MOTOR_ID = 0x206,
   CAN_TRIGGER_MOTOR_ID = 0x207,
   CAN_GIMBAL_ALL_ID = 0x1FF,
-  CAN_MANIFOLD_ID = 0x208
+  CAN_MANIFOLD_ID = 0x666
 
 } can_msg_id_e;
 

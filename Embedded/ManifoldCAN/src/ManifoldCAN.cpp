@@ -3,9 +3,14 @@
 //
 
 #include "ManifoldCAN.h"
+#include "CANUtil.h"
 #include <stdexcept>
 #include <iostream>
 #include <cstring>
+#include <thread>
+#include <chrono>
+
+using namespace std::chrono_literals;
 
 ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
     this->canInterfaceName = canInterface;
@@ -78,29 +83,28 @@ void ManifoldCAN::threadUpdate() {
     ssize_t size = read(canSocket, &frame, CANFD_MTU);
 
     if(size <= 0){
-        std::cout << "a" << std::endl;
-        //throw std::runtime_error("CAN returned zero bytes!");
+        throw std::runtime_error("CAN returned zero bytes!");
     }
 
-    long inputBuf = 0;
-    inputBuf |= ((long)frame.data[0]) << 24;
-    inputBuf |= ((long)frame.data[1]) << 16;
-    inputBuf |= ((long)frame.data[2]) << 8;
-    inputBuf |= ((long)frame.data[3]);
-    float input = *(float*) &inputBuf;
+    int messageId = deserializeInt(frame.data);
+    float input = deserializeFloat(frame.data + 4);
 
-    inputBuf = 0;
-    inputBuf |= ((uint8_t)frame.data[4]) << 24;
-    inputBuf |= ((uint8_t)frame.data[5]) << 16;
-    inputBuf |= ((uint8_t)frame.data[6]) << 8;
-    inputBuf |= ((uint8_t)frame.data[7]);
-
-    //uint16_t ret = be16toh(*(std::uint16_t *)(frame.data + 0));
-
-    //uint8_t id;
-    //memcpy(&id, &frame.data, sizeof(uint8_t));
-    //memcpy(&input, &frame.data + 8, 4);
-
-    std::cout << "ID: " << std::to_string(frame.can_id) << " Data: " << input << " message ID: " << inputBuf << std::endl;
+    std::cout << "ID: " << std::hex << frame.can_id << " Data: " << input << " Message ID: " << messageId << std::endl;
 }
 
+void ManifoldCAN::writeTest() {
+    canfd_frame frame;
+
+    frame.can_id = 1638; //0x666
+    frame.len = 8;
+
+    for(float i = -1.0; i <= 1.0; i += .01){
+        float testData = i;
+        serializeInt(1, frame.data);
+        serializeFloat(testData, frame.data + 4);
+
+        write(canSocket, &frame, sizeof(struct can_frame));
+
+        std::this_thread::sleep_for(1s);
+    }
+}

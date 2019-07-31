@@ -25,6 +25,7 @@ public:
     ManifoldCAN(const std::string &canInterface);
 
     void threadUpdate();
+    void writeTest();
 
 private:
     std::string canInterfaceName;

@@ -27,6 +27,7 @@
 #include "task.h"
 
 #include "CANMessage.h"
+#include "CANUtil.h"
 
 extern CAN_HandleTypeDef hcan1;
 
@@ -48,12 +49,10 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
 static motor_measure_t motor_chassis[7];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
-
-float messageTest = 0.0f;
-
+	
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   CAN_RxHeaderTypeDef rx_header;
-  uint8_t rx_data[8];
+	uint8_t rx_data[8];
 
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
 
@@ -167,16 +166,16 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   }
 
   case CAN_MANIFOLD_ID: {
-    uint8_t messageId = 0;
-    memcpy(&messageId, rx_data, CANMESSAGE_ID_SIZE);
+    uint8_t messageId = deserializeInt(rx_data);
 
     switch(messageId){
       case CANMESSAGE_ID_TEST: {
-        memcpy(&messageTest, rx_data + CANMESSAGE_ID_SIZE, CANMESSAGE_ID_TEST_MSG_SIZE);
+        float messageTest = deserializeFloat(rx_data + 4);
         break;
       }
 
       default: {
+				
         break;
       }
     }

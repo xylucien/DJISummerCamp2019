@@ -6,7 +6,7 @@ int main() {
     ManifoldCAN can("can0");
 
     for(;;){
-        can.threadUpdate();
+        can.writeTest();
     }
 
     return 0;

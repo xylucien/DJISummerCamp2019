@@ -857,6 +857,16 @@
               <FileType>5</FileType>
               <FilePath>..\Src\RoboMaster_Libs\CANMessage.h</FilePath>
             </File>
+            <File>
+              <FileName>CANUtil.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANUtil.c</FilePath>
+            </File>
+            <File>
+              <FileName>CANUtil.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANUtil.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
