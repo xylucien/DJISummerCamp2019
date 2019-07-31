@@ -828,6 +828,11 @@
           <GroupName>RoboMasterLibs</GroupName>
           <Files>
             <File>
+              <FileName>CANMessage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANMessage.c</FilePath>
+            </File>
+            <File>
               <FileName>MathUtils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\RoboMaster_Libs\MathUtils.c</FilePath>
@@ -847,6 +852,11 @@
               <FileType>5</FileType>
               <FilePath>..\Src\RoboMaster_Libs\MecanumKinematics.h</FilePath>
             </File>
+            <File>
+              <FileName>CANMessage.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANMessage.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -861,6 +871,11 @@
               <FileName>CAN_receive.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\app\CAN_receive.c</FilePath>
+            </File>
+            <File>
+              <FileName>CAN_transmitTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\app\CAN_transmitTask.c</FilePath>
             </File>
             <File>
               <FileName>detect_task.c</FileName>

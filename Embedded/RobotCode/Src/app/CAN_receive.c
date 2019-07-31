@@ -1,11 +1,11 @@
 /**
   ****************************(C) COPYRIGHT 2016 DJI****************************
   * @file       can_receive.c/h
-  * @brief      Íê³ÉcanÉè±¸Êı¾İÊÕ·¢º¯Êı£¬¸ÃÎÄ¼şÊÇÍ¨¹ıcanÖĞ¶ÏÍê³É½ÓÊÕ
-  * @note       ¸ÃÎÄ¼ş²»ÊÇfreeRTOSÈÎÎñ
+  * @brief      ï¿½ï¿½ï¿½canï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Í¨ï¿½ï¿½canï¿½Ğ¶ï¿½ï¿½ï¿½É½ï¿½ï¿½ï¿½
+  * @note       ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½freeRTOSï¿½ï¿½ï¿½ï¿½
   * @history
   *  Version    Date            Author          Modification
-  *  V1.0.0     Dec-26-2018     RM              1. Íê³É
+  *  V1.0.0     Dec-26-2018     RM              1. ï¿½ï¿½ï¿½
   *
   @verbatim
   ==============================================================================
@@ -15,7 +15,7 @@
   ****************************(C) COPYRIGHT 2016 DJI****************************
   */
 
-#include "CAN_Receive.h"
+#include "CAN_receive.h"
 
 #include "bsp_rng.h"
 #include "stm32f4xx.h"
@@ -26,14 +26,14 @@
 #include "string.h"
 #include "task.h"
 
+#include "CANMessage.h"
+
 extern CAN_HandleTypeDef hcan1;
-extern CAN_HandleTypeDef hcan2;
 
 rm_imu_data_t rm_imu_data;
 
 static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
 
-//µç»úÊı¾İ¶ÁÈ¡
 #define get_motor_measure(ptr, data)                                           \
   {                                                                            \
     (ptr)->last_ecd = (ptr)->ecd;                                              \
@@ -45,10 +45,11 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
     (ptr)->total_ecd += (ptr)->delta_ecd;                                      \
   }
 
-//ÉùÃ÷µç»ú±äÁ¿
 static motor_measure_t motor_chassis[7];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
+
+float messageTest = 0.0f;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   CAN_RxHeaderTypeDef rx_header;
@@ -65,14 +66,15 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   case CAN_PIT_MOTOR_ID:
   case CAN_TRIGGER_MOTOR_ID: {
     static uint8_t i = 0;
-    //´¦Àíµç»úIDºÅ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½
     i = rx_header.StdId - CAN_3508_M1_ID;
-    //´¦Àíµç»úÊı¾İºêº¯Êı
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İºêº¯ï¿½ï¿½
     get_motor_measure(&motor_chassis[i], rx_data);
-    //¼ÇÂ¼Ê±¼ä
+    //ï¿½ï¿½Â¼Ê±ï¿½ï¿½
     DetectHook(ChassisMotor1TOE + i);
     break;
   }
+
   case RM_IMU_PARAM_ID: {
     rm_imu_data.accel_rangle = rx_data[0] & 0x0F;
     rm_imu_data.gyro_rangle = (rx_data[0] & 0xF0) >> 4;
@@ -80,6 +82,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     rm_imu_data.imu_sensor_rotation = rx_data[3] & 0x1F;
     rm_imu_data.ahrs_rotation_sequence = (rx_data[3] & 0xE0) >> 5;
     rm_imu_data.quat_euler = rx_data[4] & 0x01;
+
     switch (rm_imu_data.gyro_rangle) {
     case 0:
       rm_imu_data.gyro_sen = GYRO_2000_SEN;
@@ -97,6 +100,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       rm_imu_data.gyro_sen = GYRO_125_SEN;
       break;
     }
+
     switch (rm_imu_data.accel_rangle) {
     case 0:
       rm_imu_data.accel_sen = ACCEL_3G_SEN;
@@ -111,8 +115,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       rm_imu_data.accel_sen = ACCEL_24G_SEN;
       break;
     }
+
     break;
   }
+
   case RM_IMU_QUAT_ID: {
     if (rm_imu_data.quat_euler && rx_header.DLC == 6) {
       memcpy(rm_imu_data.euler_angle, rx_data, rx_header.DLC);
@@ -126,8 +132,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       rm_imu_data.quat_fp32[2] = rm_imu_data.quat[2] * 0.0001f;
       rm_imu_data.quat_fp32[3] = rm_imu_data.quat[3] * 0.0001f;
     }
+
     break;
   }
+
   case RM_IMU_GYRO_ID: {
     memcpy(rm_imu_data.gyro_int16, rx_data, 6);
     rm_imu_data.gyro_fp32[0] = rm_imu_data.gyro_int16[0] * rm_imu_data.gyro_sen;
@@ -140,6 +148,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     }
     break;
   }
+
   case RM_IMU_ACCEL_ID: {
     memcpy(rm_imu_data.accel_int16, rx_data, 6);
     rm_imu_data.accel_fp32[0] =
@@ -151,17 +160,37 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     memcpy(&rm_imu_data.sensor_time, (rx_data + 6), 2);
     break;
   }
+
   case RM_IMU_MAG_ID: {
     memcpy(rm_imu_data.mag_int16, rx_data, 6);
     break;
   }
+
+  case CAN_MANIFOLD_ID: {
+    uint8_t messageId = 0;
+    memcpy(&messageId, rx_data, CANMESSAGE_ID_SIZE);
+
+    switch(messageId){
+      case CANMESSAGE_ID_TEST: {
+        memcpy(&messageTest, rx_data + CANMESSAGE_ID_SIZE, CANMESSAGE_ID_TEST_MSG_SIZE);
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+
+    break;
+  }
+
   default: {
     break;
   }
   }
 }
 
-// CAN ·¢ËÍ 0x700µÄIDµÄÊı¾İ£¬»áÒı·¢M3508½øÈë¿ìËÙÉèÖÃIDÄ£Ê½
+// CAN ï¿½ï¿½ï¿½ï¿½ 0x700ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½M3508ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDÄ£Ê½
 void CAN_CMD_CHASSIS_RESET_ID(void) {
   uint32_t send_mail_box;
   chassis_tx_message.StdId = 0x700;
@@ -181,14 +210,16 @@ void CAN_CMD_CHASSIS_RESET_ID(void) {
                        &send_mail_box);
 }
 
-//·¢ËÍµ×ÅÌµç»ú¿ØÖÆÃüÁî
+//ï¿½ï¿½ï¿½Íµï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                      int16_t motor4) {
   uint32_t send_mail_box;
+
   chassis_tx_message.StdId = CAN_CHASSIS_ALL_ID;
   chassis_tx_message.IDE = CAN_ID_STD;
   chassis_tx_message.RTR = CAN_RTR_DATA;
   chassis_tx_message.DLC = 0x08;
+
   chassis_can_send_data[0] = motor1 >> 8;
   chassis_can_send_data[1] = motor1;
   chassis_can_send_data[2] = motor2 >> 8;
@@ -202,19 +233,18 @@ void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                        &send_mail_box);
 }
 
-//·µ»Øyawµç»ú±äÁ¿µØÖ·£¬Í¨¹ıÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êı¾İ
 const motor_measure_t *get_Yaw_Gimbal_Motor_Measure_Point(void) {
   return &motor_chassis[4];
 }
-//·µ»Øpitchµç»ú±äÁ¿µØÖ·£¬Í¨¹ıÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êı¾İ
+
 const motor_measure_t *get_Pitch_Gimbal_Motor_Measure_Point(void) {
   return &motor_chassis[5];
 }
-//·µ»Øtriggerµç»ú±äÁ¿µØÖ·£¬Í¨¹ıÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êı¾İ
+
 const motor_measure_t *get_Trigger_Motor_Measure_Point(void) {
   return &motor_chassis[6];
 }
-//·µ»Øµ×ÅÌµç»ú±äÁ¿µØÖ·£¬Í¨¹ıÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êı¾İ
+
 const motor_measure_t *get_Chassis_Motor_Measure_Point(uint8_t i) {
   return &motor_chassis[(i & 0x03)];
 }

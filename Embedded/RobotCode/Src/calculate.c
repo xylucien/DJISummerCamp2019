@@ -1,7 +1,7 @@
 #include "CRC8_CRC16.h"
 #include "cmsis_os.h"
 #include "fifo.h"
-#include "protocol.h"
+#  include "protocol.h"
 #include "referee.h"
 #include "stdio.h"
 #include "string.h"
@@ -22,32 +22,32 @@ extern void Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength);
 */
 void Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
 
-// USBµ×²ã·¢ËÍº¯Êý£¬Ö±½Ó²Ù×÷Ó²¼þ
+// USBï¿½×²ã·¢ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó²ï¿½ï¿½ï¿½Ó²ï¿½ï¿½
 extern uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
-//¼ÆËãÊ½ÊäÈëÊý¾Ý
+//ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 communicate_class_input_data_t communicate_input_data;
-//¼ÆËãÊ½Êä³ö½á¹û
+//ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 communicate_class_output_data_t communicate_output_data;
 
 chassis_ctrl_info_t chassis_ctrl_input_data;
 
 extern QueueHandle_t recvMotorQueue;
 
-//ÊµÏÖRMÐ­ÒéµÄÐòÁÐ»¯¹ý³Ì
+//Êµï¿½ï¿½RMÐ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½
 void referee_send_data(uint16_t cmd_id, void *buf, uint16_t len) {
-  // TODO ¶¨ÒåÖÁÉÙ128×Ö½Ú´óÐ¡»º´æÊý×é
+  // TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½128ï¿½Ö½Ú´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   static uint8_t send_buf[128];
   uint16_t index = 0;
-  // TODO ¶¨ÒåÖ¡Í·½á¹¹Ìå
+  // TODO ï¿½ï¿½ï¿½ï¿½Ö¡Í·ï¿½á¹¹ï¿½ï¿½
   frame_header_struct_t referee_send_header;
 
-  // TODO ³õÊ¼»¯¶ÔÓ¦Ö¡Í·½á¹¹Ìå
+  // TODO ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ó¦Ö¡Í·ï¿½á¹¹ï¿½ï¿½
   referee_send_header.SOF = HEADER_SOF;
   referee_send_header.data_length = len;
   referee_send_header.seq++;
 
-  // TODO Éú³ÉCRC8Ð£Ñé
+  // TODO ï¿½ï¿½ï¿½ï¿½CRC8Ð£ï¿½ï¿½
   Append_CRC8_Check_Sum((uint8_t *)&referee_send_header,
                         sizeof(frame_header_struct_t));
 
@@ -58,21 +58,21 @@ void referee_send_data(uint16_t cmd_id, void *buf, uint16_t len) {
   memcpy(send_buf + index, (void *)&cmd_id, sizeof(uint16_t));
   index += sizeof(uint16_t);
 
-  // TODO Ìî³äÊý¾Ý°ü
+  // TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½
   memcpy(send_buf + index, (void *)buf, len);
   index += len;
 
-  // TODO Éú³ÉCRC16Ð£Ñé
+  // TODO ï¿½ï¿½ï¿½ï¿½CRC16Ð£ï¿½ï¿½
   Append_CRC16_Check_Sum(send_buf, REF_HEADER_CRC_CMDID_LEN + len);
   index += sizeof(uint16_t);
 
-  // TODO µ÷ÓÃµ×²ã·¢ËÍº¯Êý
+  // TODO ï¿½ï¿½ï¿½Ãµ×²ã·¢ï¿½Íºï¿½ï¿½ï¿½
   CDC_Transmit_FS(send_buf, index);
 }
 
-// TODO£ºÊµÏÖ¼ÆËãÊ½ÔËËãºÍ½á¹ûÉÏ·¢
-//¼ÆËãÊ½ÐÅÏ¢°ü·´ÐòÁÐ»¯ÒÑ¾­ÊµÏÖ
-//Í¨¹ýcommunicate_input_data½á¹¹Ìå¿ÉÒÔÖ±½Ó»ñÈ¡¼ÆËãÊ½ÐÅÏ¢
+// TODOï¿½ï¿½Êµï¿½Ö¼ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Í½ï¿½ï¿½ï¿½Ï·ï¿½
+//ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ñ¾ï¿½Êµï¿½ï¿½
+//Í¨ï¿½ï¿½communicate_input_dataï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó»ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Ï¢
 // operate '+' '-' '*' '/'
 void communicate_class_solve(void) { ; }
 
@@ -100,5 +100,5 @@ void chassis_command_solve() {
   backLeft = values.backLeft;
   backRight = values.backRight;
 
-  xQueueSend(recvMotorQueue, (void *)(&input), (TickType_t)100);
+  xQueueSend(recvMotorQueue, (void *)(&input), (TickType_t)10);
 }

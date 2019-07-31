@@ -30,8 +30,10 @@
 
 #include "INS_task.h"
 #include "chassis_task.h"
+#include "CAN_transmitTask.h"
 
 /* USER CODE END Includes */
+#include "CANMessage.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -100,6 +102,7 @@ osThreadId gimbal_taskHandle;
 osThreadId ins_taskHandle;
 osThreadId referee_taskHandle;
 osThreadId chassis_taskHandle;
+osThreadId canTransmit_taskHandle;
 
 /* USER CODE END PV */
 
@@ -138,9 +141,11 @@ void led_trigger_task(void const *argument);
 /* USER CODE BEGIN PFP */
 extern void remote_control_init(void);
 extern void referee_task(void const *argument);
+extern void canTransmitTaskLoop(void const *argument);
 
 // Queues
 QueueHandle_t recvMotorQueue;
+QueueHandle_t canTestTransmitQueue;
 
 /* USER CODE END PFP */
 
@@ -231,6 +236,7 @@ int main(void) {
 
   /* USER CODE BEGIN RTOS_QUEUES */
   recvMotorQueue = xQueueCreate(25, sizeof(Twist2D));
+  canTestTransmitQueue = xQueueCreate(25, CANMESSAGE_ID_TEST_MSG_SIZE);
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
@@ -243,11 +249,15 @@ int main(void) {
   /* add threads, ... */
   osThreadDef(ins_task, INSTask, osPriorityRealtime, 0, 512);
   ins_taskHandle = osThreadCreate(osThread(ins_task), NULL);
+
   osThreadDef(refereeTask, referee_task, osPriorityNormal, 0, 512);
   referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
 
   osThreadDef(chassis, chassis_task, osPriorityHigh, 0, 512);
   chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
+
+  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh, 0, 512);
+  canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -467,9 +477,7 @@ static void MX_CAN1_Init(void) {
   /* USER CODE END CAN1_Init 0 */
 
   /* USER CODE BEGIN CAN1_Init 1 */
-
-  /* USER CODE END CAN1_Init 1 */
-  hcan1.Instance = CAN1;
+	hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 3;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
@@ -484,6 +492,8 @@ static void MX_CAN1_Init(void) {
   if (HAL_CAN_Init(&hcan1) != HAL_OK) {
     Error_Handler();
   }
+  /* USER CODE END CAN1_Init 1 */
+  
   /* USER CODE BEGIN CAN1_Init 2 */
 
   /* USER CODE END CAN1_Init 2 */
