@@ -24,6 +24,7 @@
 #include "cmsis_os.h"
 #include "usb_device.h"
 #include <FreeRTOS.h>
+#include <stdbool.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -147,6 +148,9 @@ extern void canTransmitTaskLoop(void const *argument);
 QueueHandle_t recvMotorQueue;
 QueueHandle_t canTestTransmitQueue;
 
+//Target velocity queue
+QueueHandle_t canTargetVelocityQueue;
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -237,6 +241,9 @@ int main(void) {
   /* USER CODE BEGIN RTOS_QUEUES */
   recvMotorQueue = xQueueCreate(25, sizeof(Twist2D));
   canTestTransmitQueue = xQueueCreate(25, CANMESSAGE_ID_TEST_MSG_SIZE);
+  
+  canTargetVelocityQueue = xQueueCreate(25, sizeof(Twist2D));
+
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 

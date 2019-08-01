@@ -5,8 +5,6 @@ extern "C"
 {
 #endif
 
-#include <stdint.h>
-
 extern void serializeFloat(float input, uint8_t *dest);
 extern float deserializeFloat(uint8_t *source);
 

@@ -12,6 +12,51 @@
 
 using namespace std::chrono_literals;
 
+int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
+    canfd_frame frame;
+
+    frame.can_id = 1638; //0x666
+    frame.len = 8;
+
+    serializeInt(message.id, frame.data);
+    serializeFloat(message.data, frame.data + 4);
+
+    return write(canSocket, &frame, sizeof(struct can_frame));
+}
+
+FloatCANMessage ManifoldCAN::receiveFloatMessage() const {
+    canfd_frame frame;
+
+    ssize_t size = read(canSocket, &frame, CANFD_MTU);
+
+    if(size <= 0){
+        throw std::runtime_error("CAN returned zero bytes!");
+    }
+
+    FloatCANMessage message;
+
+    message.id = deserializeInt(frame.data);
+    message.data = deserializeFloat(frame.data + 4);
+
+    return message;
+}
+
+void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
+
+    int ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TEST, twist.vX));
+
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VX, twist.vX));
+    std::this_thread::sleep_for(1s);
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VY, twist.vY));
+    std::this_thread::sleep_for(1s);
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VW, twist.w));
+    std::this_thread::sleep_for(1s);
+
+    //Some non zero number
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_READY, 1.0f));
+    std::this_thread::sleep_for(1s);
+}
+
 ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
     this->canInterfaceName = canInterface;
 
@@ -54,25 +99,14 @@ ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
     }
 
     /*
-    strcpy(ifr.ifr_name, canInterface.c_str());
-    ioctl(canSocket, SIOCGIFINDEX, &ifr);
-
-    addr.can_family = AF_CAN;
-    addr.can_ifindex = ifr.ifr_ifindex;
-
-    if(connect(canSocket, (struct sockaddr*) &addr, sizeof(addr)) < 0){
-        throw std::runtime_error("Unable to connect to CAN interface errno: " + std::to_string(errno));
-    }
-
-
     rxMsg.msg_head.opcode  = RX_SETUP;
     rxMsg.msg_head.can_id  = 0x666;
     rxMsg.msg_head.flags   = 0;
     rxMsg.msg_head.nframes = 0;
 
-    //if(write(canSocket, &rxMsg, sizeof(rxMsg)) < 0){
-    //    throw std::runtime_error("RX setup error: " + std::to_string(errno));
-    //}
+    if(write(canSocket, &rxMsg, sizeof(rxMsg)) < 0){
+        throw std::runtime_error("RX setup error: " + std::to_string(errno));
+    }
      */
 }
 
@@ -82,29 +116,15 @@ void ManifoldCAN::threadUpdate() {
 
     ssize_t size = read(canSocket, &frame, CANFD_MTU);
 
-    if(size <= 0){
-        throw std::runtime_error("CAN returned zero bytes!");
-    }
+    FloatCANMessage message = receiveFloatMessage();
+    float data = message.data;
 
-    int messageId = deserializeInt(frame.data);
-    float input = deserializeFloat(frame.data + 4);
-
-    std::cout << "ID: " << std::hex << frame.can_id << " Data: " << input << " Message ID: " << messageId << std::endl;
+    std::cout << "ID: " << std::hex << frame.can_id << " Data: " << data << " Message ID: " << message.id << std::endl;
 }
 
 void ManifoldCAN::writeTest() {
-    canfd_frame frame;
-
-    frame.can_id = 1638; //0x666
-    frame.len = 8;
-
     for(float i = -1.0; i <= 1.0; i += .01){
-        float testData = i;
-        serializeInt(1, frame.data);
-        serializeFloat(testData, frame.data + 4);
-
-        write(canSocket, &frame, sizeof(struct can_frame));
-
+        sendFloatMessage(FloatCANMessage(1, i));
         std::this_thread::sleep_for(1s);
     }
 }

@@ -18,7 +18,23 @@
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 
+#include "MathUtils.h"
+#include "CANMessage.h"
 #include "CANTopic.h"
+
+struct FloatCANMessage {
+    FloatCANMessage(){
+        this->id = 0;
+        this->data = 0;
+    }
+
+    FloatCANMessage(uint8_t id, float data){
+        this->id = id;
+        this->data = data;
+    }
+    uint8_t id;
+    float data;
+};
 
 class ManifoldCAN {
 public:
@@ -27,7 +43,13 @@ public:
     void threadUpdate();
     void writeTest();
 
+    void sendTargetVelocity(const Twist2D &twist);
+
+
 private:
+    int sendFloatMessage(const FloatCANMessage &message);
+    FloatCANMessage receiveFloatMessage() const;
+
     std::string canInterfaceName;
     int canSocket;
 

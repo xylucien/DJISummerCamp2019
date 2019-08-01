@@ -9,6 +9,11 @@
 #define CANMESSAGE_ID_TEST 1
 #define CANMESSAGE_ID_TEST_MSG_SIZE sizeof(float)
 
+#define CANMESSAGE_ID_TARGET_VX 2
+#define CANMESSAGE_ID_TARGET_VY 3
+#define CANMESSAGE_ID_TARGET_VW 4
+#define CANMESSAGE_ID_TARGET_READY 5
+
 typedef struct CANMessage {
     uint8_t messageId;
     void* data;

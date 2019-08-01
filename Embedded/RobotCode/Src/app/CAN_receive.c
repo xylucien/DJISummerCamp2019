@@ -26,12 +26,20 @@
 #include "string.h"
 #include "task.h"
 
+#include "cmsis_os.h"
+#include <stdbool.h>
+
+#include "MathUtils.h"
 #include "CANMessage.h"
 #include "CANUtil.h"
 
 extern CAN_HandleTypeDef hcan1;
 
+extern QueueHandle_t canTargetVelocityQueue;
+
 rm_imu_data_t rm_imu_data;
+
+float lastVx, lastVy, lastVw;
 
 static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
 
@@ -50,8 +58,10 @@ static motor_measure_t motor_chassis[7];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
 	
+float test = 0.0;
+CAN_RxHeaderTypeDef rx_header;
+	
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-  CAN_RxHeaderTypeDef rx_header;
 	uint8_t rx_data[8];
 
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
@@ -171,6 +181,38 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     switch(messageId){
       case CANMESSAGE_ID_TEST: {
         float messageTest = deserializeFloat(rx_data + 4);
+				test = messageTest;
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_VX: {
+        float vX = deserializeFloat(rx_data + 4);
+        lastVx = vX;
+				//xQueueSend(canTargetVXQueue, &vX, (TickType_t)0);
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_VY: {
+        float vY = deserializeFloat(rx_data + 4);
+        lastVy = vY;
+				//xQueueSend(canTargetVYQueue, &vY, (TickType_t)0);
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_VW: {
+        float vW = deserializeFloat(rx_data + 4);
+        lastVw = vW;
+				//xQueueSend(canTargetVWQueue, &vW, (TickType_t)0);
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_READY: {
+				Twist2D output;
+        output.vX = lastVx;
+        output.vY = lastVy;
+        output.w = lastVw;
+
+        xQueueSend(canTargetVelocityQueue, &output, (TickType_t)10);
         break;
       }
 
