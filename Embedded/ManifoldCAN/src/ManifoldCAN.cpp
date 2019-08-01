@@ -12,22 +12,73 @@
 
 using namespace std::chrono_literals;
 
+ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
+    this->canInterfaceName = canInterface;
+
+    canTxSocket = socket(PF_CAN, SOCK_DGRAM, CAN_BCM);
+
+    if(canTxSocket < 0){
+        throw std::runtime_error("Unable to start CAN TX socket errno: " + std::to_string(errno));
+    }
+
+    struct sockaddr_can addr;
+    struct ifreq ifr;
+
+    strcpy(ifr.ifr_name, canInterface.c_str());
+    ioctl(canTxSocket, SIOCGIFINDEX, &ifr);
+
+    addr.can_family = AF_CAN;
+    addr.can_ifindex = ifr.ifr_ifindex;
+
+    int connRet = connect(canTxSocket, (struct sockaddr *)&addr, sizeof(addr));
+
+    if(connRet < 0){
+        throw std::runtime_error("Connect failed with: " + std::to_string(errno));
+    }
+
+    canRxSocket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+    if(canRxSocket < 0){
+        throw std::runtime_error("Unable to start CAN RX socket errno: " + std::to_string(errno));
+    }
+
+    sendRXSetup();
+}
+
 int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
-    canfd_frame frame;
+    BCM_Msg msg;
+    msg.msg_head.opcode  = TX_SETUP;
+    msg.msg_head.can_id  = 1638;
+    msg.msg_head.flags   = SETTIMER|STARTTIMER|TX_CP_CAN_ID;
+    msg.msg_head.nframes = 1;
+    msg.msg_head.count = 0;
+    msg.msg_head.ival1.tv_sec = 0;
+    msg.msg_head.ival1.tv_usec = 0;
+    msg.msg_head.ival2.tv_sec = 0;
+    msg.msg_head.ival2.tv_usec = 100000;
+    msg.frame[0].can_dlc   = 8;
 
-    frame.can_id = 1638; //0x666
-    frame.len = 8;
+    serializeInt(message.id, msg.frame[0].data);
+    serializeFloat(message.data, msg.frame[0].data + 4);
 
-    serializeInt(message.id, frame.data);
-    serializeFloat(message.data, frame.data + 4);
+    return write(canTxSocket, &msg, sizeof(struct BCM_Msg));
+}
 
-    return write(canSocket, &frame, sizeof(struct can_frame));
+void ManifoldCAN::sendRXSetup() const {
+    BCM_Msg msg;
+    msg.msg_head.opcode  = RX_SETUP;
+    msg.msg_head.can_id  = 1639;
+    msg.msg_head.flags   = 0;
+    msg.msg_head.nframes = 1;
+
+    write(canTxSocket, &msg, sizeof(struct BCM_Msg));
 }
 
 FloatCANMessage ManifoldCAN::receiveFloatMessage() const {
-    canfd_frame frame;
+    sendRXSetup();
 
-    ssize_t size = read(canSocket, &frame, CANFD_MTU);
+    BCM_Msg msg;
+
+    ssize_t size = read(canTxSocket, &msg, sizeof(BCM_Msg));
 
     if(size <= 0){
         throw std::runtime_error("CAN returned zero bytes!");
@@ -35,8 +86,8 @@ FloatCANMessage ManifoldCAN::receiveFloatMessage() const {
 
     FloatCANMessage message;
 
-    message.id = deserializeInt(frame.data);
-    message.data = deserializeFloat(frame.data + 4);
+    message.id = deserializeInt(msg.frame[0].data);
+    message.data = deserializeFloat(msg.frame[0].data + 4);
 
     return message;
 }
@@ -56,69 +107,14 @@ void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
     std::this_thread::sleep_for(5ms);
 }
 
-ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
-    this->canInterfaceName = canInterface;
-
-    canSocket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-
-    if(canSocket < 0){
-        throw std::runtime_error("Unable to start CAN socket errno: " + std::to_string(errno));
-    }
-
-    struct can_filter filter;
-    filter.can_id   = 0x666;
-    filter.can_mask = CAN_SFF_MASK;
-
-    /*
-    int sockOptRet = setsockopt(
-            canSocket,
-            SOL_CAN_RAW,
-            CAN_RAW_FILTER,
-            &filter,
-            sizeof(filter)
-    );
-     */
-
-    //if(sockOptRet < 0){
-    //    throw std::runtime_error("setsockopt failed with: " + std::to_string(errno));
-    //}
-
-    strcpy(ifr.ifr_name, canInterface.c_str());
-    ioctl(canSocket, SIOCGIFINDEX, &ifr);
-
-    struct sockaddr_can addr;
-
-    addr.can_family = AF_CAN;
-    addr.can_ifindex = ifr.ifr_ifindex;
-
-    int bindRet = bind(canSocket, (struct sockaddr*) (&addr), sizeof(addr));
-
-    if(bindRet < 0){
-        throw std::runtime_error("Bind failed with: " + std::to_string(errno));
-    }
-
-    /*
-    rxMsg.msg_head.opcode  = RX_SETUP;
-    rxMsg.msg_head.can_id  = 0x666;
-    rxMsg.msg_head.flags   = 0;
-    rxMsg.msg_head.nframes = 0;
-
-    if(write(canSocket, &rxMsg, sizeof(rxMsg)) < 0){
-        throw std::runtime_error("RX setup error: " + std::to_string(errno));
-    }
-     */
-}
-
 void ManifoldCAN::threadUpdate() {
     //TODO finish this
     canfd_frame frame;
 
-    ssize_t size = read(canSocket, &frame, CANFD_MTU);
-
     FloatCANMessage message = receiveFloatMessage();
     float data = message.data;
 
-    std::cout << "ID: " << std::hex << frame.can_id << " Data: " << data << " Message ID: " << message.id << std::endl;
+    std::cout << " Data: " << data << " Message ID: " << std::to_string(message.id) << std::endl;
 }
 
 void ManifoldCAN::writeTest() {

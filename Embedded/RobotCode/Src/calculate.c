@@ -76,11 +76,6 @@ void referee_send_data(uint16_t cmd_id, void *buf, uint16_t len) {
 // operate '+' '-' '*' '/'
 void communicate_class_solve(void) { ; }
 
-double topLeft = 0;
-double topRight = 0;
-double backLeft = 0;
-double backRight = 0;
-
 float ab = 2.0f;
 float r = 1.0f;
 
@@ -94,11 +89,6 @@ void chassis_command_solve() {
   MecanumWheelValues values;
 
   mecanumInverseKinematics(&input, ab, r, &values);
-
-  topLeft = values.topLeft;
-  topRight = values.topRight;
-  backLeft = values.backLeft;
-  backRight = values.backRight;
 
   xQueueSend(recvMotorQueue, (void *)(&input), (TickType_t)10);
 }

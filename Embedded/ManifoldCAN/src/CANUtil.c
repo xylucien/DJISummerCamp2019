@@ -25,9 +25,9 @@ void serializeInt(uint8_t input, uint8_t *dest){
 
 uint8_t deserializeInt(uint8_t *source){
 	long buffer = 0;
-	buffer |= (source[0]) << 24;
-	buffer |= (source[1]) << 16;
-	buffer |= (source[2]) << 8;
-	buffer |= (source[3]);
+	buffer |= ((long) source[0]) << 24;
+	buffer |= ((long) source[1]) << 16;
+	buffer |= ((long) source[2]) << 8;
+	buffer |= ((long) source[3]);
 	return *(uint8_t*) &buffer;
 }

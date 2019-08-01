@@ -17,6 +17,10 @@ extern QueueHandle_t recvMotorQueue;
 
 extern QueueHandle_t canTargetVelocityQueue;
 
+extern float lastVx;
+extern float lastVy;
+extern float lastVw;
+
 Twist2D currentVelocityTarget;
 
 uint8_t chassis_odom_pack_solve(uint8_t *buf, float x, float y, float odom_yaw,
@@ -40,14 +44,19 @@ void chassis_motor_speed_update(chassis_move_t *chassis_move_update) {
   }
 }
 
-void chassis_twist_to_mecanum_wheel_speed(Twist2D *input, fp32 wheel_speed[4]) {
+float topLeft;
+float topRight;
+float backLeft;
+float backRight;
+
+void chassis_twist_to_mecanum_wheel_speed(Twist2D *input, fp32 *wheelSpeed) {
   MecanumWheelValues values;
   mecanumInverseKinematics(input, 2, 1, &values);
 
-  wheel_speed[0] = values.topLeft;
-  wheel_speed[1] = values.topRight;
-  wheel_speed[2] = values.backLeft;
-  wheel_speed[3] = values.backRight;
+  topLeft = values.topLeft;
+  topRight = values.topRight;
+  backLeft = values.backLeft;
+  backRight = values.backRight;
 }
 
 void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 vy_set,
@@ -97,6 +106,7 @@ void chassis_normal_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
 }
 
 Twist2D targetVel;
+fp32 *wheel_speedsTest[4];
 
 void chassis_auto_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
                           chassis_move_t *chassis_move_rc_to_vector) {
@@ -106,7 +116,15 @@ void chassis_auto_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
 				;
 			}
 
-  xQueueReceive(canTargetVelocityQueue, &targetVel, (TickType_t)10);
+  targetVel.vX = lastVx;
+  targetVel.vY = lastVy;
+  targetVel.w = lastVw;
+
+  (*vx_set) = targetVel.vX;  
+  (*vy_set) = targetVel.vY;
+  (*wz_set) = targetVel.w;
+
+  chassis_twist_to_mecanum_wheel_speed(&targetVel, (fp32*) &wheel_speedsTest);
 
   return;
 }

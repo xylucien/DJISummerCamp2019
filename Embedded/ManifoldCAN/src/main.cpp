@@ -18,8 +18,8 @@ int main() {
             test.vY = i + 2.0;
             test.w = std::sin(i);
             can.sendTargetVelocity(test);
-            std::this_thread::sleep_for(1000ms);
-            //can.threadUpdate();
+            std::this_thread::sleep_for(100ms);
+            can.threadUpdate();
             std::this_thread::sleep_for(100ms);
         }
     }

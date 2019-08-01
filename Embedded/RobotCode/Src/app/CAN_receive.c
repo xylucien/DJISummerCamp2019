@@ -176,7 +176,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     break;
   }
 
-  case CAN_MANIFOLD_ID: {
+  case CAN_MANIFOLD_ID - 1: {
     uint8_t messageId = deserializeInt(rx_data);
 
     switch(messageId){

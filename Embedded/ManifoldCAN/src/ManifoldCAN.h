@@ -7,6 +7,8 @@
 
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include <linux/can/bcm.h>
+#include <sys/ioctl.h>
 
 #include <string>
 #include <libnet.h>
@@ -36,6 +38,12 @@ struct FloatCANMessage {
     float data;
 };
 
+struct BCM_Msg {
+    struct bcm_msg_head msg_head;
+    struct can_frame frame[4]; /* just an example */
+} ;
+
+
 class ManifoldCAN {
 public:
     ManifoldCAN(const std::string &canInterface);
@@ -50,8 +58,11 @@ private:
     int sendFloatMessage(const FloatCANMessage &message);
     FloatCANMessage receiveFloatMessage() const;
 
+    void sendRXSetup() const;
+
     std::string canInterfaceName;
-    int canSocket;
+    int canTxSocket;
+    int canRxSocket;
 
     struct sockaddr_can addr;
     struct ifreq ifr;
