@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "ManifoldCAN.h"
 
 int main() {
@@ -7,10 +8,12 @@ int main() {
 
     for(;;){
         Twist2D test;
-        test.vX = 3.14;
-        test.vY = test.vX * 2;
-        test.w = 1.0;
-        can.sendTargetVelocity(test);
+        for(float i = 0.0; i <= 1.0; i += 0.1) {
+            test.vX = i + 1.0;
+            test.vY = i + 2.0;
+            test.w = std::sin(i);
+            can.sendTargetVelocity(test);
+        }
     }
 
     return 0;

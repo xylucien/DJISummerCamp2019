@@ -38,6 +38,7 @@ extern CAN_HandleTypeDef hcan1;
 extern QueueHandle_t canTargetVelocityQueue;
 
 rm_imu_data_t rm_imu_data;
+Twist2D targetVelocity;
 
 float lastVx, lastVy, lastVw;
 
@@ -208,11 +209,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
       case CANMESSAGE_ID_TARGET_READY: {
 				Twist2D output;
-        output.vX = lastVx;
-        output.vY = lastVy;
-        output.w = lastVw;
-
-        xQueueSend(canTargetVelocityQueue, &output, (TickType_t)10);
+        targetVelocity.vX = lastVx;
+        targetVelocity.vY = lastVy;
+        targetVelocity.w = lastVw;
+				
         break;
       }
 

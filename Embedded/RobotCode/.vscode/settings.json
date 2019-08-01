@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "array": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "mecanumkinematics.h": "c"
     }
 }

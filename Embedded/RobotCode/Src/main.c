@@ -239,7 +239,7 @@ int main(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  recvMotorQueue = xQueueCreate(25, sizeof(Twist2D));
+  //recvMotorQueue = xQueueCreate(25, sizeof(Twist2D));
   canTestTransmitQueue = xQueueCreate(25, CANMESSAGE_ID_TEST_MSG_SIZE);
   
   canTargetVelocityQueue = xQueueCreate(25, sizeof(Twist2D));
@@ -254,16 +254,16 @@ int main(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  osThreadDef(ins_task, INSTask, osPriorityRealtime, 0, 512);
+  osThreadDef(ins_task, INSTask, osPriorityRealtime, 0, 2046);
   ins_taskHandle = osThreadCreate(osThread(ins_task), NULL);
 
-  osThreadDef(refereeTask, referee_task, osPriorityNormal, 0, 512);
+  osThreadDef(refereeTask, referee_task, osPriorityNormal, 0, 2046);
   referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
 
-  osThreadDef(chassis, chassis_task, osPriorityHigh, 0, 512);
+  osThreadDef(chassis, chassis_task, osPriorityHigh, 0, 2046);
   chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
 
-  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh, 0, 512);
+  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh, 0, 2046);
   canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
 
   /* USER CODE END RTOS_THREADS */

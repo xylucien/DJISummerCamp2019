@@ -102,10 +102,11 @@ void chassis_auto_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
                           chassis_move_t *chassis_move_rc_to_vector) {
   if (vx_set == NULL || vy_set == NULL || wz_set == NULL ||
       chassis_move_rc_to_vector == NULL) {
-    return;
+    //return;
+				;
 			}
 
-  xQueueReceive(canTargetVelocityQueue, &targetVel, (TickType_t)0);
+  xQueueReceive(canTargetVelocityQueue, &targetVel, (TickType_t)10);
 
   return;
 }

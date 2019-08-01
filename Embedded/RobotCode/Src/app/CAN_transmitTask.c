@@ -25,7 +25,7 @@ void canTransmitTaskLoop(void const *argument){
 						float output = i;
 						xQueueSend(canTestTransmitQueue, (void *)(&output), (TickType_t)10);
 						canSendTestMessage();
-						vTaskDelay(1000);
+						vTaskDelay(10000);
 					}
 					
     }

@@ -46,11 +46,11 @@ void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
     int ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TEST, twist.vX));
 
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VX, twist.vX));
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(10ms);
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VY, twist.vY));
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(10ms);
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VW, twist.w));
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(10ms);
 
     //Some non zero number
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_READY, 1.0f));
