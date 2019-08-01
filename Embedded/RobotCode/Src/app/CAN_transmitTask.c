@@ -23,14 +23,17 @@ void canTransmitTaskLoop(void const *argument){
     for (;;){
 					for(float i = -1.0f; i < 1.0f; i += 0.1f){
 						float output = i;
+
+            //taskENTER_CRITICAL();
 						xQueueSend(canTestTransmitQueue, (void *)(&output), (TickType_t)10);
 						canSendTestMessage();
-						vTaskDelay(10000);
+						vTaskDelay(1000);
+            //taskEXIT_CRITICAL();
 					}
 					
     }
 
-    //vTaskDelete(NULL);
+    vTaskDelete(NULL);
 }
 
 uint32_t canTxMailbox;

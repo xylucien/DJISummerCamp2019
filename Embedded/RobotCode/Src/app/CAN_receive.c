@@ -208,10 +208,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       }
 
       case CANMESSAGE_ID_TARGET_READY: {
-				Twist2D output;
+        //portENTER_CRITICAL();
         targetVelocity.vX = lastVx;
         targetVelocity.vY = lastVy;
         targetVelocity.w = lastVw;
+        //portENTER_CRITICAL();
 				
         break;
       }
