@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/abiel/Documents/Botbusters_Gazebo/devel/include",
+                "/opt/ros/melodic/include",
+                "/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/src/CANRobot/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

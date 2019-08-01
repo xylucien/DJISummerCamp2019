@@ -1,0 +1,8 @@
+prefix=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/install_isolated
+
+Name: canRobot
+Description: Description of canRobot
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/install_isolated/lib 
+Requires: 
