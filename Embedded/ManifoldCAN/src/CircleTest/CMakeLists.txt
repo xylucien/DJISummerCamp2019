@@ -1,16 +1,17 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(can-robot)
+project(CircleTest)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++14)
+# add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
-  roscpp
+  rospy
   std_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -103,9 +104,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS src
-#  LIBRARIES CANRobot
-  CATKIN_DEPENDS geometry_msgs roscpp std_msgs
+#  INCLUDE_DIRS include
+#  LIBRARIES CircleTest
+  CATKIN_DEPENDS geometry_msgs rospy std_msgs tf
 #  DEPENDS system_lib
 )
 
@@ -122,7 +123,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/CANRobot.cpp
+#   src/${PROJECT_NAME}/CircleTest.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -133,7 +134,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/main.cpp src/CANMessage.c src/CANUtil.c src/ManifoldCAN.cpp src/MathUtils.c src/MecanumKinematics.c)
+# add_executable(${PROJECT_NAME}_node src/CircleTest_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -143,12 +144,12 @@ add_executable(${PROJECT_NAME}_node src/main.cpp src/CANMessage.c src/CANUtil.c 
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES}
-)
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -159,10 +160,10 @@ target_link_libraries(${PROJECT_NAME}_node
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(PROGRAMS
+   scripts/CircleTest.py
+   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark executables and/or libraries for installation
 #install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
@@ -179,12 +180,18 @@ target_link_libraries(${PROJECT_NAME}_node
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES
-    launch/can-robot.launch
-    TestCircle.py
+#install(FILES
 #   # myfile1
 #   # myfile2
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
+
+install(PROGRAMS
+#     src/crazyflieDriver
+#     src/crazyflie-scan
+    scripts/CircleTest.py
+#    nodes/crazyflieDriverNode
+     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 #############
@@ -192,7 +199,7 @@ install(FILES
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_CANRobot.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_CircleTest.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

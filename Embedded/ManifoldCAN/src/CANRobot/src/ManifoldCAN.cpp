@@ -117,7 +117,7 @@ void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
     //std::this_thread::sleep_for(5ms);
 
     //std::cout << canTxSocket << std::endl;
-    //std::cout << "SENT!" << std::endl;
+    std::cout << "SENT!" << std::endl;
 }
 
 

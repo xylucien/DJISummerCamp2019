@@ -6,4 +6,4 @@ if [ ! -z "$_CATKIN_SETUP_DIR" ] && [ "$_CATKIN_SETUP_DIR" != "/home/abiel/Docum
   return 1
 fi
 
-_CATKIN_SETUP_DIR= . "/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/canRobot/setup.sh"
+_CATKIN_SETUP_DIR= . "/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/can-robot/setup.sh"

@@ -29,13 +29,13 @@ void mecanumInverseKinematics(struct Twist2D *targetVelocity, float ab, float r,
   }
 
   outputWheels->topRight =
-      (targetVelocity->vX - targetVelocity->vY - targetVelocity->w * ab) / r;
+      (targetVelocity->vY - targetVelocity->w - targetVelocity->vX * ab) / r;
   outputWheels->topLeft =
-      (targetVelocity->vX + targetVelocity->vY + targetVelocity->w * ab) / r;
+      (targetVelocity->vY + targetVelocity->w + targetVelocity->vX * ab) / r;
   outputWheels->backLeft =
-      (targetVelocity->vX + targetVelocity->vY - targetVelocity->w * ab) / r;
+      (targetVelocity->vY + targetVelocity->w - targetVelocity->vX * ab) / r;
   outputWheels->backRight =
-      (targetVelocity->vX - targetVelocity->vY + targetVelocity->w * ab) / r;
+      (targetVelocity->vY - targetVelocity->w + targetVelocity->vX * ab) / r;
 }
 
 // TODO Not finished, needs to rotate vx and vy

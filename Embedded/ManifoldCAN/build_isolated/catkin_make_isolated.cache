@@ -1,2 +1,2 @@
-CANRobot
+CANRobot:CircleTest
 -G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/install_isolated

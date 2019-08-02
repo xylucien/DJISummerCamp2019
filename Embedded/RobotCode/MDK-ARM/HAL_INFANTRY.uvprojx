@@ -131,14 +131,14 @@
           <Flash1>
             <UseTargetDll>1</UseTargetDll>
             <UseExternalTool>0</UseExternalTool>
-            <RunIndependent>0</RunIndependent>
+            <RunIndependent>1</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
             <DriverSelection>4101</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3>"C:\Windows\System32\OpenSSH\scp.exe" ( -i C:\Users\Botbusters\.ssh\id_rsa #H dji@192.168.137.66:/home/dji/Downloads/)</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>

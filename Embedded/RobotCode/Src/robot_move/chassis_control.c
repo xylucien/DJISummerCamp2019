@@ -57,6 +57,11 @@ void chassis_twist_to_mecanum_wheel_speed(Twist2D *input, fp32 *wheelSpeed) {
   topRight = values.topRight;
   backLeft = values.backLeft;
   backRight = values.backRight;
+	
+	wheelSpeed[0] = -values.topRight;
+	wheelSpeed[1] = values.topLeft;
+	wheelSpeed[2] = values.backLeft;
+	wheelSpeed[3] = -values.backRight;
 }
 
 void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 vy_set,
@@ -105,6 +110,25 @@ void chassis_normal_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
             chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
 }
 
+float a = 0.13;
+float b = 0.14;
+float radius = 0.04;
+
+void chassis_twist_control(Twist2D *twist, chassis_move_t *chassis_move){
+  MecanumWheelValues values;
+  mecanumInverseKinematics(twist, a + b, radius, &values);
+	
+	topLeft = values.topLeft;
+  topRight = values.topRight;
+  backLeft = values.backLeft;
+  backRight = values.backRight;
+
+  chassis_move->motor_chassis[0].speed_set = values.topLeft;
+  chassis_move->motor_chassis[1].speed_set = values.topRight;
+  chassis_move->motor_chassis[2].speed_set = values.backLeft;
+  chassis_move->motor_chassis[3].speed_set = values.backRight;
+}
+
 Twist2D targetVel;
 fp32 *wheel_speedsTest[4];
 
@@ -120,11 +144,11 @@ void chassis_auto_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
   targetVel.vY = lastVy;
   targetVel.w = lastVw;
 
-  (*vx_set) = targetVel.vX;  
-  (*vy_set) = targetVel.vY;
-  (*wz_set) = targetVel.w;
+	(*vx_set) = targetVel.vX;
+	(*vy_set) = targetVel.vY;
+	(*wz_set) = targetVel.w;
 
-  chassis_twist_to_mecanum_wheel_speed(&targetVel, (fp32*) &wheel_speedsTest);
+  chassis_twist_control(&targetVel, chassis_move_rc_to_vector);
 
   return;
 }
