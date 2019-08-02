@@ -96,7 +96,7 @@ void ManifoldCAN::sendTargetVelocityROS(const geometry_msgs::Twist &twist){
     Twist2D output;
 
     output.vX = twist.linear.x;
-    output.vX = twist.linear.y;
+    output.vY = twist.linear.y;
     output.w = twist.angular.z;
 
     sendTargetVelocity(output);
@@ -106,15 +106,18 @@ void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
     int ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TEST, twist.vX));
 
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VX, twist.vX));
-    std::this_thread::sleep_for(5ms);
+    //std::this_thread::sleep_for(5ms);
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VY, twist.vY));
-    std::this_thread::sleep_for(5ms);
+    //std::this_thread::sleep_for(5ms);
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VW, twist.w));
-    std::this_thread::sleep_for(5ms);
+    //std::this_thread::sleep_for(5ms);
 
     //Some number
     ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_READY, 1.0f));
-    std::this_thread::sleep_for(5ms);
+    //std::this_thread::sleep_for(5ms);
+
+    //std::cout << canTxSocket << std::endl;
+    //std::cout << "SENT!" << std::endl;
 }
 
 

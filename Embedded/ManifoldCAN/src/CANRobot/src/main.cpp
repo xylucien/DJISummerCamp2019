@@ -6,9 +6,11 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 
-using namespace std::chrono_literals;
-
 #include "ManifoldCAN.h"
+
+void subTest(const geometry_msgs::Twist &twist){
+    std::cout << "hello" << std::endl;
+}
 
 int main(int argc, char **argv) {
     std::cout << "Hello, World!" << std::endl;
@@ -18,7 +20,18 @@ int main(int argc, char **argv) {
 
     ManifoldCAN can("can0");
 
-    n.subscribe("robot/velocity", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
+    Twist2D zeroTwist;
+    zeroTwist.vX = 0.0;
+    zeroTwist.vY = 0.0;
+    zeroTwist.w = 0.0;
+
+    can.sendTargetVelocity(zeroTwist);
+
+    n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
+    ros::Subscriber sub = n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
+
+
+    //can.sendTargetVelocity(test);
 
     ros::spin();
 
