@@ -10,7 +10,7 @@
 
 //Test message
 #define CANMESSAGE_ID_TEST 1
-#define CANMESSAGE_SUBID_TEST 1
+#define CANMESSAGE_SUBID_TEST 0
 #define CANMESSAGE_ID_TEST_MSG_SIZE sizeof(float)
 
 //Target Velocity (floats)
@@ -25,6 +25,9 @@
 #define CANMESSAGE_SUBID_ODOMETRY_Y 1
 #define CANMESSAGE_SUBID_ODOMETRY_W 2
 #define CANMESSAGE_SUBID_ODOMETRY_READY 3
+
+#define CANMESSAGE_ID_PWM 3
+#define CANMESSAGE_SUBID_PWM0 0
 
 typedef struct CANMessage {
     uint8_t messageId;

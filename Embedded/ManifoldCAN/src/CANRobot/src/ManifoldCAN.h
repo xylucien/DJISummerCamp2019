@@ -26,6 +26,7 @@
 
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
+#include "std_msgs/Float32.h"
 
 struct FloatCANMessage {
     FloatCANMessage(){
@@ -58,6 +59,8 @@ public:
 
     void sendTargetVelocity(const Twist2D &twist);
     void sendTargetVelocityROS(const geometry_msgs::Twist &twist);
+
+    void sendTargetServoVelocity(const std_msgs::Float32 &msg);
 
 
 private:

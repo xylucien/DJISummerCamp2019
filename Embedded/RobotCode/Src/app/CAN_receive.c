@@ -26,6 +26,7 @@
 #include "string.h"
 #include "task.h"
 
+#include <stdlib.h>
 #include <stdbool.h>
 #include "cmsis_os.h"
 
@@ -34,6 +35,7 @@
 #include "MathUtils.h"
 
 extern CAN_HandleTypeDef hcan1;
+extern TIM_HandleTypeDef htim2;
 
 extern QueueHandle_t canTargetVelocityQueue;
 
@@ -60,6 +62,7 @@ static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
 
 float test = 0.0;
+int prevDutyCycle = 0;
 CAN_RxHeaderTypeDef rx_header;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
@@ -100,6 +103,44 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
             targetVelocity.vX = lastVx;
             targetVelocity.vY = lastVy;
             targetVelocity.w = lastVw;
+            break;
+          }
+        }
+        break;
+      }
+
+      case CANMESSAGE_ID_PWM: {
+        switch(subMessageId){
+          case CANMESSAGE_SUBID_PWM0: {
+            //TIM_OC_InitTypeDef sConfigOC = {0};
+
+            float input = deserializeFloat(rx_data);
+            int dutyCycle = input * 1000.0f;
+
+            if(dutyCycle == prevDutyCycle){
+              break;
+            }
+
+            // if(dutyCycle < 0){
+            //   sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
+            // } else {
+            //   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+            // }
+
+            __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, dutyCycle);
+            prevDutyCycle = dutyCycle;
+
+
+            // sConfigOC.OCMode = TIM_OCMODE_PWM1;
+            // sConfigOC.Pulse = (20000 * dutyCycle) / 100 - 1;
+            // sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+            // sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+
+            // HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1);
+						
+						// HAL_TIM_Base_Start(&htim2);
+						// HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+						// __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 1000);
             break;
           }
         }
