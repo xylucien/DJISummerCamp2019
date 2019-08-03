@@ -30,14 +30,19 @@
 struct FloatCANMessage {
     FloatCANMessage(){
         this->id = 0;
+        this->subid = 0;
         this->data = 0;
     }
 
-    FloatCANMessage(uint8_t id, float data){
+    FloatCANMessage(uint8_t id, uint8_t subid, float data){
         this->id = id;
+        this->subid = subid;
+
         this->data = data;
     }
     uint8_t id;
+    uint8_t subid;
+
     float data;
 };
 
@@ -56,6 +61,8 @@ public:
 
 
 private:
+    static uint32_t calculateId(uint8_t baseId, uint8_t canId, uint8_t subId);
+
     void threadUpdate();
     void writeTest();
 

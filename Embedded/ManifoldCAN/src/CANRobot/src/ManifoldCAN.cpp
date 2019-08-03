@@ -9,6 +9,7 @@
 #include <cstring>
 #include <thread>
 #include <chrono>
+#include "CANMessage.h"
 
 using namespace std::chrono_literals;
 
@@ -47,7 +48,7 @@ ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
 int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     BCM_Msg msg;
     msg.msg_head.opcode  = TX_SETUP;
-    msg.msg_head.can_id  = 1638;
+    msg.msg_head.can_id  = calculateId(CANMESSAGE_MANIFOLD_BASE_ID, message.id, message.subid);
     msg.msg_head.flags   = SETTIMER|STARTTIMER|TX_CP_CAN_ID;
     msg.msg_head.nframes = 1;
     msg.msg_head.count = 0;
@@ -57,8 +58,9 @@ int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     msg.msg_head.ival2.tv_usec = 100000;
     msg.frame[0].can_dlc   = 8;
 
-    serializeInt(message.id, msg.frame[0].data);
-    serializeFloat(message.data, msg.frame[0].data + 4);
+    std::cout << calculateId(CANMESSAGE_MANIFOLD_BASE_ID, message.id, message.subid) << std::endl;
+
+    serializeFloat(message.data, msg.frame[0].data);
 
     return write(canTxSocket, &msg, sizeof(struct BCM_Msg));
 }
@@ -103,17 +105,19 @@ void ManifoldCAN::sendTargetVelocityROS(const geometry_msgs::Twist &twist){
 }
 
 void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
-    int ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TEST, twist.vX));
+    std::cout << "first" << std::endl;
+    int ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TEST, CANMESSAGE_SUBID_TEST, twist.vX));
+    std::cout << "second" << std::endl;
 
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VX, twist.vX));
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VX, twist.vX));
     //std::this_thread::sleep_for(5ms);
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VY, twist.vY));
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VY, twist.vY));
     //std::this_thread::sleep_for(5ms);
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VW, twist.w));
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VW, twist.w));
     //std::this_thread::sleep_for(5ms);
 
     //Some number
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_READY, 1.0f));
+    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_READY, 1.0f));
     //std::this_thread::sleep_for(5ms);
 
     //std::cout << canTxSocket << std::endl;
@@ -133,8 +137,16 @@ void ManifoldCAN::threadUpdate() {
 }
 
 void ManifoldCAN::writeTest() {
-    for(float i = -1.0; i <= 1.0; i += .01){
-        sendFloatMessage(FloatCANMessage(1, i));
-        std::this_thread::sleep_for(1s);
-    }
+    //for(float i = -1.0; i <= 1.0; i += .01){
+    //    sendFloatMessage(FloatCANMessage(1, i));
+    //    std::this_thread::sleep_for(1s);
+    //}
+}
+
+uint32_t ManifoldCAN::calculateId(uint8_t baseId, uint8_t canId, uint8_t subId) {
+    uint32_t output = CANMESSAGE_MANIFOLD_BASE_ID;
+    output |= (canId << 4);
+    output |= subId;
+
+    return output;
 }

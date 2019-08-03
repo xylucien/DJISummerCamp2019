@@ -26,12 +26,12 @@
 #include "string.h"
 #include "task.h"
 
-#include "cmsis_os.h"
 #include <stdbool.h>
+#include "cmsis_os.h"
 
-#include "MathUtils.h"
 #include "CANMessage.h"
 #include "CANUtil.h"
+#include "MathUtils.h"
 
 extern CAN_HandleTypeDef hcan1;
 
@@ -50,7 +50,7 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
     (ptr)->ecd = (uint16_t)((data)[0] << 8 | (data)[1]);                       \
     (ptr)->speed_rpm = (uint16_t)((data)[2] << 8 | (data)[3]);                 \
     (ptr)->given_current = (uint16_t)((data)[4] << 8 | (data)[5]);             \
-    (ptr)->temperature = (data)[6];                                              \
+    (ptr)->temperature = (data)[6];                                            \
     (ptr)->delta_ecd = motor_ecd_to_angle_change((ptr)->ecd, (ptr)->last_ecd); \
     (ptr)->total_ecd += (ptr)->delta_ecd;                                      \
   }
@@ -58,177 +58,168 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
 static motor_measure_t motor_chassis[7];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
-	
+
 float test = 0.0;
 CAN_RxHeaderTypeDef rx_header;
-	
+
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-	uint8_t rx_data[8];
+  uint8_t rx_data[8];
 
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
 
+  //Get the first digit of the id
+  uint8_t manifoldId = (rx_header.StdId & 0x00000F00) >> 8;
+
+  // Check for messages from the manifold
+  if (manifoldId == 6) {
+    uint8_t canMessageId = (rx_header.StdId & 0x000000F0) >> 4;
+    uint8_t subMessageId = (rx_header.StdId & 0x0000000F);
+
+    switch (canMessageId) {
+      case CANMESSAGE_ID_TARGET_VEL: {
+        switch (subMessageId) {
+          case CANMESSAGE_SUBID_TARGET_VX: {
+            float vX = deserializeFloat(rx_data);
+            lastVx = vX;
+            break;
+          }
+
+          case CANMESSAGE_SUBID_TARGET_VY: {
+            float vY = deserializeFloat(rx_data);
+            lastVy = vY;
+            break;
+          }
+
+          case CANMESSAGE_SUBID_TARGET_VW: {
+            float vW = deserializeFloat(rx_data);
+            lastVw = vW;
+            break;
+          }
+
+          case CANMESSAGE_SUBID_TARGET_READY: {
+            targetVelocity.vX = lastVx;
+            targetVelocity.vY = lastVy;
+            targetVelocity.w = lastVw;
+            break;
+          }
+        }
+        break;
+      }
+    }
+  }
+
   switch (rx_header.StdId) {
-  case CAN_3508_M1_ID:
-  case CAN_3508_M2_ID:
-  case CAN_3508_M3_ID:
-  case CAN_3508_M4_ID:
-  case CAN_YAW_MOTOR_ID:
-  case CAN_PIT_MOTOR_ID:
-  case CAN_TRIGGER_MOTOR_ID: {
-    static uint8_t i = 0;
-    //�������ID��
-    i = rx_header.StdId - CAN_3508_M1_ID;
-    //����������ݺ꺯��
-    get_motor_measure(&motor_chassis[i], rx_data);
-    //��¼ʱ��
-    DetectHook(ChassisMotor1TOE + i);
-    break;
-  }
-
-  case RM_IMU_PARAM_ID: {
-    rm_imu_data.accel_rangle = rx_data[0] & 0x0F;
-    rm_imu_data.gyro_rangle = (rx_data[0] & 0xF0) >> 4;
-    rm_imu_data.sensor_control_temperature = rx_data[2];
-    rm_imu_data.imu_sensor_rotation = rx_data[3] & 0x1F;
-    rm_imu_data.ahrs_rotation_sequence = (rx_data[3] & 0xE0) >> 5;
-    rm_imu_data.quat_euler = rx_data[4] & 0x01;
-
-    switch (rm_imu_data.gyro_rangle) {
-    case 0:
-      rm_imu_data.gyro_sen = GYRO_2000_SEN;
-      break;
-    case 1:
-      rm_imu_data.gyro_sen = GYRO_1000_SEN;
-      break;
-    case 2:
-      rm_imu_data.gyro_sen = GYRO_500_SEN;
-      break;
-    case 3:
-      rm_imu_data.gyro_sen = GYRO_250_SEN;
-      break;
-    case 4:
-      rm_imu_data.gyro_sen = GYRO_125_SEN;
+    case CAN_3508_M1_ID:
+    case CAN_3508_M2_ID:
+    case CAN_3508_M3_ID:
+    case CAN_3508_M4_ID:
+    case CAN_YAW_MOTOR_ID:
+    case CAN_PIT_MOTOR_ID:
+    case CAN_TRIGGER_MOTOR_ID: {
+      static uint8_t i = 0;
+      //�������ID��
+      i = rx_header.StdId - CAN_3508_M1_ID;
+      //����������ݺ꺯��
+      get_motor_measure(&motor_chassis[i], rx_data);
+      //��¼ʱ��
+      DetectHook(ChassisMotor1TOE + i);
       break;
     }
 
-    switch (rm_imu_data.accel_rangle) {
-    case 0:
-      rm_imu_data.accel_sen = ACCEL_3G_SEN;
-      break;
-    case 1:
-      rm_imu_data.accel_sen = ACCEL_6G_SEN;
-      break;
-    case 2:
-      rm_imu_data.accel_sen = ACCEL_12G_SEN;
-      break;
-    case 3:
-      rm_imu_data.accel_sen = ACCEL_24G_SEN;
+    case RM_IMU_PARAM_ID: {
+      rm_imu_data.accel_rangle = rx_data[0] & 0x0F;
+      rm_imu_data.gyro_rangle = (rx_data[0] & 0xF0) >> 4;
+      rm_imu_data.sensor_control_temperature = rx_data[2];
+      rm_imu_data.imu_sensor_rotation = rx_data[3] & 0x1F;
+      rm_imu_data.ahrs_rotation_sequence = (rx_data[3] & 0xE0) >> 5;
+      rm_imu_data.quat_euler = rx_data[4] & 0x01;
+
+      switch (rm_imu_data.gyro_rangle) {
+        case 0:
+          rm_imu_data.gyro_sen = GYRO_2000_SEN;
+          break;
+        case 1:
+          rm_imu_data.gyro_sen = GYRO_1000_SEN;
+          break;
+        case 2:
+          rm_imu_data.gyro_sen = GYRO_500_SEN;
+          break;
+        case 3:
+          rm_imu_data.gyro_sen = GYRO_250_SEN;
+          break;
+        case 4:
+          rm_imu_data.gyro_sen = GYRO_125_SEN;
+          break;
+      }
+
+      switch (rm_imu_data.accel_rangle) {
+        case 0:
+          rm_imu_data.accel_sen = ACCEL_3G_SEN;
+          break;
+        case 1:
+          rm_imu_data.accel_sen = ACCEL_6G_SEN;
+          break;
+        case 2:
+          rm_imu_data.accel_sen = ACCEL_12G_SEN;
+          break;
+        case 3:
+          rm_imu_data.accel_sen = ACCEL_24G_SEN;
+          break;
+      }
+
       break;
     }
 
-    break;
-  }
+    case RM_IMU_QUAT_ID: {
+      if (rm_imu_data.quat_euler && rx_header.DLC == 6) {
+        memcpy(rm_imu_data.euler_angle, rx_data, rx_header.DLC);
+        rm_imu_data.euler_angle_fp32[0] = rm_imu_data.euler_angle[0] * 0.0001f;
+        rm_imu_data.euler_angle_fp32[1] = rm_imu_data.euler_angle[1] * 0.0001f;
+        rm_imu_data.euler_angle_fp32[2] = rm_imu_data.euler_angle[2] * 0.0001f;
+      } else if (rm_imu_data.quat_euler == 0 && rx_header.DLC == 8) {
+        memcpy(rm_imu_data.quat, rx_data, rx_header.DLC);
+        rm_imu_data.quat_fp32[0] = rm_imu_data.quat[0] * 0.0001f;
+        rm_imu_data.quat_fp32[1] = rm_imu_data.quat[1] * 0.0001f;
+        rm_imu_data.quat_fp32[2] = rm_imu_data.quat[2] * 0.0001f;
+        rm_imu_data.quat_fp32[3] = rm_imu_data.quat[3] * 0.0001f;
+      }
 
-  case RM_IMU_QUAT_ID: {
-    if (rm_imu_data.quat_euler && rx_header.DLC == 6) {
-      memcpy(rm_imu_data.euler_angle, rx_data, rx_header.DLC);
-      rm_imu_data.euler_angle_fp32[0] = rm_imu_data.euler_angle[0] * 0.0001f;
-      rm_imu_data.euler_angle_fp32[1] = rm_imu_data.euler_angle[1] * 0.0001f;
-      rm_imu_data.euler_angle_fp32[2] = rm_imu_data.euler_angle[2] * 0.0001f;
-    } else if (rm_imu_data.quat_euler == 0 && rx_header.DLC == 8) {
-      memcpy(rm_imu_data.quat, rx_data, rx_header.DLC);
-      rm_imu_data.quat_fp32[0] = rm_imu_data.quat[0] * 0.0001f;
-      rm_imu_data.quat_fp32[1] = rm_imu_data.quat[1] * 0.0001f;
-      rm_imu_data.quat_fp32[2] = rm_imu_data.quat[2] * 0.0001f;
-      rm_imu_data.quat_fp32[3] = rm_imu_data.quat[3] * 0.0001f;
+      break;
     }
 
-    break;
-  }
-
-  case RM_IMU_GYRO_ID: {
-    memcpy(rm_imu_data.gyro_int16, rx_data, 6);
-    rm_imu_data.gyro_fp32[0] = rm_imu_data.gyro_int16[0] * rm_imu_data.gyro_sen;
-    rm_imu_data.gyro_fp32[1] = rm_imu_data.gyro_int16[1] * rm_imu_data.gyro_sen;
-    rm_imu_data.gyro_fp32[2] = rm_imu_data.gyro_int16[2] * rm_imu_data.gyro_sen;
-    rm_imu_data.sensor_temperature =
-        (int16_t)((rx_data[6] << 3) | (rx_data[7] >> 5));
-    if (rm_imu_data.sensor_temperature > 1023) {
-      rm_imu_data.sensor_temperature -= 2048;
-    }
-    break;
-  }
-
-  case RM_IMU_ACCEL_ID: {
-    memcpy(rm_imu_data.accel_int16, rx_data, 6);
-    rm_imu_data.accel_fp32[0] =
-        rm_imu_data.accel_int16[0] * rm_imu_data.accel_sen;
-    rm_imu_data.accel_fp32[1] =
-        rm_imu_data.accel_int16[1] * rm_imu_data.accel_sen;
-    rm_imu_data.accel_fp32[2] =
-        rm_imu_data.accel_int16[2] * rm_imu_data.accel_sen;
-    memcpy(&rm_imu_data.sensor_time, (rx_data + 6), 2);
-    break;
-  }
-
-  case RM_IMU_MAG_ID: {
-    memcpy(rm_imu_data.mag_int16, rx_data, 6);
-    break;
-  }
-
-  case CAN_MANIFOLD_ID - 1: {
-    uint8_t messageId = deserializeInt(rx_data);
-
-    switch(messageId){
-      case CANMESSAGE_ID_TEST: {
-        float messageTest = deserializeFloat(rx_data + 4);
-				test = messageTest;
-        break;
+    case RM_IMU_GYRO_ID: {
+      memcpy(rm_imu_data.gyro_int16, rx_data, 6);
+      rm_imu_data.gyro_fp32[0] =
+          rm_imu_data.gyro_int16[0] * rm_imu_data.gyro_sen;
+      rm_imu_data.gyro_fp32[1] =
+          rm_imu_data.gyro_int16[1] * rm_imu_data.gyro_sen;
+      rm_imu_data.gyro_fp32[2] =
+          rm_imu_data.gyro_int16[2] * rm_imu_data.gyro_sen;
+      rm_imu_data.sensor_temperature =
+          (int16_t)((rx_data[6] << 3) | (rx_data[7] >> 5));
+      if (rm_imu_data.sensor_temperature > 1023) {
+        rm_imu_data.sensor_temperature -= 2048;
       }
-
-      case CANMESSAGE_ID_TARGET_VX: {
-        float vX = deserializeFloat(rx_data + 4);
-        lastVx = vX;
-				//xQueueSend(canTargetVXQueue, &vX, (TickType_t)0);
-        break;
-      }
-
-      case CANMESSAGE_ID_TARGET_VY: {
-        float vY = deserializeFloat(rx_data + 4);
-        lastVy = vY;
-				//xQueueSend(canTargetVYQueue, &vY, (TickType_t)0);
-        break;
-      }
-
-      case CANMESSAGE_ID_TARGET_VW: {
-        float vW = deserializeFloat(rx_data + 4);
-        lastVw = vW;
-				//xQueueSend(canTargetVWQueue, &vW, (TickType_t)0);
-        break;
-      }
-
-      case CANMESSAGE_ID_TARGET_READY: {
-        //portENTER_CRITICAL();
-        targetVelocity.vX = lastVx;
-        targetVelocity.vY = lastVy;
-        targetVelocity.w = lastVw;
-        //portENTER_CRITICAL();
-				
-        break;
-      }
-
-      default: {
-				
-        break;
-      }
+      break;
     }
 
-    break;
-  }
+    case RM_IMU_ACCEL_ID: {
+      memcpy(rm_imu_data.accel_int16, rx_data, 6);
+      rm_imu_data.accel_fp32[0] =
+          rm_imu_data.accel_int16[0] * rm_imu_data.accel_sen;
+      rm_imu_data.accel_fp32[1] =
+          rm_imu_data.accel_int16[1] * rm_imu_data.accel_sen;
+      rm_imu_data.accel_fp32[2] =
+          rm_imu_data.accel_int16[2] * rm_imu_data.accel_sen;
+      memcpy(&rm_imu_data.sensor_time, (rx_data + 6), 2);
+      break;
+    }
 
-  default: {
-    break;
-  }
+    case RM_IMU_MAG_ID: {
+      memcpy(rm_imu_data.mag_int16, rx_data, 6);
+      break;
+    }
+    default: { break; }
   }
 }
 
@@ -256,7 +247,7 @@ void CAN_CMD_CHASSIS_RESET_ID(void) {
 void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                      int16_t motor4) {
   uint32_t send_mail_box;
-											 
+
   chassis_tx_message.StdId = CAN_CHASSIS_ALL_ID;
   chassis_tx_message.IDE = CAN_ID_STD;
   chassis_tx_message.RTR = CAN_RTR_DATA;
