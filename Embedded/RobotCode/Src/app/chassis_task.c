@@ -210,10 +210,11 @@ void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set,
   if (chassis_move_rc_to_vector == NULL || vx_set == NULL || vy_set == NULL) {
     return;
   }
+
   //ң����ԭʼͨ��ֵ
   int16_t vx_channel, vy_channel;
   fp32 vx_set_channel, vy_set_channel;
-  //�������ƣ���Ϊң�������ܴ��ڲ��� ҡ�����м䣬��ֵ��Ϊ0
+
   rc_deadline_limit(
       chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_X_CHANNEL],
       vx_channel, CHASSIS_RC_DEADLINE);
@@ -236,13 +237,11 @@ void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set,
     vy_set_channel = chassis_move_rc_to_vector->vy_min_speed;
   }
 
-  //һ�׵�ͨ�˲�����б����Ϊ�����ٶ�����
   first_order_filter_cali(&chassis_move_rc_to_vector->chassis_cmd_slow_set_vx,
                           vx_set_channel);
   first_order_filter_cali(&chassis_move_rc_to_vector->chassis_cmd_slow_set_vy,
                           vy_set_channel);
 
-  //ֹͣ�źţ�����Ҫ�������٣�ֱ�Ӽ��ٵ���
   if (vx_set_channel < CHASSIS_RC_DEADLINE * CHASSIS_VX_RC_SEN &&
       vx_set_channel > -CHASSIS_RC_DEADLINE * CHASSIS_VX_RC_SEN) {
     chassis_move_rc_to_vector->chassis_cmd_slow_set_vx.out = 0.0f;

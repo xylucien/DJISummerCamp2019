@@ -50,7 +50,7 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
     (ptr)->ecd = (uint16_t)((data)[0] << 8 | (data)[1]);                       \
     (ptr)->speed_rpm = (uint16_t)((data)[2] << 8 | (data)[3]);                 \
     (ptr)->given_current = (uint16_t)((data)[4] << 8 | (data)[5]);             \
-    (ptr)->temperate = (data)[6];                                              \
+    (ptr)->temperature = (data)[6];                                              \
     (ptr)->delta_ecd = motor_ecd_to_angle_change((ptr)->ecd, (ptr)->last_ecd); \
     (ptr)->total_ecd += (ptr)->delta_ecd;                                      \
   }
