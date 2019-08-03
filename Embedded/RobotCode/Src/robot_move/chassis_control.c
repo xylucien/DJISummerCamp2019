@@ -7,12 +7,21 @@
 #include "string.h"
 
 #include "cmsis_os.h"
+#include <stdbool.h>
 
 #include "MecanumKinematics.h"
 
 #define CHASSIS_MOTOR_RPM_TO_VECTOR_SEN 0.00005f
 
 extern QueueHandle_t recvMotorQueue;
+
+extern QueueHandle_t canTargetVelocityQueue;
+
+extern float lastVx;
+extern float lastVy;
+extern float lastVw;
+
+Twist2D currentVelocityTarget;
 
 uint8_t chassis_odom_pack_solve(uint8_t *buf, float x, float y, float odom_yaw,
                                 float vx, float vy, float vw, float gyro_z,
@@ -21,28 +30,38 @@ uint8_t chassis_odom_pack_solve(uint8_t *buf, float x, float y, float odom_yaw,
 }
 extern uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
-//µ×ÅÌÔË¶¯Êý¾Ý
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½
 chassis_move_t chassis_move;
 uint8_t usb_tx[128];
 
 void chassis_motor_speed_update(chassis_move_t *chassis_move_update) {
   uint8_t i = 0;
   for (i = 0; i < 4; i++) {
-    //¸üÐÂµç»úËÙ¶È£¬¼ÓËÙ¶ÈÊÇËÙ¶ÈµÄPIDÎ¢·Ö
+    //ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½Ù¶È£ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½Ù¶Èµï¿½PIDÎ¢ï¿½ï¿½
     chassis_move_update->motor_chassis[i].speed =
         CHASSIS_MOTOR_RPM_TO_VECTOR_SEN *
         chassis_move_update->motor_chassis[i].chassis_motor_measure->speed_rpm;
   }
 }
 
-void chassis_twist_to_mecanum_wheel_speed(Twist2D *input, fp32 wheel_speed[4]) {
+float topLeft;
+float topRight;
+float backLeft;
+float backRight;
+
+void chassis_twist_to_mecanum_wheel_speed(Twist2D *input, fp32 *wheelSpeed) {
   MecanumWheelValues values;
   mecanumInverseKinematics(input, 2, 1, &values);
 
-  wheel_speed[0] = values.topLeft;
-  wheel_speed[1] = values.topRight;
-  wheel_speed[2] = values.backLeft;
-  wheel_speed[3] = values.backRight;
+  topLeft = values.topLeft;
+  topRight = values.topRight;
+  backLeft = values.backLeft;
+  backRight = values.backRight;
+	
+	wheelSpeed[0] = -values.topRight;
+	wheelSpeed[1] = values.topLeft;
+	wheelSpeed[2] = values.backLeft;
+	wheelSpeed[3] = -values.backRight;
 }
 
 void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 vy_set,
@@ -91,27 +110,51 @@ void chassis_normal_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
             chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
 }
 
-Twist2D recev;
+float a = 0.13;
+float b = 0.14;
+float radius = 0.04;
+
+void chassis_twist_control(Twist2D *twist, chassis_move_t *chassis_move){
+  MecanumWheelValues values;
+  mecanumInverseKinematics(twist, a + b, radius, &values);
+	
+	topLeft = values.topLeft;
+  topRight = values.topRight;
+  backLeft = values.backLeft;
+  backRight = values.backRight;
+
+  chassis_move->motor_chassis[0].speed_set = values.topLeft;
+  chassis_move->motor_chassis[1].speed_set = values.topRight;
+  chassis_move->motor_chassis[2].speed_set = values.backLeft;
+  chassis_move->motor_chassis[3].speed_set = values.backRight;
+}
+
+Twist2D targetVel;
+fp32 *wheel_speedsTest[4];
 
 void chassis_auto_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set,
                           chassis_move_t *chassis_move_rc_to_vector) {
   if (vx_set == NULL || vy_set == NULL || wz_set == NULL ||
       chassis_move_rc_to_vector == NULL) {
-    return;
-  }
+    //return;
+				;
+			}
 
-  // Twist2D recev;
-  xQueueReceive(recvMotorQueue, &(recev), (TickType_t)10);
+  targetVel.vX = lastVx;
+  targetVel.vY = lastVy;
+  targetVel.w = lastVw;
 
-  (*vx_set) = recev.vX;
-  (*vy_set) = recev.vY;
-  (*wz_set) = recev.w;
+	(*vx_set) = targetVel.vX;
+	(*vy_set) = targetVel.vY;
+	(*wz_set) = targetVel.w;
+
+  chassis_twist_control(&targetVel, chassis_move_rc_to_vector);
 
   return;
 }
 
 void chassis_PID_init(void) {
-  //µ×ÅÌËÙ¶È»·pidÖµ
+  //ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½pidÖµ
   const static fp32 motor_speed_pid[3] = {M3505_MOTOR_SPEED_PID_KP,
                                           M3505_MOTOR_SPEED_PID_KI,
                                           M3505_MOTOR_SPEED_PID_KD};
@@ -119,19 +162,19 @@ void chassis_PID_init(void) {
   const static fp32 chassis_rotation_pid[3] = {CHASSIS_ROTATION_PID_KP,
                                                CHASSIS_ROTATION_PID_KI,
                                                CHASSIS_ROTATION_PID_KD};
-  //µ×ÅÌÐý×ª»·pidÖµ
+  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½pidÖµ
   const static fp32 chassis_angle_pid[3] = {
       CHASSIS_ANGLE_PID_KP, CHASSIS_ANGLE_PID_KI, CHASSIS_ANGLE_PID_KD};
 
   uint8_t i;
 
-  //³õÊ¼»¯PID ÔË¶¯
+  //ï¿½ï¿½Ê¼ï¿½ï¿½PID ï¿½Ë¶ï¿½
   for (i = 0; i < 4; i++) {
     PID_Init(&chassis_move.motor_speed_pid[i], PID_POSITION, motor_speed_pid,
              M3505_MOTOR_SPEED_PID_MAX_OUT, M3505_MOTOR_SPEED_PID_MAX_IOUT);
   }
 
-  //³õÊ¼»¯Ðý×ªPID
+  //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½×ªPID
   PID_Init(&chassis_move.chassis_rotation_pid, PID_POSITION,
            chassis_rotation_pid, CHASSIS_ROTATION_PID_MAX_OUT,
            CHASSIS_ROTATION_PID_MAX_IOUT);

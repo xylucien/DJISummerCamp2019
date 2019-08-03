@@ -131,14 +131,14 @@
           <Flash1>
             <UseTargetDll>1</UseTargetDll>
             <UseExternalTool>0</UseExternalTool>
-            <RunIndependent>0</RunIndependent>
+            <RunIndependent>1</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
             <DriverSelection>4101</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3>"C:\Windows\System32\OpenSSH\scp.exe" ( -i C:\Users\Botbusters\.ssh\id_rsa #H dji@192.168.137.66:/home/dji/Downloads/)</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -828,6 +828,11 @@
           <GroupName>RoboMasterLibs</GroupName>
           <Files>
             <File>
+              <FileName>CANMessage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANMessage.c</FilePath>
+            </File>
+            <File>
               <FileName>MathUtils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\RoboMaster_Libs\MathUtils.c</FilePath>
@@ -847,6 +852,21 @@
               <FileType>5</FileType>
               <FilePath>..\Src\RoboMaster_Libs\MecanumKinematics.h</FilePath>
             </File>
+            <File>
+              <FileName>CANMessage.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANMessage.h</FilePath>
+            </File>
+            <File>
+              <FileName>CANUtil.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANUtil.c</FilePath>
+            </File>
+            <File>
+              <FileName>CANUtil.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\CANUtil.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -861,6 +881,11 @@
               <FileName>CAN_receive.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\app\CAN_receive.c</FilePath>
+            </File>
+            <File>
+              <FileName>CAN_transmitTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\app\CAN_transmitTask.c</FilePath>
             </File>
             <File>
               <FileName>detect_task.c</FileName>

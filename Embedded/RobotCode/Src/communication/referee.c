@@ -33,7 +33,7 @@ uint16_t communicate_result_pack(uint8_t *buf,
                                  communicate_class_output_data_t output);
 
 extern void communicate_class_solve(void);
-extern void chassis_command_solve();
+extern void chassis_command_solve(void);
 
 frame_header_struct_t referee_receive_header;
 

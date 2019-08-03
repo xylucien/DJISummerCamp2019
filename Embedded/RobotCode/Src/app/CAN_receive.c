@@ -1,11 +1,11 @@
 /**
   ****************************(C) COPYRIGHT 2016 DJI****************************
   * @file       can_receive.c/h
-  * @brief      Íê³ÉcanÉè±¸Êý¾ÝÊÕ·¢º¯Êý£¬¸ÃÎÄ¼þÊÇÍ¨¹ýcanÖÐ¶ÏÍê³É½ÓÊÕ
-  * @note       ¸ÃÎÄ¼þ²»ÊÇfreeRTOSÈÎÎñ
+  * @brief      ï¿½ï¿½ï¿½canï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Í¨ï¿½ï¿½canï¿½Ð¶ï¿½ï¿½ï¿½É½ï¿½ï¿½ï¿½
+  * @note       ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½freeRTOSï¿½ï¿½ï¿½ï¿½
   * @history
   *  Version    Date            Author          Modification
-  *  V1.0.0     Dec-26-2018     RM              1. Íê³É
+  *  V1.0.0     Dec-26-2018     RM              1. ï¿½ï¿½ï¿½
   *
   @verbatim
   ==============================================================================
@@ -15,7 +15,7 @@
   ****************************(C) COPYRIGHT 2016 DJI****************************
   */
 
-#include "CAN_Receive.h"
+#include "CAN_receive.h"
 
 #include "bsp_rng.h"
 #include "stm32f4xx.h"
@@ -26,14 +26,24 @@
 #include "string.h"
 #include "task.h"
 
+#include "cmsis_os.h"
+#include <stdbool.h>
+
+#include "MathUtils.h"
+#include "CANMessage.h"
+#include "CANUtil.h"
+
 extern CAN_HandleTypeDef hcan1;
-extern CAN_HandleTypeDef hcan2;
+
+extern QueueHandle_t canTargetVelocityQueue;
 
 rm_imu_data_t rm_imu_data;
+Twist2D targetVelocity;
+
+float lastVx, lastVy, lastVw;
 
 static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
 
-//µç»úÊý¾Ý¶ÁÈ¡
 #define get_motor_measure(ptr, data)                                           \
   {                                                                            \
     (ptr)->last_ecd = (ptr)->ecd;                                              \
@@ -45,14 +55,15 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
     (ptr)->total_ecd += (ptr)->delta_ecd;                                      \
   }
 
-//ÉùÃ÷µç»ú±äÁ¿
 static motor_measure_t motor_chassis[7];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
-
+	
+float test = 0.0;
+CAN_RxHeaderTypeDef rx_header;
+	
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-  CAN_RxHeaderTypeDef rx_header;
-  uint8_t rx_data[8];
+	uint8_t rx_data[8];
 
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
 
@@ -65,14 +76,15 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   case CAN_PIT_MOTOR_ID:
   case CAN_TRIGGER_MOTOR_ID: {
     static uint8_t i = 0;
-    //´¦Àíµç»úIDºÅ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½
     i = rx_header.StdId - CAN_3508_M1_ID;
-    //´¦Àíµç»úÊý¾Ýºêº¯Êý
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýºêº¯ï¿½ï¿½
     get_motor_measure(&motor_chassis[i], rx_data);
-    //¼ÇÂ¼Ê±¼ä
+    //ï¿½ï¿½Â¼Ê±ï¿½ï¿½
     DetectHook(ChassisMotor1TOE + i);
     break;
   }
+
   case RM_IMU_PARAM_ID: {
     rm_imu_data.accel_rangle = rx_data[0] & 0x0F;
     rm_imu_data.gyro_rangle = (rx_data[0] & 0xF0) >> 4;
@@ -80,6 +92,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     rm_imu_data.imu_sensor_rotation = rx_data[3] & 0x1F;
     rm_imu_data.ahrs_rotation_sequence = (rx_data[3] & 0xE0) >> 5;
     rm_imu_data.quat_euler = rx_data[4] & 0x01;
+
     switch (rm_imu_data.gyro_rangle) {
     case 0:
       rm_imu_data.gyro_sen = GYRO_2000_SEN;
@@ -97,6 +110,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       rm_imu_data.gyro_sen = GYRO_125_SEN;
       break;
     }
+
     switch (rm_imu_data.accel_rangle) {
     case 0:
       rm_imu_data.accel_sen = ACCEL_3G_SEN;
@@ -111,8 +125,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       rm_imu_data.accel_sen = ACCEL_24G_SEN;
       break;
     }
+
     break;
   }
+
   case RM_IMU_QUAT_ID: {
     if (rm_imu_data.quat_euler && rx_header.DLC == 6) {
       memcpy(rm_imu_data.euler_angle, rx_data, rx_header.DLC);
@@ -126,8 +142,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       rm_imu_data.quat_fp32[2] = rm_imu_data.quat[2] * 0.0001f;
       rm_imu_data.quat_fp32[3] = rm_imu_data.quat[3] * 0.0001f;
     }
+
     break;
   }
+
   case RM_IMU_GYRO_ID: {
     memcpy(rm_imu_data.gyro_int16, rx_data, 6);
     rm_imu_data.gyro_fp32[0] = rm_imu_data.gyro_int16[0] * rm_imu_data.gyro_sen;
@@ -140,6 +158,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     }
     break;
   }
+
   case RM_IMU_ACCEL_ID: {
     memcpy(rm_imu_data.accel_int16, rx_data, 6);
     rm_imu_data.accel_fp32[0] =
@@ -151,17 +170,69 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     memcpy(&rm_imu_data.sensor_time, (rx_data + 6), 2);
     break;
   }
+
   case RM_IMU_MAG_ID: {
     memcpy(rm_imu_data.mag_int16, rx_data, 6);
     break;
   }
+
+  case CAN_MANIFOLD_ID - 1: {
+    uint8_t messageId = deserializeInt(rx_data);
+
+    switch(messageId){
+      case CANMESSAGE_ID_TEST: {
+        float messageTest = deserializeFloat(rx_data + 4);
+				test = messageTest;
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_VX: {
+        float vX = deserializeFloat(rx_data + 4);
+        lastVx = vX;
+				//xQueueSend(canTargetVXQueue, &vX, (TickType_t)0);
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_VY: {
+        float vY = deserializeFloat(rx_data + 4);
+        lastVy = vY;
+				//xQueueSend(canTargetVYQueue, &vY, (TickType_t)0);
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_VW: {
+        float vW = deserializeFloat(rx_data + 4);
+        lastVw = vW;
+				//xQueueSend(canTargetVWQueue, &vW, (TickType_t)0);
+        break;
+      }
+
+      case CANMESSAGE_ID_TARGET_READY: {
+        //portENTER_CRITICAL();
+        targetVelocity.vX = lastVx;
+        targetVelocity.vY = lastVy;
+        targetVelocity.w = lastVw;
+        //portENTER_CRITICAL();
+				
+        break;
+      }
+
+      default: {
+				
+        break;
+      }
+    }
+
+    break;
+  }
+
   default: {
     break;
   }
   }
 }
 
-// CAN ·¢ËÍ 0x700µÄIDµÄÊý¾Ý£¬»áÒý·¢M3508½øÈë¿ìËÙÉèÖÃIDÄ£Ê½
+// CAN ï¿½ï¿½ï¿½ï¿½ 0x700ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½M3508ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDÄ£Ê½
 void CAN_CMD_CHASSIS_RESET_ID(void) {
   uint32_t send_mail_box;
   chassis_tx_message.StdId = 0x700;
@@ -181,14 +252,16 @@ void CAN_CMD_CHASSIS_RESET_ID(void) {
                        &send_mail_box);
 }
 
-//·¢ËÍµ×ÅÌµç»ú¿ØÖÆÃüÁî
+//ï¿½ï¿½ï¿½Íµï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                      int16_t motor4) {
   uint32_t send_mail_box;
+											 
   chassis_tx_message.StdId = CAN_CHASSIS_ALL_ID;
   chassis_tx_message.IDE = CAN_ID_STD;
   chassis_tx_message.RTR = CAN_RTR_DATA;
   chassis_tx_message.DLC = 0x08;
+
   chassis_can_send_data[0] = motor1 >> 8;
   chassis_can_send_data[1] = motor1;
   chassis_can_send_data[2] = motor2 >> 8;
@@ -202,19 +275,18 @@ void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                        &send_mail_box);
 }
 
-//·µ»Øyawµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
 const motor_measure_t *get_Yaw_Gimbal_Motor_Measure_Point(void) {
   return &motor_chassis[4];
 }
-//·µ»Øpitchµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
+
 const motor_measure_t *get_Pitch_Gimbal_Motor_Measure_Point(void) {
   return &motor_chassis[5];
 }
-//·µ»Øtriggerµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
+
 const motor_measure_t *get_Trigger_Motor_Measure_Point(void) {
   return &motor_chassis[6];
 }
-//·µ»Øµ×ÅÌµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
+
 const motor_measure_t *get_Chassis_Motor_Measure_Point(uint8_t i) {
   return &motor_chassis[(i & 0x03)];
 }

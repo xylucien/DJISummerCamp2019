@@ -24,14 +24,17 @@
 #include "cmsis_os.h"
 #include "usb_device.h"
 #include <FreeRTOS.h>
+#include <stdbool.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
 #include "INS_task.h"
 #include "chassis_task.h"
+#include "CAN_transmitTask.h"
 
 /* USER CODE END Includes */
+#include "CANMessage.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -100,6 +103,7 @@ osThreadId gimbal_taskHandle;
 osThreadId ins_taskHandle;
 osThreadId referee_taskHandle;
 osThreadId chassis_taskHandle;
+osThreadId canTransmit_taskHandle;
 
 /* USER CODE END PV */
 
@@ -138,9 +142,14 @@ void led_trigger_task(void const *argument);
 /* USER CODE BEGIN PFP */
 extern void remote_control_init(void);
 extern void referee_task(void const *argument);
+extern void canTransmitTaskLoop(void const *argument);
 
 // Queues
 QueueHandle_t recvMotorQueue;
+QueueHandle_t canTestTransmitQueue;
+
+//Target velocity queue
+QueueHandle_t canTargetVelocityQueue;
 
 /* USER CODE END PFP */
 
@@ -230,24 +239,32 @@ int main(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  recvMotorQueue = xQueueCreate(25, sizeof(Twist2D));
+  //recvMotorQueue = xQueueCreate(25, sizeof(Twist2D));
+  canTestTransmitQueue = xQueueCreate(25, CANMESSAGE_ID_TEST_MSG_SIZE);
+  
+  canTargetVelocityQueue = xQueueCreate(25, sizeof(Twist2D));
+
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* definition and creation of led_trigger */
-  osThreadDef(led_trigger, led_trigger_task, osPriorityLow, 0, 128);
+  osThreadDef(led_trigger, led_trigger_task, osPriorityLow, 1, 128);
   led_triggerHandle = osThreadCreate(osThread(led_trigger), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  osThreadDef(ins_task, INSTask, osPriorityRealtime, 0, 512);
+  osThreadDef(ins_task, INSTask, osPriorityRealtime, 1, 512);
   ins_taskHandle = osThreadCreate(osThread(ins_task), NULL);
-  osThreadDef(refereeTask, referee_task, osPriorityNormal, 0, 512);
+
+  osThreadDef(refereeTask, referee_task, osPriorityNormal, 1, 512);
   referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
 
-  osThreadDef(chassis, chassis_task, osPriorityHigh, 0, 512);
+  osThreadDef(chassis, chassis_task, osPriorityHigh, 1, 512);
   chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
+
+  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityNormal, 1, 512);
+  canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -467,9 +484,7 @@ static void MX_CAN1_Init(void) {
   /* USER CODE END CAN1_Init 0 */
 
   /* USER CODE BEGIN CAN1_Init 1 */
-
-  /* USER CODE END CAN1_Init 1 */
-  hcan1.Instance = CAN1;
+	hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 3;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
@@ -484,6 +499,8 @@ static void MX_CAN1_Init(void) {
   if (HAL_CAN_Init(&hcan1) != HAL_OK) {
     Error_Handler();
   }
+  /* USER CODE END CAN1_Init 1 */
+  
   /* USER CODE BEGIN CAN1_Init 2 */
 
   /* USER CODE END CAN1_Init 2 */
@@ -513,7 +530,7 @@ static void MX_CAN2_Init(void) {
   hcan2.Init.AutoBusOff = DISABLE;
   hcan2.Init.AutoWakeUp = DISABLE;
   hcan2.Init.AutoRetransmission = DISABLE;
-  hcan2.Init.ReceiveFifoLocked = DISABLE;
+  hcan2.Init.ReceiveFifoLocked = ENABLE;
   hcan2.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan2) != HAL_OK) {
     Error_Handler();

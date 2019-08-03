@@ -1,11 +1,11 @@
 /**
   ****************************(C) COPYRIGHT 2016 DJI****************************
   * @file       can_receive.c/h
-  * @brief      Íê³ÉcanÉè±¸Êý¾ÝÊÕ·¢º¯Êý£¬¸ÃÎÄ¼þÊÇÍ¨¹ýcanÖÐ¶ÏÍê³É½ÓÊÕ
-  * @note       ¸ÃÎÄ¼þ²»ÊÇfreeRTOSÈÎÎñ
+  * @brief      ï¿½ï¿½ï¿½canï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Í¨ï¿½ï¿½canï¿½Ð¶ï¿½ï¿½ï¿½É½ï¿½ï¿½ï¿½
+  * @note       ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½freeRTOSï¿½ï¿½ï¿½ï¿½
   * @history
   *  Version    Date            Author          Modification
-  *  V1.0.0     Dec-26-2018     RM              1. Íê³É
+  *  V1.0.0     Dec-26-2018     RM              1. ï¿½ï¿½ï¿½
   *
   @verbatim
   ==============================================================================
@@ -22,7 +22,7 @@
 #define CHASSIS_CAN hcan1
 #define GIMBAL_CAN hcan1
 
-//µç»úÂëÅÌÖµ×î´óÒÔ¼°ÖÐÖµ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½Öµ
 #define HALF_ECD_RANGE 4096
 #define ECD_RANGE 8191
 #define RM_IMU_QUAT_ID 0x401
@@ -30,17 +30,20 @@
 #define RM_IMU_ACCEL_ID 0x403
 #define RM_IMU_MAG_ID 0x404
 #define RM_IMU_PARAM_ID 0x405
-//×ª»»³É m/s^2
+
+//×ªï¿½ï¿½ï¿½ï¿½ m/s^2
 #define ACCEL_3G_SEN 0.0008974358974f
 #define ACCEL_6G_SEN 0.00179443359375f
 #define ACCEL_12G_SEN 0.0035888671875f
 #define ACCEL_24G_SEN 0.007177734375f
-//×ª»»³É rad/s
+
+//×ªï¿½ï¿½ï¿½ï¿½ rad/s
 #define GYRO_2000_SEN 0.00106526443603169529841533860381f
 #define GYRO_1000_SEN 0.00053263221801584764920766930190693f
 #define GYRO_500_SEN 0.00026631610900792382460383465095346f
 #define GYRO_250_SEN 0.00013315805450396191230191732547673f
 #define GYRO_125_SEN 0.000066579027251980956150958662738366f
+
 /* CAN send and receive ID */
 typedef enum {
   CAN_CHASSIS_ALL_ID = 0x200,
@@ -53,10 +56,11 @@ typedef enum {
   CAN_PIT_MOTOR_ID = 0x206,
   CAN_TRIGGER_MOTOR_ID = 0x207,
   CAN_GIMBAL_ALL_ID = 0x1FF,
+  CAN_MANIFOLD_ID = 0x667
 
 } can_msg_id_e;
 
-// rmµç»úÍ³Ò»Êý¾Ý½á¹¹Ìå
+// rmï¿½ï¿½ï¿½Í³Ò»ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½
 typedef struct {
   uint16_t ecd;
   int16_t speed_rpm;
@@ -66,6 +70,7 @@ typedef struct {
   int16_t delta_ecd;
   int32_t total_ecd;
 } motor_measure_t;
+
 typedef struct {
   uint8_t quat_euler : 1;
   uint8_t gyro_rangle : 3;
@@ -89,19 +94,19 @@ typedef struct {
 } rm_imu_data_t;
 extern void CAN_CMD_CHASSIS_RESET_ID(void);
 
-//·¢ËÍÔÆÌ¨¿ØÖÆÃüÁî£¬ÆäÖÐrevÎª±£Áô×Ö½Ú
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î£¬ï¿½ï¿½ï¿½ï¿½revÎªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½
 extern void CAN_CMD_GIMBAL(int16_t yaw, int16_t pitch, int16_t shoot,
                            int16_t rev);
-//·¢ËÍµ×ÅÌµç»ú¿ØÖÆÃüÁî
+//ï¿½ï¿½ï¿½Íµï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 extern void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                             int16_t motor4);
-//·µ»Øyawµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
+//ï¿½ï¿½ï¿½ï¿½yawï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Í¨ï¿½ï¿½Ö¸ï¿½ë·½Ê½ï¿½ï¿½È¡Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
 extern const motor_measure_t *get_Yaw_Gimbal_Motor_Measure_Point(void);
-//·µ»Øpitchµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
+//ï¿½ï¿½ï¿½ï¿½pitchï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Í¨ï¿½ï¿½Ö¸ï¿½ë·½Ê½ï¿½ï¿½È¡Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
 extern const motor_measure_t *get_Pitch_Gimbal_Motor_Measure_Point(void);
-//·µ»Øtriggerµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý
+//ï¿½ï¿½ï¿½ï¿½triggerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Í¨ï¿½ï¿½Ö¸ï¿½ë·½Ê½ï¿½ï¿½È¡Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
 extern const motor_measure_t *get_Trigger_Motor_Measure_Point(void);
-//·µ»Øµ×ÅÌµç»ú±äÁ¿µØÖ·£¬Í¨¹ýÖ¸Õë·½Ê½»ñÈ¡Ô­Ê¼Êý¾Ý,iµÄ·¶Î§ÊÇ0-3£¬¶ÔÓ¦0x201-0x204,
+//ï¿½ï¿½ï¿½Øµï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Í¨ï¿½ï¿½Ö¸ï¿½ë·½Ê½ï¿½ï¿½È¡Ô­Ê¼ï¿½ï¿½ï¿½ï¿½,iï¿½Ä·ï¿½Î§ï¿½ï¿½0-3ï¿½ï¿½ï¿½ï¿½Ó¦0x201-0x204,
 extern const motor_measure_t *get_Chassis_Motor_Measure_Point(uint8_t i);
 
 #endif
