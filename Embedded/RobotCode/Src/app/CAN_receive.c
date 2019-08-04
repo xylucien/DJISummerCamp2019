@@ -34,6 +34,8 @@
 #include "CANUtil.h"
 #include "MathUtils.h"
 
+#include "bsp_buzzer.h"
+
 extern CAN_HandleTypeDef hcan1;
 extern TIM_HandleTypeDef htim2;
 
@@ -57,13 +59,16 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
     (ptr)->total_ecd += (ptr)->delta_ecd;                                      \
   }
 
-static motor_measure_t motor_chassis[7];
+motor_measure_t motor_chassis[7];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
 
 float test = 0.0;
 int prevDutyCycle = 0;
 CAN_RxHeaderTypeDef rx_header;
+
+uint16_t setPsc;
+uint16_t setPwm;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];
@@ -112,8 +117,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       case CANMESSAGE_ID_PWM: {
         switch(subMessageId){
           case CANMESSAGE_SUBID_PWM0: {
-            //TIM_OC_InitTypeDef sConfigOC = {0};
-
             float input = deserializeFloat(rx_data);
             int dutyCycle = input * 1000.0f;
 
@@ -121,29 +124,34 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
               break;
             }
 
-            // if(dutyCycle < 0){
-            //   sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
-            // } else {
-            //   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-            // }
-
             __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, dutyCycle);
             prevDutyCycle = dutyCycle;
-
-
-            // sConfigOC.OCMode = TIM_OCMODE_PWM1;
-            // sConfigOC.Pulse = (20000 * dutyCycle) / 100 - 1;
-            // sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-            // sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-
-            // HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1);
-						
-						// HAL_TIM_Base_Start(&htim2);
-						// HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-						// __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 1000);
             break;
           }
         }
+        break;
+      }
+
+      case CANMESSAGE_ID_BUZZER: {
+        switch(subMessageId){
+          case CANMESSAGE_SUBID_BUZZER_DUTYCYCLE: {
+            buzzer_on(setPsc, setPwm);
+            setPsc = deserializeFloat(rx_data);
+            break;
+          }
+
+          case CANMESSAGE_SUBID_BUZZER_FREQUENCY: {
+            setPwm = deserializeFloat(rx_data);
+            buzzer_on(setPsc, setPwm);
+            break;
+          }
+
+          case CANMESSAGE_SUBID_BUZZER_OFF:{
+            buzzer_off();
+            break;
+          }
+        }
+
         break;
       }
     }

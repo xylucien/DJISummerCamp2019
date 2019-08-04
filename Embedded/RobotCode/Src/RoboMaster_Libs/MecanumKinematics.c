@@ -53,15 +53,16 @@ void integrateVelocities(struct MecanumWheelValues *newVelocity, float ab,
   }
 
   Twist2D velocityVector;
-
+  mecanumKinematics(newVelocity, ab, &velocityVector);
   rotateTwist2D(-currentYaw, &velocityVector, &velocityVector);
 
-  mecanumKinematics(newVelocity, ab, &velocityVector);
+  position->x += velocityVector.vX * dt;
+  position->y += velocityVector.vY * dt;
 
-  float dX = velocityVector.vX * dt;
-  float dY = velocityVector.vY * dt;
+  //Maybe use gyro yaw
+  position->yaw += velocityVector.w * dt;
 
-  float dW = velocityVector.w * dt;
+  position->lastRanTime = currentTime;
 }
 
 // Gyro yaw in radians

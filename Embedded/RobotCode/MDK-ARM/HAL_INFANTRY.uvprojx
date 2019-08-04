@@ -867,6 +867,11 @@
               <FileType>5</FileType>
               <FilePath>..\Src\RoboMaster_Libs\CANUtil.h</FilePath>
             </File>
+            <File>
+              <FileName>RobotProperties.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\RobotProperties.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -901,6 +906,11 @@
               <FileName>led_trigger_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\app\led_trigger_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>chassis_odom_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\app\chassis_odom_task.c</FilePath>
             </File>
             <File>
               <FileName>remote_control.c</FileName>

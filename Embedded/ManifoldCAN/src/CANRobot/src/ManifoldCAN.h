@@ -62,6 +62,9 @@ public:
 
     void sendTargetServoVelocity(const std_msgs::Float32 &msg);
 
+    void sendBuzzerFrequency(const std_msgs::Float32 &msg);
+    void sendBuzzerDutyCycle(const std_msgs::Float32 &msg);
+
 
 private:
     static uint32_t calculateId(uint8_t baseId, uint8_t canId, uint8_t subId);

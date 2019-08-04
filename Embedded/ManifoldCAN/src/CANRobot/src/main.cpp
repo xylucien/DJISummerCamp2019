@@ -29,8 +29,10 @@ int main(int argc, char **argv) {
 
     //n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
     ros::Subscriber sub = n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
-
     ros::Subscriber servoSub = n.subscribe("servo_vel", 1000, &ManifoldCAN::sendTargetServoVelocity, &can);
+
+    ros::Subscriber buzzerFreqSub = n.subscribe("buzzer/frequency", 1000, &ManifoldCAN::sendBuzzerFrequency, &can);
+    ros::Subscriber buzzerDutyCycleSub = n.subscribe("buzzer/dutycycle", 1000, &ManifoldCAN::sendBuzzerDutyCycle, &can);
 
     //can.sendTargetVelocity(test);
 
