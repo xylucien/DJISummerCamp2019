@@ -28,25 +28,29 @@ oppoC = 8
 #temps
 pcount = 0
 flag = False
-class state():
-	def __init__(self, cs, tl):
-		self.curState = cs
-		self.timeLeft = tl
+
 '''
 def printMymap():
 	for i in range(7):
 		print(Mymap[i])
 '''
 #printMymap()
-#记录连接信息用一个新的bool 每次从队列挤出时刷新bool状态 初始状态根据开始时是否连接路径、城堡确定 连接到城堡时刷新
-def check_sp(r,c):
+
+def calculate_sp(r, c):
+	pass
+
+def check_sp_coor(r,c):
 	if r == 0 or r == 6:
 		if c == 2 or c == 6:
-			return True
+			return r,c
 	if r == 3:
 		if c == 0 or c == 4 or c == 8:
-			return True
-	return False
+			return r,c
+	return -1,-1
+
+def check_sp(r,c):
+	a, b = check_sp_coor(r,c)
+	return False if (a==-1 and b==-1) else True
 
 def check_put(r, c):
 	return check_sp(r-1, c) or check_sp(r+1, c) or check_sp(r, c-1) or check_sp(r, c+1)
@@ -56,57 +60,79 @@ def check_oppo(r,c):
 		return True
 	return False
 
+def get_near_sp(r,c):
+	c, d = check_sp_coor(r-1, c)
+	if c == -1:
+		check_sp_coor(r+1, c)
+	if c == -1:
+		check_sp_coor(r, c-1)
+	if c == -1:
+		check_sp_coor(r-1, c)
+	return Mymap[c][d]
+
 def near_secured(r,c):
-	#await implemented
+	if r > 0:
+		if Mymap[r-1][c] < 100000 and Mymap[r-1][c]%10 == 1:
+			return True
+		elif int((Mymap[r-1][c]-100000)/10000) == 1:
+			return True
+	if r < 6:
+		if Mymap[r+1][c] < 100000 and Mymap[r+1][c]%10 == 1:
+			return True
+		elif int((Mymap[r+1][c]-100000)/10000) == 1:
+			return True
+	if c < 8:
+		if Mymap[r][c+1] < 100000 and Mymap[r][c+1]%10 == 1:
+			return True
+		elif int((Mymap[r][c+1]-100000)/10000) == 1:
+			return True
+	if c > 0:	
+		if Mymap[r][c-1] < 100000 and Mymap[r][c-1]%10 == 1:
+			return True
+		elif int((Mymap[r][c-1]-100000)/10000) == 1:
+			return True			
 	return False
 
 def search():
 	global pcount, flag
-	if pcount > 100:
+	
+	if pcount >= 10000:
 		flag = True
 		return
-	(pts, (state, tleft, r, c, step)) = search_queue.get()
+	
+	(pts, (state, tleft, r, c, step, connected)) = search_queue.get()
+	
+	last_step = state[-1:]
+	stayed = (not (last_step == 's' or last_step == 'w' or last_step == 'e' or last_step == 'n'))
 	if check_sp(r,c) or check_oppo(r,c):
 		return
-	#if pcount%100000 == 0:
-	#	print(pcount)
+
 	if tleft == 0 or step == step_limit:
 		pcount+=1
 		print(state, r, c, step, -pts)
 		return
+
 	if tleft >=10 and check_put(r, c):
-		search_queue.put((pts-50, (state+'&', tleft - 10, r, c, step)))
+		info = get_near_sp(r,c)
+		if int((info-100000)/10000) == 1:
+			pass
+		else:
+			search_queue.put((pts-50, (state + '&', tleft - 10, r, c, step, connected)))
+
 	if tleft >=1:
-		if state[-1:] != 's' and r > 0:
-			search_queue.put((pts, (state+'n', tleft - 1, r-1, c, step+1)))
-		if state[-1:] != 'n' and r < 6:	
-			search_queue.put((pts, (state+'s', tleft - 1, r+1, c, step+1)))	
-		if state[-1:] != 'w' and c < 8:
-			search_queue.put((pts, (state+'e', tleft - 1, r, c+1, step+1)))
-		if state[-1:] != 'e' and c > 0:	
-			search_queue.put((pts, (state+'w', tleft - 1, r, c-1, step+1)))
-		if state[-1:] != '!' and (state[-2:-1] == '!' or near_secured(r,c) or check_put(r,c)):
-			search_queue.put((pts - 15, (state+'!', tleft - 1, r, c, step)))
-#a = 'asdfghjkl'
-#print(a[-2:-1])
-search_queue.put((0,(' ', 40, initR, initC, 0)) )
+		if last_step != 's' and r > 0:
+			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'n', tleft - 1, r-1, c, step+1, stayed)))
+		if last_step != 'n' and r < 6:	
+			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 's', tleft - 1, r+1, c, step+1, stayed)))	
+		if last_step != 'w' and c < 8:
+			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'e', tleft - 1, r, c+1, step+1, stayed)))
+		if last_step != 'e' and c > 0:	
+			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'w', tleft - 1, r, c-1, step+1, stayed)))
+		if last_step != '!' and (connected or near_secured(r,c)):
+			search_queue.put((pts - 15, (state + '!', tleft - 1, r, c, step, True)))
+
+search_queue.put((0,(' ', 40, initR, initC, 0, False)) )
+
 while not flag:
 	search()
-#print(check_put(0,0))
 print(pcount)
-
-#print(search_queue.get()[1][1])
-'''
-search_queue.put((-15, (1,2,3,4,5)))
-search_queue.put((-145, (1,244,3,4,5)))
-search_queue.put((-515, (1,23,3,4,5)))
-search_queue.put((-155, (1,2,3,4,5)))
-a=0
-b=0
-c=0
-d=0
-e=0
-f=0
-(a, (b, c, d, e, f)) = search_queue.get()
-print(a,b,c,d,e,f)
-'''
