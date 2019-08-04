@@ -11,7 +11,12 @@ from sys import exit
 TEST=True
 SCREEN_MODE=0
 HAND_DRIVE_ROBOT=False
-FILE_ROUTE="C:\\Users\\Lucien\\Desktop\\ui\\RoboMaster\\"
+MOVE_TIME=0
+TURN_TIME=0
+CAPTURE_TIME=1
+PUT_TIME=0
+
+FILE_ROUTE="D:\\mydata\\pics\\RoboMaster\\"
 
 def pause(*args):
     pass #在这个pass设置断点
@@ -132,13 +137,16 @@ if TEST:
 
         def connection_update(self):
             for team in [CaptureState["red"],CaptureState["blue"]]:
+                for block in self.blocks:
+                    if type(block)==Block:
+                        block.castle_connected=[]
                 for i in range(0,14):
                     for block in self.blocks:
-                        if type(block)==Block:
-                            self.BCU(block,block.no+1,self.blocks,team)
-                            self.BCU(block,block.no-1,self.blocks,team)
-                            self.BCU(block,block.no+9,self.blocks,team)
-                            self.BCU(block,block.no-9,self.blocks,team)
+#                        if type(block)==Block:
+                        self.BCU(block,block.no+1,self.blocks,team)
+                        self.BCU(block,block.no-1,self.blocks,team)
+                        self.BCU(block,block.no+9,self.blocks,team)
+                        self.BCU(block,block.no-9,self.blocks,team)
             for block in self.blocks:
                 block.energy_update(CaptureState["red"])
                 block.energy_update(CaptureState["blue"])
@@ -319,11 +327,11 @@ if TEST:
         return mp.blocks[no]
 
     def move(direction,lth):
-        time.sleep(1)
+        time.sleep(MOVE_TIME)
         robots[0].movpoz(direction,lth)
 
     def turn(direction):
-        time.sleep(1)
+        time.sleep(TURN_TIME)
         robots[0].rotate(direction)
 
     def stay(s=1.0):
@@ -333,7 +341,7 @@ if TEST:
             pass
         else:
             raise TypeError
-        if s>0.999:
+        if s>CAPTURE_TIME:
             try:
                 mp.capture(robots[0].team,robots[0].poz)
                 mp.connection_update()
@@ -345,10 +353,10 @@ if TEST:
         if team==CaptureState["blue"]: rbt=0
         else: rbt=1
         for cst in mp.castles:
-            if robots[rbt].poz==cst.capturePoint:
+            if robots[rbt].poz==cst.capturePoint and Robot.DFC(robots[rbt].direction)==(Robot.DFC(cst.direction)+2)%4:
                 if cup: cst.ballamount[team] += 4
                 else: cst.ballamount[team] += 1
-                time.sleep(2)
+                time.sleep(PUT_TIME)
                 cst.capture_update()
                 mp.connection_update()
                 break
@@ -404,6 +412,22 @@ if TEST:
                 if event.key==K_ESCAPE:
                     pygame.quit()
                     exit()
+                if event.key==K_w:
+                    move('F',1)
+                if event.key==K_d:
+                    move('R',1)
+                if event.key==K_s:
+                    move('B',1)
+                if event.key==K_a:
+                    move('L',1)
+                if event.key==K_q:
+                    turn(-1)
+                if event.key==K_e:
+                    turn(1)
+                if event.key==K_p:
+                    put()
+                if event.key==K_c:
+                    stay(0.01)
 
         mp.display(screen)
 
@@ -412,3 +436,4 @@ if TEST:
 
         pygame.display.update()
         pygame.time.delay(30)
+
