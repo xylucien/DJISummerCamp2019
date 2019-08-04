@@ -47,18 +47,18 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/src/CANRobot
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot
+CMAKE_BINARY_DIR = /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/canRobot_node.dir/all
+all: CMakeFiles/CANRobot_node.dir/all
 
 .PHONY : all
 
 # The main recursive "clean" target.
-clean: CMakeFiles/canRobot_node.dir/clean
+clean: CMakeFiles/CANRobot_node.dir/clean
 clean: CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
 clean: CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
 clean: CMakeFiles/geometry_msgs_generate_messages_cpp.dir/clean
@@ -93,31 +93,31 @@ preinstall:
 .PHONY : preinstall
 
 #=============================================================================
-# Target rules for target CMakeFiles/canRobot_node.dir
+# Target rules for target CMakeFiles/CANRobot_node.dir
 
 # All Build rule for target.
-CMakeFiles/canRobot_node.dir/all:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/depend
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target canRobot_node"
-.PHONY : CMakeFiles/canRobot_node.dir/all
+CMakeFiles/CANRobot_node.dir/all:
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/depend
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target CANRobot_node"
+.PHONY : CMakeFiles/CANRobot_node.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/canRobot_node.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 7
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/canRobot_node.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
-.PHONY : CMakeFiles/canRobot_node.dir/rule
+CMakeFiles/CANRobot_node.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 7
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/CANRobot_node.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
+.PHONY : CMakeFiles/CANRobot_node.dir/rule
 
 # Convenience name for target.
-canRobot_node: CMakeFiles/canRobot_node.dir/rule
+CANRobot_node: CMakeFiles/CANRobot_node.dir/rule
 
-.PHONY : canRobot_node
+.PHONY : CANRobot_node
 
 # clean rule for target.
-CMakeFiles/canRobot_node.dir/clean:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/clean
-.PHONY : CMakeFiles/canRobot_node.dir/clean
+CMakeFiles/CANRobot_node.dir/clean:
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/clean
+.PHONY : CMakeFiles/CANRobot_node.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir
@@ -126,14 +126,14 @@ CMakeFiles/canRobot_node.dir/clean:
 CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all:
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/depend
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_nodejs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_nodejs"
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -153,14 +153,14 @@ CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean:
 CMakeFiles/geometry_msgs_generate_messages_py.dir/all:
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_py.dir/build.make CMakeFiles/geometry_msgs_generate_messages_py.dir/depend
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_py.dir/build.make CMakeFiles/geometry_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_py"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_py"
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_py.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/geometry_msgs_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/geometry_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -180,14 +180,14 @@ CMakeFiles/geometry_msgs_generate_messages_py.dir/clean:
 CMakeFiles/geometry_msgs_generate_messages_cpp.dir/all:
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build.make CMakeFiles/geometry_msgs_generate_messages_cpp.dir/depend
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build.make CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_cpp"
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/geometry_msgs_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -207,14 +207,14 @@ CMakeFiles/geometry_msgs_generate_messages_cpp.dir/clean:
 CMakeFiles/download_extra_data.dir/all:
 	$(MAKE) -f CMakeFiles/download_extra_data.dir/build.make CMakeFiles/download_extra_data.dir/depend
 	$(MAKE) -f CMakeFiles/download_extra_data.dir/build.make CMakeFiles/download_extra_data.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target download_extra_data"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target download_extra_data"
 .PHONY : CMakeFiles/download_extra_data.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/download_extra_data.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/download_extra_data.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/download_extra_data.dir/rule
 
 # Convenience name for target.
@@ -234,14 +234,14 @@ CMakeFiles/download_extra_data.dir/clean:
 CMakeFiles/geometry_msgs_generate_messages_lisp.dir/all:
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build.make CMakeFiles/geometry_msgs_generate_messages_lisp.dir/depend
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build.make CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_lisp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_lisp"
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_lisp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/geometry_msgs_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -261,14 +261,14 @@ CMakeFiles/geometry_msgs_generate_messages_lisp.dir/clean:
 CMakeFiles/std_msgs_generate_messages_lisp.dir/all:
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make CMakeFiles/std_msgs_generate_messages_lisp.dir/depend
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make CMakeFiles/std_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_lisp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_lisp"
 .PHONY : CMakeFiles/std_msgs_generate_messages_lisp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/std_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/std_msgs_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -288,14 +288,14 @@ CMakeFiles/std_msgs_generate_messages_lisp.dir/clean:
 CMakeFiles/doxygen.dir/all:
 	$(MAKE) -f CMakeFiles/doxygen.dir/build.make CMakeFiles/doxygen.dir/depend
 	$(MAKE) -f CMakeFiles/doxygen.dir/build.make CMakeFiles/doxygen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target doxygen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target doxygen"
 .PHONY : CMakeFiles/doxygen.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/doxygen.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/doxygen.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/doxygen.dir/rule
 
 # Convenience name for target.
@@ -315,14 +315,14 @@ CMakeFiles/doxygen.dir/clean:
 CMakeFiles/run_tests.dir/all:
 	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/depend
 	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target run_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target run_tests"
 .PHONY : CMakeFiles/run_tests.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/run_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/run_tests.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/run_tests.dir/rule
 
 # Convenience name for target.
@@ -342,14 +342,14 @@ CMakeFiles/run_tests.dir/clean:
 CMakeFiles/std_msgs_generate_messages_cpp.dir/all:
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make CMakeFiles/std_msgs_generate_messages_cpp.dir/depend
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make CMakeFiles/std_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_cpp"
 .PHONY : CMakeFiles/std_msgs_generate_messages_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/std_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/std_msgs_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -369,14 +369,14 @@ CMakeFiles/std_msgs_generate_messages_cpp.dir/clean:
 CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all:
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/depend
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_cpp"
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -396,14 +396,14 @@ CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean:
 CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/all:
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build.make CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/depend
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build.make CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_nodejs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_nodejs"
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -423,14 +423,14 @@ CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/clean:
 CMakeFiles/clean_test_results.dir/all:
 	$(MAKE) -f CMakeFiles/clean_test_results.dir/build.make CMakeFiles/clean_test_results.dir/depend
 	$(MAKE) -f CMakeFiles/clean_test_results.dir/build.make CMakeFiles/clean_test_results.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target clean_test_results"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target clean_test_results"
 .PHONY : CMakeFiles/clean_test_results.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/clean_test_results.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/clean_test_results.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/clean_test_results.dir/rule
 
 # Convenience name for target.
@@ -450,14 +450,14 @@ CMakeFiles/clean_test_results.dir/clean:
 CMakeFiles/std_msgs_generate_messages_nodejs.dir/all:
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make CMakeFiles/std_msgs_generate_messages_nodejs.dir/depend
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_nodejs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_nodejs"
 .PHONY : CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -477,14 +477,14 @@ CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean:
 CMakeFiles/roscpp_generate_messages_cpp.dir/all:
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_cpp.dir/build.make CMakeFiles/roscpp_generate_messages_cpp.dir/depend
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_cpp.dir/build.make CMakeFiles/roscpp_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_cpp"
 .PHONY : CMakeFiles/roscpp_generate_messages_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/roscpp_generate_messages_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/roscpp_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/roscpp_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -504,14 +504,14 @@ CMakeFiles/roscpp_generate_messages_cpp.dir/clean:
 CMakeFiles/geometry_msgs_generate_messages_eus.dir/all:
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_eus.dir/build.make CMakeFiles/geometry_msgs_generate_messages_eus.dir/depend
 	$(MAKE) -f CMakeFiles/geometry_msgs_generate_messages_eus.dir/build.make CMakeFiles/geometry_msgs_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_eus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target geometry_msgs_generate_messages_eus"
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/geometry_msgs_generate_messages_eus.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
@@ -531,14 +531,14 @@ CMakeFiles/geometry_msgs_generate_messages_eus.dir/clean:
 CMakeFiles/std_msgs_generate_messages_py.dir/all:
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_py.dir/build.make CMakeFiles/std_msgs_generate_messages_py.dir/depend
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_py.dir/build.make CMakeFiles/std_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_py"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_py"
 .PHONY : CMakeFiles/std_msgs_generate_messages_py.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/std_msgs_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/std_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/std_msgs_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -558,14 +558,14 @@ CMakeFiles/std_msgs_generate_messages_py.dir/clean:
 CMakeFiles/roscpp_generate_messages_lisp.dir/all:
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_lisp.dir/build.make CMakeFiles/roscpp_generate_messages_lisp.dir/depend
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_lisp.dir/build.make CMakeFiles/roscpp_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_lisp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_lisp"
 .PHONY : CMakeFiles/roscpp_generate_messages_lisp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/roscpp_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/roscpp_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/roscpp_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -585,14 +585,14 @@ CMakeFiles/roscpp_generate_messages_lisp.dir/clean:
 CMakeFiles/std_msgs_generate_messages_eus.dir/all:
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_eus.dir/build.make CMakeFiles/std_msgs_generate_messages_eus.dir/depend
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_eus.dir/build.make CMakeFiles/std_msgs_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_eus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_eus"
 .PHONY : CMakeFiles/std_msgs_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/std_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/std_msgs_generate_messages_eus.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
@@ -612,14 +612,14 @@ CMakeFiles/std_msgs_generate_messages_eus.dir/clean:
 CMakeFiles/roscpp_generate_messages_eus.dir/all:
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_eus.dir/build.make CMakeFiles/roscpp_generate_messages_eus.dir/depend
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_eus.dir/build.make CMakeFiles/roscpp_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_eus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_eus"
 .PHONY : CMakeFiles/roscpp_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/roscpp_generate_messages_eus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/roscpp_generate_messages_eus.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/roscpp_generate_messages_eus.dir/rule
 
 # Convenience name for target.
@@ -639,14 +639,14 @@ CMakeFiles/roscpp_generate_messages_eus.dir/clean:
 CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all:
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_py.dir/depend
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_py"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_py"
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -666,14 +666,14 @@ CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean:
 CMakeFiles/tests.dir/all:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/depend
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target tests"
 .PHONY : CMakeFiles/tests.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/tests.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/tests.dir/rule
 
 # Convenience name for target.
@@ -693,14 +693,14 @@ CMakeFiles/tests.dir/clean:
 CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all:
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/depend
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_lisp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_lisp"
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -720,14 +720,14 @@ CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean:
 CMakeFiles/roscpp_generate_messages_nodejs.dir/all:
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make CMakeFiles/roscpp_generate_messages_nodejs.dir/depend
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make CMakeFiles/roscpp_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_nodejs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_nodejs"
 .PHONY : CMakeFiles/roscpp_generate_messages_nodejs.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/roscpp_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/roscpp_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -747,14 +747,14 @@ CMakeFiles/roscpp_generate_messages_nodejs.dir/clean:
 CMakeFiles/roscpp_generate_messages_py.dir/all:
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_py.dir/build.make CMakeFiles/roscpp_generate_messages_py.dir/depend
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_py.dir/build.make CMakeFiles/roscpp_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_py"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target roscpp_generate_messages_py"
 .PHONY : CMakeFiles/roscpp_generate_messages_py.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/roscpp_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/roscpp_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/roscpp_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -774,14 +774,14 @@ CMakeFiles/roscpp_generate_messages_py.dir/clean:
 CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all:
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/depend
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_eus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_eus"
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.

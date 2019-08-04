@@ -51,7 +51,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/src/CANRobot
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot
+CMAKE_BINARY_DIR = /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -137,9 +137,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -168,17 +168,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named canRobot_node
+# Target rules for targets named CANRobot_node
 
 # Build rule for target.
-canRobot_node: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 canRobot_node
-.PHONY : canRobot_node
+CANRobot_node: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 CANRobot_node
+.PHONY : CANRobot_node
 
 # fast build rule for target.
-canRobot_node/fast:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/build
-.PHONY : canRobot_node/fast
+CANRobot_node/fast:
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/build
+.PHONY : CANRobot_node/fast
 
 #=============================================================================
 # Target rules for targets named rosgraph_msgs_generate_messages_nodejs
@@ -511,7 +511,7 @@ src/CANMessage.o: src/CANMessage.c.o
 
 # target to build an object file
 src/CANMessage.c.o:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/CANMessage.c.o
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/CANMessage.c.o
 .PHONY : src/CANMessage.c.o
 
 src/CANMessage.i: src/CANMessage.c.i
@@ -520,7 +520,7 @@ src/CANMessage.i: src/CANMessage.c.i
 
 # target to preprocess a source file
 src/CANMessage.c.i:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/CANMessage.c.i
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/CANMessage.c.i
 .PHONY : src/CANMessage.c.i
 
 src/CANMessage.s: src/CANMessage.c.s
@@ -529,7 +529,7 @@ src/CANMessage.s: src/CANMessage.c.s
 
 # target to generate assembly for a file
 src/CANMessage.c.s:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/CANMessage.c.s
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/CANMessage.c.s
 .PHONY : src/CANMessage.c.s
 
 src/CANUtil.o: src/CANUtil.c.o
@@ -538,7 +538,7 @@ src/CANUtil.o: src/CANUtil.c.o
 
 # target to build an object file
 src/CANUtil.c.o:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/CANUtil.c.o
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/CANUtil.c.o
 .PHONY : src/CANUtil.c.o
 
 src/CANUtil.i: src/CANUtil.c.i
@@ -547,7 +547,7 @@ src/CANUtil.i: src/CANUtil.c.i
 
 # target to preprocess a source file
 src/CANUtil.c.i:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/CANUtil.c.i
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/CANUtil.c.i
 .PHONY : src/CANUtil.c.i
 
 src/CANUtil.s: src/CANUtil.c.s
@@ -556,7 +556,7 @@ src/CANUtil.s: src/CANUtil.c.s
 
 # target to generate assembly for a file
 src/CANUtil.c.s:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/CANUtil.c.s
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/CANUtil.c.s
 .PHONY : src/CANUtil.c.s
 
 src/ManifoldCAN.o: src/ManifoldCAN.cpp.o
@@ -565,7 +565,7 @@ src/ManifoldCAN.o: src/ManifoldCAN.cpp.o
 
 # target to build an object file
 src/ManifoldCAN.cpp.o:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/ManifoldCAN.cpp.o
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/ManifoldCAN.cpp.o
 .PHONY : src/ManifoldCAN.cpp.o
 
 src/ManifoldCAN.i: src/ManifoldCAN.cpp.i
@@ -574,7 +574,7 @@ src/ManifoldCAN.i: src/ManifoldCAN.cpp.i
 
 # target to preprocess a source file
 src/ManifoldCAN.cpp.i:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/ManifoldCAN.cpp.i
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/ManifoldCAN.cpp.i
 .PHONY : src/ManifoldCAN.cpp.i
 
 src/ManifoldCAN.s: src/ManifoldCAN.cpp.s
@@ -583,7 +583,7 @@ src/ManifoldCAN.s: src/ManifoldCAN.cpp.s
 
 # target to generate assembly for a file
 src/ManifoldCAN.cpp.s:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/ManifoldCAN.cpp.s
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/ManifoldCAN.cpp.s
 .PHONY : src/ManifoldCAN.cpp.s
 
 src/MathUtils.o: src/MathUtils.c.o
@@ -592,7 +592,7 @@ src/MathUtils.o: src/MathUtils.c.o
 
 # target to build an object file
 src/MathUtils.c.o:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/MathUtils.c.o
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/MathUtils.c.o
 .PHONY : src/MathUtils.c.o
 
 src/MathUtils.i: src/MathUtils.c.i
@@ -601,7 +601,7 @@ src/MathUtils.i: src/MathUtils.c.i
 
 # target to preprocess a source file
 src/MathUtils.c.i:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/MathUtils.c.i
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/MathUtils.c.i
 .PHONY : src/MathUtils.c.i
 
 src/MathUtils.s: src/MathUtils.c.s
@@ -610,7 +610,7 @@ src/MathUtils.s: src/MathUtils.c.s
 
 # target to generate assembly for a file
 src/MathUtils.c.s:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/MathUtils.c.s
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/MathUtils.c.s
 .PHONY : src/MathUtils.c.s
 
 src/MecanumKinematics.o: src/MecanumKinematics.c.o
@@ -619,7 +619,7 @@ src/MecanumKinematics.o: src/MecanumKinematics.c.o
 
 # target to build an object file
 src/MecanumKinematics.c.o:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/MecanumKinematics.c.o
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/MecanumKinematics.c.o
 .PHONY : src/MecanumKinematics.c.o
 
 src/MecanumKinematics.i: src/MecanumKinematics.c.i
@@ -628,7 +628,7 @@ src/MecanumKinematics.i: src/MecanumKinematics.c.i
 
 # target to preprocess a source file
 src/MecanumKinematics.c.i:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/MecanumKinematics.c.i
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/MecanumKinematics.c.i
 .PHONY : src/MecanumKinematics.c.i
 
 src/MecanumKinematics.s: src/MecanumKinematics.c.s
@@ -637,7 +637,7 @@ src/MecanumKinematics.s: src/MecanumKinematics.c.s
 
 # target to generate assembly for a file
 src/MecanumKinematics.c.s:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/MecanumKinematics.c.s
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/MecanumKinematics.c.s
 .PHONY : src/MecanumKinematics.c.s
 
 src/main.o: src/main.cpp.o
@@ -646,7 +646,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -655,7 +655,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -664,7 +664,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/canRobot_node.dir/build.make CMakeFiles/canRobot_node.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/CANRobot_node.dir/build.make CMakeFiles/CANRobot_node.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -680,7 +680,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
-	@echo "... canRobot_node"
+	@echo "... CANRobot_node"
 	@echo "... rosgraph_msgs_generate_messages_nodejs"
 	@echo "... geometry_msgs_generate_messages_py"
 	@echo "... geometry_msgs_generate_messages_cpp"

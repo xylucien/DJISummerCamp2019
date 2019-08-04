@@ -7,7 +7,9 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/canRobot:$CMAKE_PREFIX_PATH"
-export PWD="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/canRobot"
-export ROSLISP_PACKAGE_DIRECTORIES="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/canRobot/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export CMAKE_PREFIX_PATH="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/CANRobot:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/CANRobot/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/CANRobot/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PWD="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/build_isolated/CANRobot"
+export ROSLISP_PACKAGE_DIRECTORIES="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/devel_isolated/CANRobot/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
 export ROS_PACKAGE_PATH="/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/Embedded/ManifoldCAN/src/CANRobot:$ROS_PACKAGE_PATH"
