@@ -11,6 +11,7 @@ from sys import exit
 TEST=True
 SCREEN_MODE=0
 KEYBOARD_DRIVE_ROBOT=True
+CONNECTION_PASS_CASTLE=True
 MOVE_TIME=0
 TURN_TIME=0
 CAPTURE_TIME=0
@@ -142,11 +143,11 @@ if TEST:
                         block.castle_connected=[]
                 for i in range(0,14):
                     for block in self.blocks:
-#                       if type(block)==Block:
-                        self.BCU(block,block.no+1,self.blocks,team)
-                        self.BCU(block,block.no-1,self.blocks,team)
-                        self.BCU(block,block.no+9,self.blocks,team)
-                        self.BCU(block,block.no-9,self.blocks,team)
+                        if type(block)==Block or CONNECTION_PASS_CASTLE:
+                            self.BCU(block,block.no+1,self.blocks,team)
+                            self.BCU(block,block.no-1,self.blocks,team)
+                            self.BCU(block,block.no+9,self.blocks,team)
+                            self.BCU(block,block.no-9,self.blocks,team)
             for block in self.blocks:
                 block.energy_update(CaptureState["red"])
                 block.energy_update(CaptureState["blue"])
