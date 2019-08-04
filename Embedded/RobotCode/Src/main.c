@@ -32,6 +32,7 @@
 #include "INS_task.h"
 #include "chassis_task.h"
 #include "CAN_transmitTask.h"
+#include "chassis_odom_task.h"
 
 /* USER CODE END Includes */
 #include "CANMessage.h"
@@ -104,6 +105,7 @@ osThreadId ins_taskHandle;
 osThreadId referee_taskHandle;
 osThreadId chassis_taskHandle;
 osThreadId canTransmit_taskHandle;
+osThreadId chassisOdom_taskHandle;
 
 /* USER CODE END PV */
 
@@ -143,6 +145,9 @@ void led_trigger_task(void const *argument);
 extern void remote_control_init(void);
 extern void referee_task(void const *argument);
 extern void canTransmitTaskLoop(void const *argument);
+
+extern void initChassisOdom(void);
+extern void chassisOdomUpdate(void const *argument);
 
 // Queues
 QueueHandle_t recvMotorQueue;
@@ -260,11 +265,15 @@ int main(void) {
   osThreadDef(refereeTask, referee_task, osPriorityNormal, 1, 512);
   referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
 
-  osThreadDef(chassis, chassis_task, osPriorityHigh, 1, 512);
+	osThreadDef(chassis, chassis_task, osPriorityHigh, 1, 512);
   chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
 
   osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityNormal, 1, 512);
   canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
+
+  initChassisOdom();
+  osThreadDef(chassisOdom, chassisOdomUpdate, osPriorityHigh, 1, 512);
+  chassisOdom_taskHandle = osThreadCreate(osThread(chassisOdom), NULL);
 
   /* USER CODE END RTOS_THREADS */
 

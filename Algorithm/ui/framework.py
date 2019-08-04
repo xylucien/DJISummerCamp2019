@@ -313,7 +313,8 @@ if TEST:
 
     robots=[Robot(0,"blue",(0,0),'S'),Robot(1,"red",(8,0),'S')]
     
-    def get_robot_info():
+    def get_robot_info(opp=False):
+        if opp: return get_opponent_info()
         return (robots[0].poz[0],robots[0].poz[1],robots[0].direction)
 
     def get_opponent_info():

@@ -5,6 +5,7 @@
 #include "referee.h"
 #include "stdio.h"
 #include "string.h"
+#include "RobotProperties.h"
 
 #include "MecanumKinematics.h"
 
@@ -76,9 +77,6 @@ void referee_send_data(uint16_t cmd_id, void *buf, uint16_t len) {
 // operate '+' '-' '*' '/'
 void communicate_class_solve(void) { ; }
 
-float ab = 2.0f;
-float r = 1.0f;
-
 void chassis_command_solve() {
   Twist2D input;
 
@@ -88,7 +86,7 @@ void chassis_command_solve() {
 
   MecanumWheelValues values;
 
-  mecanumInverseKinematics(&input, ab, r, &values);
+  mecanumInverseKinematics(&input, AB, WHEEL_RADIUS, &values);
 
   xQueueSend(recvMotorQueue, (void *)(&input), (TickType_t)10);
 }

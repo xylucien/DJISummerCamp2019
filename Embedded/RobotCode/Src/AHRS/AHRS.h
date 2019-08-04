@@ -7,8 +7,8 @@
  * @brief          根据加速度的数据，磁力计的数据进行四元数初始化
  * @author         luopin
  * @param[in]      需要初始化的四元数数组
- * @param[in]      用于初始化的加速度计,(x,y,z)不为空 单位 m/s2
- * @param[in]      用于初始化的磁力计计,(x,y,z)不为空 单位 uT
+ * @param[in]      用于初始化的加速度计,(x,y,z)不为空 单位 m/s^2
+ * @param[in]      用于初始化的磁力计计,(x,y,z)不为空 单位 uT (mag)
  * @retval         返回空
  */
 extern void AHRS_init(fp32 quat[4], const fp32 accel[3], const fp32 mag[3]);

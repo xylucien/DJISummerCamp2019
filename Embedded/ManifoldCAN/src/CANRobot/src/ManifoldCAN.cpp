@@ -114,20 +114,32 @@ void ManifoldCAN::sendTargetServoVelocity(const std_msgs::Float32 &msg) {
 }
 
 void ManifoldCAN::sendTargetVelocity(const Twist2D &twist) {
-    int ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TEST, CANMESSAGE_SUBID_TEST, twist.vX));
+    sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VX, twist.vX));
+    sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VY, twist.vY));
+    sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VW, twist.w));
 
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VX, twist.vX));
-    //std::this_thread::sleep_for(5ms);
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VY, twist.vY));
-    //std::this_thread::sleep_for(5ms);
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_VW, twist.w));
-    //std::this_thread::sleep_for(5ms);
-
-    //Some number
-    ret = sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_READY, 1.0f));
-    //std::this_thread::sleep_for(5ms);
+    sendFloatMessage(FloatCANMessage(CANMESSAGE_ID_TARGET_VEL, CANMESSAGE_SUBID_TARGET_READY, 1.0f));
 }
 
+void ManifoldCAN::sendBuzzerFrequency(const std_msgs::Float32 &msg) {
+    FloatCANMessage message;
+    message.id = CANMESSAGE_ID_BUZZER;
+    message.subid = CANMESSAGE_SUBID_BUZZER_FREQUENCY;
+
+    message.data = msg.data;
+
+    sendFloatMessage(message);
+}
+
+void ManifoldCAN::sendBuzzerDutyCycle(const std_msgs::Float32 &msg) {
+    FloatCANMessage message;
+    message.id = CANMESSAGE_ID_BUZZER;
+    message.subid = CANMESSAGE_SUBID_BUZZER_DUTYCYCLE;
+
+    message.data = msg.data;
+
+    sendFloatMessage(message);
+}
 
 //TODO RX
 void ManifoldCAN::threadUpdate() {
