@@ -12,6 +12,7 @@ TEST=True
 SCREEN_MODE=0
 KEYBOARD_DRIVE_ROBOT=True
 CONNECTION_PASS_CASTLE=True
+RAISE_ERROR_WHEN_HIT=False
 MOVE_TIME=0
 TURN_TIME=0
 CAPTURE_TIME=0
@@ -46,8 +47,8 @@ if TEST:
 
     class CaptureState(Enum):
         free=0
-        red=1
-        blue=2
+        blue=1
+        red=2
 
 
     class Block(object):
@@ -59,7 +60,7 @@ if TEST:
             self.strong=False
             self.poz=(self.no%9,self.no//9)
             self.crd=((510+self.poz[0]*100),(190+self.poz[1]*100))
-            self.castle_connected=[]
+            self.castle_connected={CaptureState["blue"]:[],CaptureState["red"]:[]}
             self.energy=0
 
             if self.poz in[(0,0),(8,6)]:
@@ -75,16 +76,17 @@ if TEST:
                 self.tp='o'
                 self.pic=ORANGEBK
 
-        def energy_update(self,team):
-            enbuf=0
-            for castle in self.castle_connected:
-                if castle.state==team:
-                    enbuf+=1
-            self.energy=enbuf
-            if self.energy>=3:
-                self.strong=True
-            else:
-                self.strong=False
+        def energy_update(self):
+            if self.state!=CaptureState["free"]:
+                enbuf=0
+                for castle in self.castle_connected[self.state]:
+                    if castle.state==self.state:
+                        enbuf+=1
+                self.energy=enbuf
+                if self.energy>=3:
+                    self.strong=True
+                else:
+                    self.strong=False
 
         def display_to(self,screen,facing=0):
             assert type(screen)==pygame.Surface
@@ -127,30 +129,30 @@ if TEST:
                     self.blocks.append(Block(i))
 
 
-        def BCU(self,blk,num,blst,team):
+        def BCU(self,blk,num,blst):
             if 0<=num<63:
-                if blst[num].state==team:
-                    for cast in blst[num].castle_connected:
-                        if not cast in blk.castle_connected:
-                            blk.castle_connected.append(cast)
-            return False
+                if blk.state!=CaptureState["free"] and blst[num].state==blk.state:
+                    for cast in blst[num].castle_connected[blk.state]:
+                        if not cast in blk.castle_connected[blk.state]:
+                            blk.castle_connected[blk.state].append(cast)
+            return
 
 
         def connection_update(self):
             for team in [CaptureState["red"],CaptureState["blue"]]:
                 for block in self.blocks:
                     if type(block)==Block:
-                        block.castle_connected=[]
+                        block.castle_connected={CaptureState["blue"]:[],CaptureState["red"]:[]}
+
                 for i in range(0,14):
                     for block in self.blocks:
                         if type(block)==Block or CONNECTION_PASS_CASTLE:
-                            self.BCU(block,block.no+1,self.blocks,team)
-                            self.BCU(block,block.no-1,self.blocks,team)
-                            self.BCU(block,block.no+9,self.blocks,team)
-                            self.BCU(block,block.no-9,self.blocks,team)
+                            self.BCU(block,block.no+1,self.blocks)
+                            self.BCU(block,block.no-1,self.blocks)
+                            self.BCU(block,block.no+9,self.blocks)
+                            self.BCU(block,block.no-9,self.blocks)
             for block in self.blocks:
-                block.energy_update(CaptureState["red"])
-                block.energy_update(CaptureState["blue"])
+                block.energy_update()
 
         def capture(self,state,poz=None,NO=None):
             assert state==CaptureState["red"] or state==CaptureState["blue"]
@@ -202,13 +204,13 @@ if TEST:
             else:
                 assert type(direction)==int
 
-                if direction==0:
+                if direction%4==0:
                     return 'N'
-                elif direction==1:
+                elif direction%4==1:
                     return 'E'
-                elif direction==2:
+                elif direction%4==2:
                     return 'S'
-                elif direction==3:
+                elif direction%4==3:
                     return 'W'
 
         def crd_calu(self):
@@ -248,7 +250,7 @@ if TEST:
                 self.poz=tuple(pozbuf)
             elif not detect:
                 self.poz=tuple(pozbuf)
-            else:
+            elif RAISE_ERROR_WHEN_HIT:
                 raise ValueError
         
         def set_facing(self,direction):
@@ -279,7 +281,7 @@ if TEST:
 
             castledict={2:0,6:1,27:2,31:3,35:4,56:5,60:6}
             self.castleNO=castledict[NO]
-            self.castle_connected=[self]
+            self.castle_connected={CaptureState["blue"]:[self],CaptureState["red"]:[self]}
 
             if NO in [27,31]:
                 self.direction='N'
@@ -292,9 +294,12 @@ if TEST:
             else:
                 raise ValueError
             
+            self.capture_point={}
             self.movpoz('F',1)
-            self.capturePoint=self.poz
-            self.movpoz('B',1,False)
+            self.capture_point.update({CaptureState["blue"]:self.poz})
+            self.movpoz('B',2,False)
+            self.capture_point.update({CaptureState["red"]:self.poz})
+            self.movpoz('F',1,False)
 
             self.ballamount = { CaptureState["red"]:0 , CaptureState["blue"]:0 }
 
@@ -328,40 +333,38 @@ if TEST:
         assert type(no)==int and 0<=no<63 and type(mp.blocks[no])==Block
         return mp.blocks[no]
 
-    def move(direction,lth):
+    def move(direction,lth,team=CaptureState["blue"]):
         time.sleep(MOVE_TIME)
-        robots[0].movpoz(direction,lth)
+        robots[team.value-1].movpoz(direction,lth)
 
-    def turn(direction):
+    def turn(direction,team=CaptureState["blue"]):
         time.sleep(TURN_TIME)
-        robots[0].rotate(direction)
+        robots[team.value-1].rotate(direction)
 
-    def stay(s=1.0):
+    def stay(s=CAPTURE_TIME,team=CaptureState["blue"]):
         if type(s)==int:
             s=float(s)
         elif type(s)==float:
             pass
         else:
             raise TypeError
-        if s>CAPTURE_TIME:
-            try:
-                mp.capture(robots[0].team,robots[0].poz)
-                mp.connection_update()
-            except Exception as error:
-                print(error)
+        if s>CAPTURE_TIME-0.01:
+            mp.capture(robots[team.value-1].team,robots[team.value-1].poz)
+            mp.connection_update()
         time.sleep(s)
     
     def put(cup=False,team=CaptureState["blue"]):
-        if team==CaptureState["blue"]: rbt=0
-        else: rbt=1
         for cst in mp.castles:
-            if robots[rbt].poz==cst.capturePoint and Robot.DFC(robots[rbt].direction)==(Robot.DFC(cst.direction)+2)%4:
-                if cup: cst.ballamount[team] += 4
-                else: cst.ballamount[team] += 1
-                time.sleep(PUT_TIME)
-                cst.capture_update()
-                mp.connection_update()
-                break
+            if robots[team.value-1].poz==cst.capture_point[team]:
+                a=Robot.DFC(robots[team.value-1].direction)
+                b=(Robot.DFC(cst.direction)+2)%4
+                if Robot.DFC(robots[team.value-1].direction)==(Robot.DFC(cst.direction)+(team.value*2))%4:
+                    if cup: cst.ballamount[team] += 4
+                    else: cst.ballamount[team] += 1
+                    time.sleep(PUT_TIME)
+                    cst.capture_update()
+                    mp.connection_update()
+                    break
 
     def OS(str):
         os.system(str)
@@ -415,22 +418,22 @@ if TEST:
                     pygame.quit()
                     exit()
                 if KEYBOARD_DRIVE_ROBOT:
-                    if event.key==K_w:
-                        move('F',1)
-                    if event.key==K_d:
-                        move('R',1)
-                    if event.key==K_s:
-                        move('B',1)
-                    if event.key==K_a:
-                        move('L',1)
-                    if event.key==K_q:
-                        turn(-1)
-                    if event.key==K_e:
-                        turn(1)
-                    if event.key==K_p:
-                        put()
-                    if event.key==K_c:
-                        stay(CAPTURE_TIME+0.01)
+                    if event.key==K_w: move('F',1)
+                    if event.key==K_d: move('R',1)
+                    if event.key==K_s: move('B',1)
+                    if event.key==K_a: move('L',1)
+                    if event.key==K_q: turn(-1)
+                    if event.key==K_e: turn(1)
+                    if event.key==K_r: put()
+                    if event.key==K_f: stay(CAPTURE_TIME)
+                    if event.key==K_u: move('F',1,CaptureState["red"])
+                    if event.key==K_k: move('R',1,CaptureState["red"])
+                    if event.key==K_j: move('B',1,CaptureState["red"])
+                    if event.key==K_h: move('L',1,CaptureState["red"])
+                    if event.key==K_y: turn(-1,CaptureState["red"])
+                    if event.key==K_i: turn(1,CaptureState["red"])
+                    if event.key==K_o: put(cup=False,team=CaptureState["red"])
+                    if event.key==K_l: stay(CAPTURE_TIME,CaptureState["red"])
 
         mp.display(screen)
 
