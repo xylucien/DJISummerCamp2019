@@ -10,10 +10,10 @@ from sys import exit
 
 TEST=True
 SCREEN_MODE=0
-HAND_DRIVE_ROBOT=False
+KEYBOARD_DRIVE_ROBOT=False
 MOVE_TIME=0
 TURN_TIME=0
-CAPTURE_TIME=1
+CAPTURE_TIME=0
 PUT_TIME=0
 
 FILE_ROUTE="D:\\mydata\\pics\\RoboMaster\\"
@@ -142,7 +142,7 @@ if TEST:
                         block.castle_connected=[]
                 for i in range(0,14):
                     for block in self.blocks:
-#                        if type(block)==Block:
+#                       if type(block)==Block:
                         self.BCU(block,block.no+1,self.blocks,team)
                         self.BCU(block,block.no-1,self.blocks,team)
                         self.BCU(block,block.no+9,self.blocks,team)
@@ -412,22 +412,23 @@ if TEST:
                 if event.key==K_ESCAPE:
                     pygame.quit()
                     exit()
-                if event.key==K_w:
-                    move('F',1)
-                if event.key==K_d:
-                    move('R',1)
-                if event.key==K_s:
-                    move('B',1)
-                if event.key==K_a:
-                    move('L',1)
-                if event.key==K_q:
-                    turn(-1)
-                if event.key==K_e:
-                    turn(1)
-                if event.key==K_p:
-                    put()
-                if event.key==K_c:
-                    stay(0.01)
+                if KEYBOARD_DRIVE_ROBOT:
+                    if event.key==K_w:
+                        move('F',1)
+                    if event.key==K_d:
+                        move('R',1)
+                    if event.key==K_s:
+                        move('B',1)
+                    if event.key==K_a:
+                        move('L',1)
+                    if event.key==K_q:
+                        turn(-1)
+                    if event.key==K_e:
+                        turn(1)
+                    if event.key==K_p:
+                        put()
+                    if event.key==K_c:
+                        stay(CAPTURE_TIME+0.01)
 
         mp.display(screen)
 
