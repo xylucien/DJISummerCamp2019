@@ -27,9 +27,10 @@ int main(int argc, char **argv) {
 
     can.sendTargetVelocity(zeroTwist);
 
-    n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
+    //n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
     ros::Subscriber sub = n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
 
+    ros::Subscriber servoSub = n.subscribe("servo_vel", 1000, &ManifoldCAN::sendTargetServoVelocity, &can);
 
     //can.sendTargetVelocity(test);
 
