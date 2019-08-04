@@ -9,8 +9,8 @@ time_limit = 40
 action = {'n':1, 'e':1, 's':1, 'w':1, 'stay!': 1, 'turn&put': 10}
 search_queue = queue.PriorityQueue() 
 
-#best_path = ""
-#max_point = -1
+best_path = []
+max_point = -1
 
 Mymap[0][2] = 100000
 Mymap[0][6] = 100000
@@ -94,9 +94,9 @@ def near_secured(r,c):
 	return False
 
 def search():
-	global pcount, flag
+	global pcount, flag, max_point, best_path
 	
-	if pcount >= 10000:
+	if pcount >= 1000000:
 		flag = True
 		return
 	
@@ -109,7 +109,12 @@ def search():
 
 	if tleft == 0 or step == step_limit:
 		pcount+=1
-		print(state, r, c, step, -pts)
+		#print(state, r, c, step, -pts)
+		if -pts > max_point:
+			best_path = []
+			max_point = -pts
+		if -pts == max_point:
+			best_path.append(state)
 		return
 
 	if tleft >=10 and check_put(r, c):
@@ -131,8 +136,9 @@ def search():
 		if last_step != '!' and (connected or near_secured(r,c)):
 			search_queue.put((pts - 15, (state + '!', tleft - 1, r, c, step, True)))
 
-search_queue.put((0,(' ', 40, initR, initC, 0, False)) )
+search_queue.put((0,('', 40, initR, initC, 0, False)) )
 
 while not flag:
 	search()
 print(pcount)
+print(best_path, len(best_path), max_point)
