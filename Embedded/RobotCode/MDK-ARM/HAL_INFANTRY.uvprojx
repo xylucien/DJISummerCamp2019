@@ -937,6 +937,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\app\CRC8_CRC16.c</FilePath>
             </File>
+            <File>
+              <FileName>AHRS_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\app\AHRS_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

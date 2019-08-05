@@ -1,14 +1,14 @@
 /**
   ****************************(C) COPYRIGHT 2016 DJI****************************
   * @file       INSTask.c/h
-  * @brief      Ö÷ÒªÀûÓÃÍÓÂÝÒÇmpu6500£¬´ÅÁ¦¼Æist8310£¬Íê³É×ËÌ¬½âËã£¬µÃ³öÅ·À­½Ç£¬
-  *             Ìá¹©Í¨¹ýmpu6500µÄdata ready ÖÐ¶ÏÍê³ÉÍâ²¿´¥·¢£¬¼õÉÙÊý¾ÝµÈ´ýÑÓ³Ù
-  *             Í¨¹ýDMAµÄSPI´«Êä½ÚÔ¼CPUÊ±¼ä£¬Ìá¹©×¢ÊÍ¶ÔÓ¦µÄºê¶¨Òå£¬¹Ø±ÕDMA£¬
-  *             DRµÄÍâ²¿ÖÐ¶ÏµÄ·½Ê½.
-  * @note       SPI ÔÚÍÓÂÝÒÇ³õÊ¼»¯µÄÊ±ºòÐèÒªµÍÓÚ2MHz£¬Ö®ºó¶ÁÈ¡Êý¾ÝÐèµÍÓÚ20MHz
+  * @brief      ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mpu6500ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ist8310ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ã£¬ï¿½Ã³ï¿½Å·ï¿½ï¿½ï¿½Ç£ï¿½
+  *             ï¿½á¹©Í¨ï¿½ï¿½mpu6500ï¿½ï¿½data ready ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÈ´ï¿½ï¿½Ó³ï¿½
+  *             Í¨ï¿½ï¿½DMAï¿½ï¿½SPIï¿½ï¿½ï¿½ï¿½ï¿½Ô¼CPUÊ±ï¿½ä£¬ï¿½á¹©×¢ï¿½Í¶ï¿½Ó¦ï¿½Äºê¶¨ï¿½å£¬ï¿½Ø±ï¿½DMAï¿½ï¿½
+  *             DRï¿½ï¿½ï¿½â²¿ï¿½Ð¶ÏµÄ·ï¿½Ê½.
+  * @note       SPI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½2MHzï¿½ï¿½Ö®ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½20MHz
   * @history
   *  Version    Date            Author          Modification
-  *  V1.0.0     Dec-26-2018     RM              1. Íê³É
+  *  V1.0.0     Dec-26-2018     RM              1. ï¿½ï¿½ï¿½
   *
   @verbatim
   ==============================================================================
@@ -31,11 +31,11 @@
 
 #include "cmsis_os.h"
 
-#define IMUWarnBuzzerOn() buzzer_on(95, 10000) //¿ª»úÍÓÂÝÒÇÐ£×¼·äÃùÆ÷
+#define IMUWarnBuzzerOn() buzzer_on(95, 10000) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-#define IMUWarnBuzzerOFF() buzzer_off() //¿ª»úÍÓÂÝÒÇÐ£×¼·äÃùÆ÷¹Ø±Õ
+#define IMUWarnBuzzerOFF() buzzer_off() //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½
 
-//ºê¶¨Òå³õÊ¼»¯SPIµÄDMA£¬Í¬Ê±ÉèÖÃSPIÎª8Î»£¬4·ÖÆµ
+//ï¿½ê¶¨ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½SPIï¿½ï¿½DMAï¿½ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½SPIÎª8Î»ï¿½ï¿½4ï¿½ï¿½Æµ
 #define MPU6500_SPI_DMA_Init(txbuf, rxbuf)                                     \
   {                                                                            \
     SPI5_DMA_Init((uint32_t)txbuf, (uint32_t)rxbuf, DMA_RX_NUM);               \
@@ -44,80 +44,80 @@
   }
 
 #define MPU6500_SPI_DMA_Enable()                                               \
-  SPI5_DMA_Enable(DMA_RX_NUM) // ¿ªÊ¼Ò»´ÎSPIµÄDMA´«Êä
-//ºê¶¨ÒåSPIµÄDMA´«ÊäÖÐ¶Ïº¯ÊýÒÔ¼°´«ÊäÖÐ¶Ï±êÖ¾Î»
+  SPI5_DMA_Enable(DMA_RX_NUM) // ï¿½ï¿½Ê¼Ò»ï¿½ï¿½SPIï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½
+//ï¿½ê¶¨ï¿½ï¿½SPIï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ïºï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï±ï¿½Ö¾Î»
 #define MPU6500_DMA_IRQHandler DMA2_Stream5_IRQHandler
 #define MPU6500_DMA_Stream DMA2_Stream5
 
 #define IMU_BOARD_INSTALL_SPIN_MATRIX                                          \
   {0.0f, 1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, { 0.0f, 0.0f, 1.0f }
 
-//Èç¹ûÊ¹ÓÃmpu6500µÄÊý¾Ý×¼±¸Íâ²¿ÖÐ¶Ï£¬¿ÉÒÔÊ¹ÓÃÈÎÎñÍ¨Öª·½·¨»½ÐÑÈÎÎñ
+//ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½mpu6500ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½â²¿ï¿½Ð¶Ï£ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 static TaskHandle_t INSTask_Local_Handler;
 
-// DMAµÄSPI ·¢ËÍµÄbuf£¬ÒÔINT_STATUS¿ªÊ¼Á¬Ðø¶ÁÈ¡ DMA_RX_NUM´óÐ¡µØÖ·µÄÖµ
+// DMAï¿½ï¿½SPI ï¿½ï¿½ï¿½Íµï¿½bufï¿½ï¿½ï¿½ï¿½INT_STATUSï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ DMA_RX_NUMï¿½ï¿½Ð¡ï¿½ï¿½Ö·ï¿½ï¿½Öµ
 static const uint8_t mpu6500_spi_DMA_txbuf[DMA_RX_NUM] = {MPU_INT_STATUS |
                                                           MPU_SPI_READ_MSB};
 
-static uint8_t mpu6500_spi_rxbuf[DMA_RX_NUM]; //±£´æ½ÓÊÕµÄÔ­Ê¼Êý¾Ý
+static uint8_t mpu6500_spi_rxbuf[DMA_RX_NUM]; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
 
-//´¦ÀíÍÓÂÝÒÇ£¬¼ÓËÙ¶È¼Æ£¬´ÅÁ¦¼ÆÊý¾ÝµÄÏßÐÔ¶È£¬ÁãÆ¯
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½Ù¶È¼Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½Ô¶È£ï¿½ï¿½ï¿½Æ¯
 static void IMU_rotation_solve(fp32 gyro[3], fp32 accel[3], fp32 mag[3],
                                mpu6500_real_data_t *mpu6500,
                                ist8310_real_data_t *ist8310);
 
-static mpu6500_real_data_t mpu6500_real_data; //×ª»»³É¹ú¼Êµ¥Î»µÄMPU6500Êý¾Ý
+static mpu6500_real_data_t mpu6500_real_data; //×ªï¿½ï¿½ï¿½É¹ï¿½ï¿½Êµï¿½Î»ï¿½ï¿½MPU6500ï¿½ï¿½ï¿½ï¿½
 static fp32 gyro_scale_factor[3][3] = {
-    IMU_BOARD_INSTALL_SPIN_MATRIX}; //ÍÓÂÝÒÇÐ£×¼ÏßÐÔ¶È
+    IMU_BOARD_INSTALL_SPIN_MATRIX}; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£×¼ï¿½ï¿½ï¿½Ô¶ï¿½
 static fp32 gyro_cali_offset[3] = {0.0f, 0.0f, 0.0f};
-static fp32 gyro_offset[3] = {0.0f, 0.0f, 0.0f}; //ÍÓÂÝÒÇÁãÆ¯
+static fp32 gyro_offset[3] = {0.0f, 0.0f, 0.0f}; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¯
 static fp32 accel_scale_factor[3][3] = {
-    IMU_BOARD_INSTALL_SPIN_MATRIX};               //¼ÓËÙ¶ÈÐ£×¼ÏßÐÔ¶È
-static fp32 accel_offset[3] = {0.0f, 0.0f, 0.0f}; //¼ÓËÙ¶ÈÁãÆ¯
+    IMU_BOARD_INSTALL_SPIN_MATRIX};               //ï¿½ï¿½ï¿½Ù¶ï¿½Ð£×¼ï¿½ï¿½ï¿½Ô¶ï¿½
+static fp32 accel_offset[3] = {0.0f, 0.0f, 0.0f}; //ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½Æ¯
 
-static ist8310_real_data_t ist8310_real_data; //×ª»»³É¹ú¼Êµ¥Î»µÄIST8310Êý¾Ý
+static ist8310_real_data_t ist8310_real_data; //×ªï¿½ï¿½ï¿½É¹ï¿½ï¿½Êµï¿½Î»ï¿½ï¿½IST8310ï¿½ï¿½ï¿½ï¿½
 static fp32 mag_scale_factor[3][3] = {{1.0f, 0.0f, 0.0f},
                                       {0.0f, 1.0f, 0.0f},
-                                      {0.0f, 0.0f, 1.0f}}; //´ÅÁ¦¼ÆÐ£×¼ÏßÐÔ¶È
-static fp32 mag_offset[3] = {0.0f, 0.0f, 0.0f};            //´ÅÁ¦¼ÆÁãÆ¯
+                                      {0.0f, 0.0f, 1.0f}}; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£×¼ï¿½ï¿½ï¿½Ô¶ï¿½
+static fp32 mag_offset[3] = {0.0f, 0.0f, 0.0f};            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¯
 
-static fp32 INS_gyro[3] = {0.0f, 0.0f, 0.0f};
-static fp32 INS_accel[3] = {0.0f, 0.0f, 0.0f};
-static fp32 INS_mag[3] = {0.0f, 0.0f, 0.0f};
+fp32 INS_gyro[3] = {0.0f, 0.0f, 0.0f};
+fp32 INS_accel[3] = {0.0f, 0.0f, 0.0f};
+fp32 INS_mag[3] = {0.0f, 0.0f, 0.0f};
 
 void INSTask(void const *pvParameters) {
 
-  //»ñÈ¡µ±Ç°ÈÎÎñµÄÈÎÎñ¾ä±ú£¬ÓÃÓÚÈÎÎñÍ¨Öª
+  //ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª
   INSTask_Local_Handler = xTaskGetHandle(pcTaskGetName(NULL));
 
   osDelay(INS_TASK_INIT_TIME);
-  //³õÊ¼»¯mpu6500£¬Ê§°Ü½øÈëËÀÑ­»·
+  //ï¿½ï¿½Ê¼ï¿½ï¿½mpu6500ï¿½ï¿½Ê§ï¿½Ü½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
   while (mpu6500_init() != MPU6500_NO_ERROR) {
     ;
   }
 
-  //³õÊ¼»¯ist8310£¬Ê§°Ü½øÈëËÀÑ­»·
+  //ï¿½ï¿½Ê¼ï¿½ï¿½ist8310ï¿½ï¿½Ê§ï¿½Ü½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
   while (ist8310_init() != IST8310_NO_ERROR) {
     ;
   }
 
-  //³õÊ¼»¯SPIµÄDMA´«ÊäµÄ·½·¨
+  //ï¿½ï¿½Ê¼ï¿½ï¿½SPIï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
   MPU6500_SPI_DMA_Init(mpu6500_spi_DMA_txbuf, mpu6500_spi_rxbuf);
 
   while (1) {
-    //        //µÈ´ýÍâ²¿ÖÐ¶ÏÖÐ¶Ï»½ÐÑÈÎÎñ
+    //        //ï¿½È´ï¿½ï¿½â²¿ï¿½Ð¶ï¿½ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     while (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) != pdPASS) {
     }
 
-    //½«¶ÁÈ¡µ½µÄmpu6500Ô­Ê¼Êý¾Ý´¦Àí³É¹ú¼Êµ¥Î»µÄÊý¾Ý
+    //ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½mpu6500Ô­Ê¼ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½Êµï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     mpu6500_read_over((mpu6500_spi_rxbuf + MPU6500_RX_BUF_DATA_OFFSET),
                       &mpu6500_real_data);
 
-    //½«¶ÁÈ¡µ½µÄist8310Ô­Ê¼Êý¾Ý´¦Àí³É¹ú¼Êµ¥Î»µÄÊý¾Ý
+    //ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ist8310Ô­Ê¼ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½Êµï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ist8310_read_over((mpu6500_spi_rxbuf + IST8310_RX_BUF_DATA_OFFSET),
                       &ist8310_real_data);
 
-    //¼õÈ¥ÁãÆ¯ÒÔ¼°Ðý×ª×ø±êÏµ
+    //ï¿½ï¿½È¥ï¿½ï¿½Æ¯ï¿½Ô¼ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ïµ
     IMU_rotation_solve(INS_gyro, INS_accel, INS_mag, &mpu6500_real_data,
                        &ist8310_real_data);
 
@@ -127,12 +127,12 @@ void INSTask(void const *pvParameters) {
 }
 
 /**
- * @brief          Ð£×¼ÍÓÂÝÒÇ
+ * @brief          Ð£×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * @author         RM
- * @param[in]      ÍÓÂÝÒÇµÄ±ÈÀýÒò×Ó£¬1.0fÎªÄ¬ÈÏÖµ£¬²»ÐÞ¸Ä
- * @param[in]      ÍÓÂÝÒÇµÄÁãÆ¯£¬²É¼¯ÍÓÂÝÒÇµÄ¾²Ö¹µÄÊä³ö×÷Îªoffset
- * @param[in]      ÍÓÂÝÒÇµÄÊ±¿Ì£¬Ã¿´ÎÔÚgyro_offsetµ÷ÓÃ»á¼Ó1,
- * @retval         ·µ»Ø¿Õ
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½ÇµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½1.0fÎªÄ¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½Æ¯ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÇµÄ¾ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªoffset
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½Ê±ï¿½Ì£ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½gyro_offsetï¿½ï¿½ï¿½Ã»ï¿½ï¿½1,
+ * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
  */
 void INS_cali_gyro(fp32 cali_scale[3], fp32 cali_offset[3],
                    uint16_t *time_count) {
@@ -152,11 +152,11 @@ void INS_cali_gyro(fp32 cali_scale[3], fp32 cali_offset[3],
 }
 
 /**
- * @brief          Ð£×¼ÍÓÂÝÒÇÉèÖÃ£¬½«´Óflash»òÕßÆäËûµØ·½´«ÈëÐ£×¼Öµ
+ * @brief          Ð£×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½flashï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½Ð£×¼Öµ
  * @author         RM
- * @param[in]      ÍÓÂÝÒÇµÄ±ÈÀýÒò×Ó£¬1.0fÎªÄ¬ÈÏÖµ£¬²»ÐÞ¸Ä
- * @param[in]      ÍÓÂÝÒÇµÄÁãÆ¯
- * @retval         ·µ»Ø¿Õ
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½ÇµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½1.0fÎªÄ¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½Æ¯
+ * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
  */
 void INS_set_cali_gyro(fp32 cali_scale[3], fp32 cali_offset[3]) {
   gyro_cali_offset[0] = cali_offset[0];
@@ -200,7 +200,7 @@ void MPU6500_DMA_IRQHandler(void) {
   if (DMA2->HISR & 0x800) {
     mpu6500_SPI_NS_H();
     DMA2->HIFCR = 0xC00;
-    //»½ÐÑÈÎÎñ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
       static BaseType_t xHigherPriorityTaskWoken;
       vTaskNotifyGiveFromISR(INSTask_Local_Handler, &xHigherPriorityTaskWoken);

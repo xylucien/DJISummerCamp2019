@@ -28,8 +28,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "calibrate_task.h"
 #include "INS_task.h"
+#include "AHRS_task.h"
 #include "chassis_task.h"
 #include "CAN_transmitTask.h"
 #include "chassis_odom_task.h"
@@ -102,6 +103,8 @@ osThreadId cali_taskHandle;
 osThreadId detect_taskHandle;
 osThreadId gimbal_taskHandle;
 osThreadId ins_taskHandle;
+osThreadId AHRS_taskHandle;
+
 osThreadId referee_taskHandle;
 osThreadId chassis_taskHandle;
 osThreadId canTransmit_taskHandle;
@@ -259,8 +262,17 @@ int main(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+
+  cali_param_init();
+  osThreadDef(cali_task, calibrate_task, osPriorityHigh + 1, 1, 512);
+  cali_taskHandle = osThreadCreate(osThread(cali_task), NULL);
+
   osThreadDef(ins_task, INSTask, osPriorityRealtime, 1, 512);
   ins_taskHandle = osThreadCreate(osThread(ins_task), NULL);
+
+  AHRSTaskInit();
+  osThreadDef(ahrs_task, AHRSTaskUpdate, osPriorityRealtime - 1, 1, 512);
+  AHRS_taskHandle = osThreadCreate(osThread(ahrs_task), NULL);
 
   osThreadDef(refereeTask, referee_task, osPriorityNormal, 1, 512);
   referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
@@ -268,7 +280,7 @@ int main(void) {
 	osThreadDef(chassis, chassis_task, osPriorityHigh, 1, 512);
   chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
 
-  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityNormal, 1, 512);
+  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh, 1, 512);
   canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
 
   initChassisOdom();

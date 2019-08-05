@@ -5,6 +5,7 @@
         "mecanumkinematics.h": "c",
         "chassis_odom_task.h": "c",
         "calibrate_task.h": "c",
-        "struct_typedef.h": "c"
+        "struct_typedef.h": "c",
+        "task.h": "c"
     }
 }

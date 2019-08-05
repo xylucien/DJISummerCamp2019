@@ -13,7 +13,7 @@
 
 using namespace std::chrono_literals;
 
-ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
+ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate) : rxThreadRate(rate), rosPubThreadRate(rate) {
     this->canInterfaceName = canInterface;
 
     canTxSocket = socket(PF_CAN, SOCK_DGRAM, CAN_BCM);
@@ -42,13 +42,59 @@ ManifoldCAN::ManifoldCAN(const std::string &canInterface) {
         throw std::runtime_error("Unable to start CAN RX socket errno: " + std::to_string(errno));
     }
 
-    sendRXSetup();
+    memset(&addr, 0, sizeof(sockaddr_can));
+    memset(&ifr, 0, sizeof(ifreq));
+
+    std::strncpy(ifr.ifr_name, canInterface.c_str(), IFNAMSIZ);
+    ioctl(canRxSocket, SIOCGIFINDEX, &ifr);
+
+    addr.can_family = AF_CAN;
+    addr.can_ifindex = ifr.ifr_ifindex;
+
+    int rxSocketBind = bind(
+            canRxSocket,
+            reinterpret_cast<struct sockaddr*>(&addr),
+            sizeof(addr)
+    );
+
+    if(rxSocketBind < 0){
+        throw std::runtime_error("Unable to bind CAN RX socket errno: " + std::to_string(errno));
+    }
+}
+
+void ManifoldCAN::initialize(const ros::Rate &rxUpdateRate) {
+    if(!isRxThreadInitialized) {
+        isRxThreadInitialized = true;
+        rxThreadRate = rxUpdateRate;
+        rxThread = std::make_shared<std::thread>(std::bind(&ManifoldCAN::rxThreadUpdate, this));
+    }
+
+    if(!isRosPubThreadInitialized){
+        isRosPubThreadInitialized = true;
+        rosPubThreadRate = rxUpdateRate;
+        rosThread = std::make_shared<std::thread>(std::bind(&ManifoldCAN::rosPubThreadUpdate, this));
+    }
+}
+
+void ManifoldCAN::addRosPublisher(const CANId &id, std::shared_ptr<ros::Publisher> publisher) {
+    publisherListMutex.lock();
+    publisherList.emplace(id, publisher);
+    publisherListMutex.unlock();
+}
+
+CANId ManifoldCAN::newCanId(uint32_t baseId, uint8_t messageId, uint8_t subId) {
+    CANId id;
+    id.baseId = baseId;
+    id.messageId = messageId;
+    id.subId = subId;
+
+    return(id);
 }
 
 int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     BCM_Msg msg;
     msg.msg_head.opcode  = TX_SETUP;
-    msg.msg_head.can_id  = calculateId(CANMESSAGE_MANIFOLD_BASE_ID, message.id, message.subid);
+    msg.msg_head.can_id  = serializeId(newCanId(0x600, message.id, message.subid));
     msg.msg_head.flags   = SETTIMER|STARTTIMER|TX_CP_CAN_ID;
     msg.msg_head.nframes = 1;
     msg.msg_head.count = 0;
@@ -57,7 +103,6 @@ int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     msg.msg_head.ival2.tv_sec = 0;
     msg.msg_head.ival2.tv_usec = 100000;
     msg.frame[0].can_dlc   = 8;
-    //std::cout << calculateId(CANMESSAGE_MANIFOLD_BASE_ID, message.id, message.subid) << std::endl;
 
     serializeFloat(message.data, msg.frame[0].data);
 
@@ -67,30 +112,11 @@ int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
 void ManifoldCAN::sendRXSetup() const {
     BCM_Msg msg;
     msg.msg_head.opcode  = RX_SETUP;
-    msg.msg_head.can_id  = 1639;
+    msg.msg_head.can_id = 0x650;
     msg.msg_head.flags   = 0;
     msg.msg_head.nframes = 1;
 
     write(canTxSocket, &msg, sizeof(struct BCM_Msg));
-}
-
-FloatCANMessage ManifoldCAN::receiveFloatMessage() const {
-    sendRXSetup();
-
-    BCM_Msg msg;
-
-    ssize_t size = read(canTxSocket, &msg, sizeof(BCM_Msg));
-
-    if(size <= 0){
-        throw std::runtime_error("CAN returned zero bytes!");
-    }
-
-    FloatCANMessage message;
-
-    message.id = deserializeInt(msg.frame[0].data);
-    message.data = deserializeFloat(msg.frame[0].data + 4);
-
-    return message;
 }
 
 void ManifoldCAN::sendTargetVelocityROS(const geometry_msgs::Twist &twist){
@@ -141,28 +167,56 @@ void ManifoldCAN::sendBuzzerDutyCycle(const std_msgs::Float32 &msg) {
     sendFloatMessage(message);
 }
 
+void ManifoldCAN::rosPubThreadUpdate() {
+    while(ros::ok()){
+        if(!receivedCanMessages.empty()){
+            rxMessageQueueMutex.lock();
+            auto canMsg = receivedCanMessages.front();
+            receivedCanMessages.pop();
+            rxMessageQueueMutex.unlock();
+
+            CANId id = canMsg.id;
+            //std::cout << std::to_string(id.messageId) << ',' << std::to_string(id.subId) << std::endl;
+
+            publisherListMutex.lock();
+            auto pub = publisherList.find(id);
+            publisherListMutex.unlock();
+
+            if(pub != publisherList.end()){
+                //Found element
+                //Assume everything is float32 for now
+                std_msgs::Float32 msg;
+                msg.data = deserializeFloat((uint8_t*) canMsg.data);
+
+                (pub->second)->publish(msg);
+            }
+
+            free(canMsg.data);
+        }
+
+        rosPubThreadRate.sleep();
+    }
+}
+
 //TODO RX
-void ManifoldCAN::threadUpdate() {
-    //TODO finish this
-    canfd_frame frame;
+void ManifoldCAN::rxThreadUpdate() {
+    while(ros::ok()){
+        //sendRXSetup();
 
-    FloatCANMessage message = receiveFloatMessage();
-    float data = message.data;
+        struct canfd_frame frame;
 
-    std::cout << " Data: " << data << " Message ID: " << std::to_string(message.id) << std::endl;
-}
+        read(canRxSocket, &frame, CANFD_MTU);
 
-void ManifoldCAN::writeTest() {
-    //for(float i = -1.0; i <= 1.0; i += .01){
-    //    sendFloatMessage(FloatCANMessage(1, i));
-    //    std::this_thread::sleep_for(1s);
-    //}
-}
+        CANMessage newMsg;
+        newMsg.id = deserializeId(frame.can_id);
 
-uint32_t ManifoldCAN::calculateId(uint8_t baseId, uint8_t canId, uint8_t subId) {
-    uint32_t output = CANMESSAGE_MANIFOLD_BASE_ID;
-    output |= (canId << 4);
-    output |= subId;
+        newMsg.data = malloc(sizeof(frame.data));
+        memcpy(newMsg.data, frame.data, sizeof(frame.data));
 
-    return output;
+        rxMessageQueueMutex.lock();
+        receivedCanMessages.push(newMsg);
+        rxMessageQueueMutex.unlock();
+
+        rxThreadRate.sleep();
+    }
 }

@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "CANRobot");
     ros::NodeHandle n;
 
-    ManifoldCAN can("can0");
+    ManifoldCAN can("can0", 1000.0);
 
     Twist2D zeroTwist;
     zeroTwist.vX = 0.0;
@@ -34,9 +34,20 @@ int main(int argc, char **argv) {
     ros::Subscriber buzzerFreqSub = n.subscribe("buzzer/frequency", 1000, &ManifoldCAN::sendBuzzerFrequency, &can);
     ros::Subscriber buzzerDutyCycleSub = n.subscribe("buzzer/dutycycle", 1000, &ManifoldCAN::sendBuzzerDutyCycle, &can);
 
-    //can.sendTargetVelocity(test);
+    std::shared_ptr<ros::Publisher> rollPub = std::make_shared<ros::Publisher>(n.advertise<std_msgs::Float32>("imu/roll", 1000));
+    ros::Publisher pitchPub = n.advertise<std_msgs::Float32>("imu/pitch", 1000);
+    ros::Publisher yawPub = n.advertise<std_msgs::Float32>("imu/yaw", 1000);
+
+    ros::Rate loopRate(100);
+    can.initialize(loopRate);
+
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_ROLL), rollPub);
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_PITCH), std::make_shared<ros::Publisher>(pitchPub));
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_YAW), std::make_shared<ros::Publisher>(yawPub));
 
     ros::spin();
+
+    //can.sendTargetVelocity(test);
 
     return 0;
 }
