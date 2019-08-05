@@ -158,13 +158,14 @@ if TEST:
             assert state==CaptureState["red"] or state==CaptureState["blue"]
             if poz==None and NO==None:
                 raise ValueError
-            elif NO==None:
-                assert type(poz)==tuple and type(poz[0])==type(poz[1])==int
-                NO=poz[0]+poz[1]*9
-            assert 0<=NO<63
-            for ps in [NO+1,NO-1,NO+9,NO-9]:
-                if 0<=ps<63 and (self.blocks[ps].state==state):
-                    self.blocks[NO].state=state
+            elif poz==None:
+                assert type(NO)==int and 0<NO<63
+                poz=(NO%9,NO//9)
+            NO=poz[0]+poz[1]*9
+            if self.blocks[NO].strong==False:
+                for pz in [(poz[0],poz[1]+1),(poz[0],poz[1]-1),(poz[0]+1,poz[1]),(poz[0]-1,poz[1])]:
+                    if 0<=pz[0]<9 and 0<=pz[1]<7 and self.blocks[pz[0]+pz[1]*9].state==state:
+                        self.blocks[NO].state=state
 
             
         def display(self,screen):
@@ -223,7 +224,7 @@ if TEST:
 
             self.poz=poz
 
-        def movpoz(self,direction,lth,detect=True):
+        def movpoz(self,direction,lth,detect=True,opppoz=None):
             assert type(lth)==int
 
             pozbuf=list(self.poz)
@@ -245,10 +246,11 @@ if TEST:
             elif direction=='E':
                 pozbuf[0]+=lth
 
-            if 0<=pozbuf[0]<9 and 0<=pozbuf[1]<7 and not\
-                    tuple(pozbuf) in [(2,0),(6,0),(0,3),(4,3),(8,3),(2,6),(6,6)]:
+            if not detect:
                 self.poz=tuple(pozbuf)
-            elif not detect:
+
+            if 0<=pozbuf[0]<9 and 0<=pozbuf[1]<7 and not\
+                    tuple(pozbuf) in [(2,0),(6,0),(0,3),(4,3),(8,3),(2,6),(6,6)] and opppoz!=None and tuple(pozbuf)!=opppoz:
                 self.poz=tuple(pozbuf)
             elif RAISE_ERROR_WHEN_HIT:
                 raise ValueError
@@ -295,7 +297,7 @@ if TEST:
                 raise ValueError
             
             self.capture_point={}
-            self.movpoz('F',1)
+            self.movpoz('F',1,False)
             self.capture_point.update({CaptureState["blue"]:self.poz})
             self.movpoz('B',2,False)
             self.capture_point.update({CaptureState["red"]:self.poz})
@@ -335,7 +337,7 @@ if TEST:
 
     def move(direction,lth,team=CaptureState["blue"]):
         time.sleep(MOVE_TIME)
-        robots[team.value-1].movpoz(direction,lth)
+        robots[team.value-1].movpoz(direction,lth,detect=True,opppoz=robots[{CaptureState["blue"]:1,CaptureState["red"]:0}[team]].poz)
 
     def turn(direction,team=CaptureState["blue"]):
         time.sleep(TURN_TIME)
