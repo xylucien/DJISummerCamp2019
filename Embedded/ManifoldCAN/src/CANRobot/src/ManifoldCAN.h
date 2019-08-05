@@ -68,6 +68,7 @@ public:
     void initialize(const ros::Rate &rxUpdateRate);
 
     void addRosPublisher(const CANId &id, std::shared_ptr <ros::Publisher> publisher);
+    void addRosPublisher(const CANId &id, ros::Publisher& publisher);
 
     static CANId newCanId(uint32_t baseId, uint8_t messageId, uint8_t subId);
 
@@ -101,7 +102,7 @@ private:
     std::queue <CANMessage> receivedCanMessages;
     std::mutex rxMessageQueueMutex;
 
-    std::map <CANId, std::shared_ptr<ros::Publisher>, CanIDCompare> publisherList;
+    std::map <uint8_t, std::map<uint8_t, std::shared_ptr<ros::Publisher>>> publisherList;
     std::mutex publisherListMutex;
 
     std::string canInterfaceName;

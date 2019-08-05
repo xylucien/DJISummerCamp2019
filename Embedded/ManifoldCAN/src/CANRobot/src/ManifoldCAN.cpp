@@ -78,8 +78,12 @@ void ManifoldCAN::initialize(const ros::Rate &rxUpdateRate) {
 
 void ManifoldCAN::addRosPublisher(const CANId &id, std::shared_ptr<ros::Publisher> publisher) {
     publisherListMutex.lock();
-    publisherList.emplace(id, publisher);
+    publisherList[id.messageId].emplace(id.subId, publisher);
     publisherListMutex.unlock();
+}
+
+void ManifoldCAN::addRosPublisher(const CANId &id, ros::Publisher &publisher) {
+    addRosPublisher(id, std::make_shared<ros::Publisher>(publisher));
 }
 
 CANId ManifoldCAN::newCanId(uint32_t baseId, uint8_t messageId, uint8_t subId) {
@@ -176,25 +180,26 @@ void ManifoldCAN::rosPubThreadUpdate() {
             rxMessageQueueMutex.unlock();
 
             CANId id = canMsg.id;
-            //std::cout << std::to_string(id.messageId) << ',' << std::to_string(id.subId) << std::endl;
 
             publisherListMutex.lock();
-            auto pub = publisherList.find(id);
+            auto subIdMap = publisherList.find(id.messageId);
+            auto pub = subIdMap->second.find(id.subId);
             publisherListMutex.unlock();
 
-            if(pub != publisherList.end()){
+            if(pub != subIdMap->second.end()){
                 //Found element
                 //Assume everything is float32 for now
                 std_msgs::Float32 msg;
                 msg.data = deserializeFloat((uint8_t*) canMsg.data);
 
                 (pub->second)->publish(msg);
+                //std::cout << (pub->second)->getTopic() << std::to_string(id.baseId >> 8) << ',' << std::to_string(id.messageId) << ',' << std::to_string(id.subId) << "found" << msg.data << std::endl;
             }
 
             free(canMsg.data);
         }
 
-        rosPubThreadRate.sleep();
+        //rosPubThreadRate.sleep();
     }
 }
 
@@ -217,6 +222,6 @@ void ManifoldCAN::rxThreadUpdate() {
         receivedCanMessages.push(newMsg);
         rxMessageQueueMutex.unlock();
 
-        rxThreadRate.sleep();
+        //rxThreadRate.sleep();
     }
 }

@@ -29,13 +29,13 @@ void mecanumInverseKinematics(struct Twist2D *targetVelocity, float ab, float r,
   }
 
   outputWheels->topRight =
-      (targetVelocity->vY - targetVelocity->w - targetVelocity->vX * ab) / r;
+      (targetVelocity->vY - targetVelocity->w * ab - targetVelocity->vX) / r;
   outputWheels->topLeft =
-      (targetVelocity->vY + targetVelocity->w + targetVelocity->vX * ab) / r;
+      (targetVelocity->vY + targetVelocity->w * ab + targetVelocity->vX ) / r;
   outputWheels->backLeft =
-      (targetVelocity->vY + targetVelocity->w - targetVelocity->vX * ab) / r;
+      (targetVelocity->vY + targetVelocity->w * ab - targetVelocity->vX ) / r;
   outputWheels->backRight =
-      (targetVelocity->vY - targetVelocity->w + targetVelocity->vX * ab) / r;
+      (targetVelocity->vY - targetVelocity->w * ab + targetVelocity->vX ) / r;
 }
 
 // TODO Not finished, needs to rotate vx and vy
@@ -46,15 +46,21 @@ void integrateVelocities(struct MecanumWheelValues *newVelocity, float ab,
     return;
   }
 
-  double dt = currentTime - position->lastRanTime;
+  double dt = currentTime - position->lastRanTime * 0.1;
 
   if (dt < 0.0) {
     return;
   }
 
+  position->lastRanTime = currentTime;
+
+  if(newVelocity->topLeft == 0 && newVelocity->topRight == 0 && newVelocity->backLeft == 0 && newVelocity->backRight){
+    return;
+  }
+
   Twist2D velocityVector;
   mecanumKinematics(newVelocity, ab, &velocityVector);
-  rotateTwist2D(-currentYaw, &velocityVector, &velocityVector);
+  //rotateTwist2D(-currentYaw, &velocityVector, &velocityVector);
 
   position->x += velocityVector.vX * dt;
   position->y += velocityVector.vY * dt;
@@ -62,7 +68,6 @@ void integrateVelocities(struct MecanumWheelValues *newVelocity, float ab,
   //Maybe use gyro yaw
   position->yaw += velocityVector.w * dt;
 
-  position->lastRanTime = currentTime;
 }
 
 // Gyro yaw in radians

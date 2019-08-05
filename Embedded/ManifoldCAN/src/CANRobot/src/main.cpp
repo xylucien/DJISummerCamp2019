@@ -38,12 +38,20 @@ int main(int argc, char **argv) {
     ros::Publisher pitchPub = n.advertise<std_msgs::Float32>("imu/pitch", 1000);
     ros::Publisher yawPub = n.advertise<std_msgs::Float32>("imu/yaw", 1000);
 
+    ros::Publisher xPub = n.advertise<std_msgs::Float32>("odom/x", 1000);
+    ros::Publisher yPub = n.advertise<std_msgs::Float32>("odom/y", 1000);
+    ros::Publisher odomYawPub = n.advertise<std_msgs::Float32>("odom/yaw", 1000);
+
     ros::Rate loopRate(100);
     can.initialize(loopRate);
 
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_ROLL), rollPub);
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_PITCH), std::make_shared<ros::Publisher>(pitchPub));
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_YAW), std::make_shared<ros::Publisher>(yawPub));
+
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X), std::make_shared<ros::Publisher>(xPub));
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y), yPub);
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW), odomYawPub);
 
     ros::spin();
 

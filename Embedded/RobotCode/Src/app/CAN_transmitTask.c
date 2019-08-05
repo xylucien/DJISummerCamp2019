@@ -16,9 +16,12 @@
 #include "CANUtil.h"
 #include <stdio.h>
 #include "AHRS_task.h"
+#include "MecanumKinematics.h"
 
 extern CAN_HandleTypeDef hcan2;
 extern QueueHandle_t canTestTransmitQueue;
+
+extern MecanumPosition currentPosition;
 
 extern float AHRSRoll;
 extern float AHRSPitch;
@@ -30,6 +33,10 @@ void canTransmitTaskLoop(void const *argument){
         canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_ROLL, AHRSRoll);
         canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_PITCH, AHRSPitch);
         canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_YAW, AHRSYaw);
+
+        canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X, currentPosition.x);
+        canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y, currentPosition.y);
+        canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW, currentPosition.yaw);
     }
 
     vTaskDelete(NULL);
