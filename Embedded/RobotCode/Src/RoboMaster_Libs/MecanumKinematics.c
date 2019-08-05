@@ -46,7 +46,7 @@ void integrateVelocities(struct MecanumWheelValues *newVelocity, float ab,
     return;
   }
 
-  double dt = currentTime - position->lastRanTime * 0.1;
+  double dt = (currentTime - position->lastRanTime);
 
   if (dt < 0.0) {
     return;
@@ -60,7 +60,7 @@ void integrateVelocities(struct MecanumWheelValues *newVelocity, float ab,
 
   Twist2D velocityVector;
   mecanumKinematics(newVelocity, ab, &velocityVector);
-  //rotateTwist2D(-currentYaw, &velocityVector, &velocityVector);
+  rotateTwist2D(-currentYaw, &velocityVector, &velocityVector);
 
   position->x += velocityVector.vX * dt;
   position->y += velocityVector.vY * dt;

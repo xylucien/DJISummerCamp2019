@@ -19,7 +19,7 @@
   */
 
 #include "INS_Task.h"
-
+#include "AHRS.h"
 #include "main.h"
 
 #include "IST8310driver.h"
@@ -31,25 +31,28 @@
 
 #include "cmsis_os.h"
 
-#define IMUWarnBuzzerOn() buzzer_on(95, 10000) //����������У׼������
 
-#define IMUWarnBuzzerOFF() buzzer_off() //����������У׼�������ر�
+#define IMUWarnBuzzerOn() \
+  buzzer_on(95, 10000)  //����������У׼������
+
+#define IMUWarnBuzzerOFF() \
+  buzzer_off()  //����������У׼�������ر�
 
 //�궨���ʼ��SPI��DMA��ͬʱ����SPIΪ8λ��4��Ƶ
-#define MPU6500_SPI_DMA_Init(txbuf, rxbuf)                                     \
-  {                                                                            \
-    SPI5_DMA_Init((uint32_t)txbuf, (uint32_t)rxbuf, DMA_RX_NUM);               \
-    SPI5->CR2 |= ((uint16_t)0x0003);                                           \
-    SPI5SetSpeedAndDataSize(0x0010, 0x0000);                                   \
+#define MPU6500_SPI_DMA_Init(txbuf, rxbuf)                       \
+  {                                                              \
+    SPI5_DMA_Init((uint32_t)txbuf, (uint32_t)rxbuf, DMA_RX_NUM); \
+    SPI5->CR2 |= ((uint16_t)0x0003);                             \
+    SPI5SetSpeedAndDataSize(0x0010, 0x0000);                     \
   }
 
-#define MPU6500_SPI_DMA_Enable()                                               \
-  SPI5_DMA_Enable(DMA_RX_NUM) // ��ʼһ��SPI��DMA����
+#define MPU6500_SPI_DMA_Enable() \
+  SPI5_DMA_Enable(DMA_RX_NUM)  // ��ʼһ��SPI��DMA����
 //�궨��SPI��DMA�����жϺ����Լ������жϱ�־λ
 #define MPU6500_DMA_IRQHandler DMA2_Stream5_IRQHandler
 #define MPU6500_DMA_Stream DMA2_Stream5
 
-#define IMU_BOARD_INSTALL_SPIN_MATRIX                                          \
+#define IMU_BOARD_INSTALL_SPIN_MATRIX \
   {0.0f, 1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, { 0.0f, 0.0f, 1.0f }
 
 //���ʹ��mpu6500������׼���ⲿ�жϣ�����ʹ������֪ͨ������������
@@ -59,34 +62,37 @@ static TaskHandle_t INSTask_Local_Handler;
 static const uint8_t mpu6500_spi_DMA_txbuf[DMA_RX_NUM] = {MPU_INT_STATUS |
                                                           MPU_SPI_READ_MSB};
 
-static uint8_t mpu6500_spi_rxbuf[DMA_RX_NUM]; //������յ�ԭʼ����
+static uint8_t
+    mpu6500_spi_rxbuf[DMA_RX_NUM];  //������յ�ԭʼ����
 
 //���������ǣ����ٶȼƣ����������ݵ����Զȣ���Ư
 static void IMU_rotation_solve(fp32 gyro[3], fp32 accel[3], fp32 mag[3],
                                mpu6500_real_data_t *mpu6500,
                                ist8310_real_data_t *ist8310);
 
-static mpu6500_real_data_t mpu6500_real_data; //ת���ɹ��ʵ�λ��MPU6500����
+static mpu6500_real_data_t mpu6500_real_data;  //ת���ɹ��ʵ�λ��MPU6500����
 static fp32 gyro_scale_factor[3][3] = {
-    IMU_BOARD_INSTALL_SPIN_MATRIX}; //������У׼���Զ�
+    IMU_BOARD_INSTALL_SPIN_MATRIX};  //������У׼���Զ�
 static fp32 gyro_cali_offset[3] = {0.0f, 0.0f, 0.0f};
-static fp32 gyro_offset[3] = {0.0f, 0.0f, 0.0f}; //��������Ư
+static fp32 gyro_offset[3] = {0.0f, 0.0f, 0.0f};  //��������Ư
 static fp32 accel_scale_factor[3][3] = {
-    IMU_BOARD_INSTALL_SPIN_MATRIX};               //���ٶ�У׼���Զ�
-static fp32 accel_offset[3] = {0.0f, 0.0f, 0.0f}; //���ٶ���Ư
+    IMU_BOARD_INSTALL_SPIN_MATRIX};  //���ٶ�У׼���Զ�
+static fp32 accel_offset[3] = {0.0f, 0.0f, 0.0f};  //���ٶ���Ư
 
-static ist8310_real_data_t ist8310_real_data; //ת���ɹ��ʵ�λ��IST8310����
-static fp32 mag_scale_factor[3][3] = {{1.0f, 0.0f, 0.0f},
-                                      {0.0f, 1.0f, 0.0f},
-                                      {0.0f, 0.0f, 1.0f}}; //������У׼���Զ�
-static fp32 mag_offset[3] = {0.0f, 0.0f, 0.0f};            //��������Ư
+static ist8310_real_data_t ist8310_real_data;  //ת���ɹ��ʵ�λ��IST8310����
+static fp32 mag_scale_factor[3][3] = {
+    {1.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f},
+    {0.0f, 0.0f, 1.0f}};  //������У׼���Զ�
+static fp32 mag_offset[3] = {0.0f, 0.0f, 0.0f};  //��������Ư
 
 fp32 INS_gyro[3] = {0.0f, 0.0f, 0.0f};
 fp32 INS_accel[3] = {0.0f, 0.0f, 0.0f};
 fp32 INS_mag[3] = {0.0f, 0.0f, 0.0f};
+fp32 INS_quat[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+fp32 INS_angle[3];
 
 void INSTask(void const *pvParameters) {
-
   //��ȡ��ǰ���������������������֪ͨ
   INSTask_Local_Handler = xTaskGetHandle(pcTaskGetName(NULL));
 
@@ -121,6 +127,21 @@ void INSTask(void const *pvParameters) {
     IMU_rotation_solve(INS_gyro, INS_accel, INS_mag, &mpu6500_real_data,
                        &ist8310_real_data);
 
+    //�ж��Ƿ���һ�ν��룬������һ������ʼ����Ԫ����֮��������Ԫ�������Ƕȵ�λrad
+    static uint8_t updata_count = 0;
+    if (mpu6500_real_data.status & 1 << MPU_DATA_READY_BIT) {
+      if (updata_count == 0) {
+        //��ʼ����Ԫ��
+        AHRS_init(INS_quat, INS_accel, INS_mag);
+        get_angle(INS_quat, INS_angle, INS_angle + 1, INS_angle + 2);
+
+        updata_count++;
+      } else {
+        //������Ԫ��
+        AHRS_update(INS_quat, 0.001f, INS_gyro, INS_accel, INS_mag);
+        get_angle(INS_quat, INS_angle, INS_angle + 1, INS_angle + 2);
+      }  // update count if   code end
+    }    // mpu6500 status  if end
     // while(1) end
   }
   // task function end
@@ -129,7 +150,8 @@ void INSTask(void const *pvParameters) {
 /**
  * @brief          У׼������
  * @author         RM
- * @param[in]      �����ǵı������ӣ�1.0fΪĬ��ֵ�����޸�
+ * @param[in]
+ * �����ǵı������ӣ�1.0fΪĬ��ֵ�����޸�
  * @param[in]      �����ǵ���Ư���ɼ������ǵľ�ֹ�������Ϊoffset
  * @param[in]      �����ǵ�ʱ�̣�ÿ����gyro_offset���û��1,
  * @retval         ���ؿ�
@@ -152,9 +174,11 @@ void INS_cali_gyro(fp32 cali_scale[3], fp32 cali_offset[3],
 }
 
 /**
- * @brief          У׼���������ã�����flash���������ط�����У׼ֵ
+ * @brief
+ * У׼���������ã�����flash���������ط�����У׼ֵ
  * @author         RM
- * @param[in]      �����ǵı������ӣ�1.0fΪĬ��ֵ�����޸�
+ * @param[in]
+ * �����ǵı������ӣ�1.0fΪĬ��ֵ�����޸�
  * @param[in]      �����ǵ���Ư
  * @retval         ���ؿ�
  */
@@ -189,7 +213,6 @@ static void IMU_rotation_solve(fp32 gyro[3], fp32 accel[3], fp32 mag[3],
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
   if (GPIO_Pin == GPIO_PIN_3) {
-
   } else if (GPIO_Pin == GPIO_PIN_8) {
     mpu6500_SPI_NS_L();
     MPU6500_SPI_DMA_Enable();

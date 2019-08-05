@@ -29,6 +29,8 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "std_msgs/Float32.h"
+#include "nav_msgs/Odometry.h"
+#include <tf/transform_broadcaster.h>
 
 struct FloatCANMessage {
     FloatCANMessage() {
@@ -55,15 +57,9 @@ struct BCM_Msg {
     struct can_frame frame[1];
 };
 
-struct CanIDCompare {
-    bool operator() (const CANId& lhs, const CANId& rhs) const {
-        return lhs.baseId + lhs.messageId + lhs.subId < rhs.baseId + rhs.messageId + rhs.subId;
-    }
-};
-
 class ManifoldCAN {
 public:
-    ManifoldCAN(const std::string &canInterface, double rate);
+    ManifoldCAN(const std::string &canInterface, double rate, tf::TransformBroadcaster &transformBroadcaster);
 
     void initialize(const ros::Rate &rxUpdateRate);
 
@@ -94,6 +90,7 @@ private:
     ros::Rate rxThreadRate;
 
     void rosPubThreadUpdate();
+    void updateOdom();
 
     bool isRosPubThreadInitialized = false;
     std::shared_ptr <std::thread> rosThread;
@@ -104,6 +101,15 @@ private:
 
     std::map <uint8_t, std::map<uint8_t, std::shared_ptr<ros::Publisher>>> publisherList;
     std::mutex publisherListMutex;
+
+    geometry_msgs::TransformStamped tfOdom;
+    bool updatedX = false;
+    bool updatedY = false;
+    bool updatedW = false;
+    float yaw = 0;
+    std::mutex odomMutex;
+
+    tf::TransformBroadcaster transformBroadcaster;
 
     std::string canInterfaceName;
     int canTxSocket;

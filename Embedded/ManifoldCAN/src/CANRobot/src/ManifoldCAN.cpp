@@ -13,7 +13,7 @@
 
 using namespace std::chrono_literals;
 
-ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate) : rxThreadRate(rate), rosPubThreadRate(rate) {
+ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate, tf::TransformBroadcaster &transformBroadcaster) : rxThreadRate(rate), rosPubThreadRate(rate) {
     this->canInterfaceName = canInterface;
 
     canTxSocket = socket(PF_CAN, SOCK_DGRAM, CAN_BCM);
@@ -60,6 +60,8 @@ ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate) : rxThrea
     if(rxSocketBind < 0){
         throw std::runtime_error("Unable to bind CAN RX socket errno: " + std::to_string(errno));
     }
+
+    this->transformBroadcaster = transformBroadcaster;
 }
 
 void ManifoldCAN::initialize(const ros::Rate &rxUpdateRate) {
@@ -186,6 +188,31 @@ void ManifoldCAN::rosPubThreadUpdate() {
             auto pub = subIdMap->second.find(id.subId);
             publisherListMutex.unlock();
 
+            if(id.messageId == CANMESSAGE_ID_AHRS and id.subId == CANMESSAGE_SUBID_AHRS_YAW){
+                yaw = deserializeFloat((uint8_t*) canMsg.data);
+                updatedW = true;
+            }
+
+            if(id.messageId == CANMESSAGE_ID_ODOMETRY){
+                switch(id.subId){
+                    case CANMESSAGE_SUBID_ODOM_X: {
+                        tfOdom.transform.translation.x = deserializeFloat((uint8_t*) canMsg.data);
+                        updatedX = true;
+                        break;
+                    }
+
+                    case CANMESSAGE_SUBID_ODOM_Y: {
+                        tfOdom.transform.translation.y = deserializeFloat((uint8_t*) canMsg.data);
+                        updatedY = true;
+                        break;
+                    }
+                }
+            }
+
+            if(id.messageId == CANMESSAGE_ID_AHRS and id.subId == CANMESSAGE_SUBID_AHRS_YAW){
+                yaw = deserializeFloat((uint8_t*) canMsg.data);
+            }
+
             if(pub != subIdMap->second.end()){
                 //Found element
                 //Assume everything is float32 for now
@@ -199,8 +226,32 @@ void ManifoldCAN::rosPubThreadUpdate() {
             free(canMsg.data);
         }
 
+        updateOdom();
+
         //rosPubThreadRate.sleep();
     }
+}
+
+void ManifoldCAN::updateOdom() {
+    odomMutex.lock();
+    if(updatedX and updatedY and updatedW){
+        tfOdom.header.frame_id = "odom";
+        tfOdom.child_frame_id = "base_link";
+
+        geometry_msgs::Quaternion q = tf::createQuaternionMsgFromYaw(yaw);
+
+        tfOdom.header.stamp = ros::Time::now();
+
+        tfOdom.transform.translation.z = 0.0;
+        tfOdom.transform.rotation = q;
+
+        updatedX = false;
+        updatedY = false;
+        updatedW = false;
+
+        transformBroadcaster.sendTransform(tfOdom);
+    }
+    odomMutex.unlock();
 }
 
 //TODO RX

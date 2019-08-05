@@ -5,6 +5,7 @@
 extern motor_measure_t motor_chassis[7];
 
 double currentTime = 0;
+extern float AHRSYaw;
 
 float wheelCircumference;
 
@@ -17,7 +18,7 @@ void initChassisOdom(){
 }
 
 float convertRPMToMSChassis(float rpm){
-    return (rpm / 60.0f) * wheelCircumference;
+    return ((rpm) / 36.0f / 60.0f) * wheelCircumference;
 }
 
 void chassisOdomUpdate(void const *argument){
