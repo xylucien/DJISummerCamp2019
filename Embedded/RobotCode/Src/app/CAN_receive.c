@@ -136,18 +136,18 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
         switch(subMessageId){
           case CANMESSAGE_SUBID_BUZZER_DUTYCYCLE: {
             buzzer_on(setPsc, setPwm);
-            setPsc = deserializeFloat(rx_data);
+            //setPsc = deserializeFloat(rx_data);
             break;
           }
 
           case CANMESSAGE_SUBID_BUZZER_FREQUENCY: {
             setPwm = deserializeFloat(rx_data);
-            buzzer_on(setPsc, setPwm);
+            //buzzer_on(setPsc, setPwm);
             break;
           }
 
           case CANMESSAGE_SUBID_BUZZER_OFF:{
-            buzzer_off();
+            //buzzer_off();
             break;
           }
         }

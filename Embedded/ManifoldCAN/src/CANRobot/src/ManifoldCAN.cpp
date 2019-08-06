@@ -196,21 +196,22 @@ void ManifoldCAN::rosPubThreadUpdate() {
             if(id.messageId == CANMESSAGE_ID_ODOMETRY){
                 switch(id.subId){
                     case CANMESSAGE_SUBID_ODOM_X: {
-                        tfOdom.transform.translation.x = deserializeFloat((uint8_t*) canMsg.data);
+                        tfOdom.transform.translation.y = -deserializeFloat((uint8_t*) canMsg.data);
                         updatedX = true;
                         break;
                     }
 
                     case CANMESSAGE_SUBID_ODOM_Y: {
-                        tfOdom.transform.translation.y = deserializeFloat((uint8_t*) canMsg.data);
+                        tfOdom.transform.translation.x = deserializeFloat((uint8_t*) canMsg.data);
                         updatedY = true;
                         break;
                     }
-                }
-            }
 
-            if(id.messageId == CANMESSAGE_ID_AHRS and id.subId == CANMESSAGE_SUBID_AHRS_YAW){
-                yaw = deserializeFloat((uint8_t*) canMsg.data);
+                    case CANMESSAGE_SUBID_AHRS_YAW: {
+                        yaw = deserializeFloat((uint8_t*) canMsg.data);
+                        updatedW = true;
+                    }
+                }
             }
 
             if(pub != subIdMap->second.end()){

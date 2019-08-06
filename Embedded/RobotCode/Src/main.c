@@ -30,7 +30,6 @@
 /* USER CODE BEGIN Includes */
 #include "calibrate_task.h"
 #include "INS_task.h"
-#include "AHRS_task.h"
 #include "chassis_task.h"
 #include "CAN_transmitTask.h"
 #include "chassis_odom_task.h"
@@ -103,7 +102,6 @@ osThreadId cali_taskHandle;
 osThreadId detect_taskHandle;
 osThreadId gimbal_taskHandle;
 osThreadId ins_taskHandle;
-osThreadId AHRS_taskHandle;
 
 osThreadId referee_taskHandle;
 osThreadId chassis_taskHandle;
@@ -263,8 +261,6 @@ int main(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
 
-  int ret = 0;
-
   cali_param_init();
   osThreadDef(cali_task, calibrate_task, osPriorityHigh, 1, 256);
   cali_taskHandle = osThreadCreate(osThread(cali_task), NULL);
@@ -272,22 +268,18 @@ int main(void) {
   osThreadDef(ins_task, INSTask, osPriorityHigh + 2, 1, 256);
   ins_taskHandle = osThreadCreate(osThread(ins_task), NULL);
 
-  //AHRSTaskInit();
-  //osThreadDef(ahrs_task, AHRSTaskUpdate, osPriorityHigh + 1, 1, 256);
-  //AHRS_taskHandle = osThreadCreate(osThread(ahrs_task), NULL);
+  osThreadDef(refereeTask, referee_task, osPriorityHigh + 3, 1, 256);
+  referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
 
-  //osThreadDef(refereeTask, referee_task, osPriorityLow, 1, 256);
-  //referee_taskHandle = osThreadCreate(osThread(refereeTask), NULL);
+	osThreadDef(chassis, chassis_task, osPriorityNormal + 2, 1, 256);
+  chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
 
-	//osThreadDef(chassis, chassis_task, osPriorityNormal + 5, 1, 256);
-  //chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
+  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh, 1, 256);
+  canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
 
-  //osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh + 3, 1, 256);
-  //canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
-
-  //initChassisOdom();
-  //osThreadDef(chassisOdom, chassisOdomUpdate, osPriorityHigh + 4, 1, 256);
-  //chassisOdom_taskHandle = osThreadCreate(osThread(chassisOdom), NULL);
+  initChassisOdom();
+  osThreadDef(chassisOdom, chassisOdomUpdate, osPriorityHigh + 1, 1, 256);
+  chassisOdom_taskHandle = osThreadCreate(osThread(chassisOdom), NULL);
 
   /* USER CODE END RTOS_THREADS */
 

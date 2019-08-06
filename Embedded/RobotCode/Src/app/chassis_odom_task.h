@@ -7,6 +7,9 @@
 #include "CAN_receive.h"
 #include "MecanumKinematics.h"
 
+//
+#define ENCODERCODES_TO_MS 8.09699811693132299769491208890938e-7f
+
 extern void initChassisOdom(void);
 extern void chassisOdomUpdate(void const *argument);
 

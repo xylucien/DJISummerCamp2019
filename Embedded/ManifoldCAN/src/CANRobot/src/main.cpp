@@ -47,8 +47,8 @@ int main(int argc, char **argv) {
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_PITCH), std::make_shared<ros::Publisher>(pitchPub));
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_YAW), std::make_shared<ros::Publisher>(yawPub));
 
-    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X), std::make_shared<ros::Publisher>(xPub));
-    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y), yPub);
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y), std::make_shared<ros::Publisher>(xPub));
+    can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X), yPub);
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW), odomYawPub);
 
     ros::Subscriber sub = n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
