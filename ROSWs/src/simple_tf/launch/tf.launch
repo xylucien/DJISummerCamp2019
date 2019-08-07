@@ -1,0 +1,10 @@
+<launch>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simple_tf)/launch/tf.rviz" />
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map2odom"
+          args="1.0 -1.0 0.0  0.0  0.0 0.0 map odom" />
+
+    <node pkg="simple_tf" type="tf_test" name="tf_test" output="screen" />
+
+</launch>

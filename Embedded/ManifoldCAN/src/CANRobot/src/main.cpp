@@ -26,9 +26,10 @@ int main(int argc, char **argv) {
     ros::Publisher pitchPub = n.advertise<std_msgs::Float32>("imu/pitch", 1000);
     ros::Publisher yawPub = n.advertise<std_msgs::Float32>("imu/yaw", 1000);
 
-    ros::Publisher xPub = n.advertise<std_msgs::Float32>("odom/x", 1000);
-    ros::Publisher yPub = n.advertise<std_msgs::Float32>("odom/y", 1000);
-    ros::Publisher odomYawPub = n.advertise<std_msgs::Float32>("odom/yaw", 1000);
+    ros::Publisher xPub = n.advertise<std_msgs::Float32>("odomRaw/x", 1000);
+    ros::Publisher yPub = n.advertise<std_msgs::Float32>("odomRaw/y", 1000);
+    ros::Publisher odomYawPub = n.advertise<std_msgs::Float32>("odomRaw/yaw", 1000);
+    ros::Publisher chassis_odom_pub = n.advertise<nav_msgs::Odometry>("odom",1000);
 
     Twist2D zeroTwist;
     zeroTwist.vX = 0.0;
@@ -37,7 +38,7 @@ int main(int argc, char **argv) {
 
     tf::TransformBroadcaster tf_broadcaster;
 
-    ManifoldCAN can("can0", 1000.0, tf_broadcaster);
+    ManifoldCAN can("can0", 1000.0, tf_broadcaster, std::make_shared<ros::Publisher>(chassis_odom_pub));
     can.sendTargetVelocity(zeroTwist);
 
     ros::Rate loopRate(100);

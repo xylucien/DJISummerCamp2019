@@ -35,8 +35,11 @@
 #include "MathUtils.h"
 
 #include "bsp_buzzer.h"
+#include "mecanisimCANRXTask.h"
 
 extern CAN_HandleTypeDef hcan1;
+extern CAN_HandleTypeDef hcan2;
+
 extern TIM_HandleTypeDef htim2;
 
 extern QueueHandle_t canTargetVelocityQueue;
@@ -59,7 +62,8 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
     (ptr)->total_ecd += (ptr)->delta_ecd;                                      \
   }
 
-motor_measure_t motor_chassis[7];
+motor_measure_t motor_chassis[8];
+motor_measure_t motor_mecanisim[8];
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
 
@@ -69,6 +73,17 @@ CAN_RxHeaderTypeDef rx_header;
 
 uint16_t setPsc;
 uint16_t setPwm;
+
+extern uint16_t motor8RX;
+extern uint16_t motor9RX;
+extern uint16_t motor10RX;
+extern uint16_t motor11RX;
+extern uint16_t motor12RX;
+extern uint16_t motor13RX;
+extern uint16_t motor14RX;
+extern uint16_t motor15RX;
+
+extern float testSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];
@@ -85,6 +100,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
     switch (canMessageId) {
       case CANMESSAGE_ID_TARGET_VEL: {
+
         switch (subMessageId) {
           case CANMESSAGE_SUBID_TARGET_VX: {
             float vX = deserializeFloat(rx_data);
@@ -154,10 +170,84 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
         break;
       }
+
+      case CANMESSAGE_ID_MECANISIM: {
+        switch(subMessageId){
+          case CANMESSAGE_SUBID_RIGHT_BALL_POSITION: {
+            testSetPoint = deserializeFloat(rx_data);
+            break;
+          }
+        }
+        break;
+      }
     }
   }
 
   switch (rx_header.StdId) {
+    case 0x800:{
+			break;
+			uint32_t send_mail_box;
+      CAN_TxHeaderTypeDef txMessageHeader;
+      txMessageHeader.StdId = CAN_CHASSIS_ALL_ID;
+      txMessageHeader.IDE = CAN_ID_STD;
+      txMessageHeader.RTR = CAN_RTR_DATA;
+      txMessageHeader.DLC = 0x08;
+
+      //RX 8-11 motors
+      static uint8_t txMessage[8];
+      //8
+      txMessage[0] = rx_data[1];
+      txMessage[1] = rx_data[0];
+      //9
+      txMessage[2] = rx_data[3];
+      txMessage[3] = rx_data[2];
+      //10
+      txMessage[4] = rx_data[5];
+      txMessage[5] = rx_data[4];
+      //11
+      txMessage[6] = rx_data[7];
+      txMessage[7] = rx_data[6];
+
+      HAL_CAN_AddTxMessage(&CHASSIS_CAN, &txMessageHeader, txMessage,
+                       &send_mail_box);
+
+      break;
+    }
+
+    case 0x801:{
+			break;
+			uint32_t send_mail_box;
+			
+      //RX 12-15 motors
+      CAN_TxHeaderTypeDef txMessageHeader;
+      txMessageHeader.StdId = CAN_GIMBAL_ALL_ID;
+      txMessageHeader.IDE = CAN_ID_STD;
+      txMessageHeader.RTR = CAN_RTR_DATA;
+      txMessageHeader.DLC = 0x08;
+
+      //RX 8-11 motors
+      static uint8_t txMessage[8];
+      //12
+      txMessage[0] = rx_data[1];
+      txMessage[1] = rx_data[0];
+      //13
+      txMessage[2] = rx_data[3];
+      txMessage[3] = rx_data[2];
+      //14
+      txMessage[4] = rx_data[5];
+      txMessage[5] = rx_data[4];
+      //15
+      txMessage[6] = rx_data[7];
+      txMessage[7] = rx_data[6];
+
+      HAL_CAN_AddTxMessage(&CHASSIS_CAN, &txMessageHeader, txMessage,
+                       &send_mail_box);
+                       
+      break;
+    }
+
+
+
     case CAN_3508_M1_ID:
     case CAN_3508_M2_ID:
     case CAN_3508_M3_ID:
@@ -166,12 +256,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     case CAN_PIT_MOTOR_ID:
     case CAN_TRIGGER_MOTOR_ID: {
       static uint8_t i = 0;
-      //�������ID��
+        //�������ID��
       i = rx_header.StdId - CAN_3508_M1_ID;
-      //����������ݺ꺯��
-      get_motor_measure(&motor_chassis[i], rx_data);
-      //��¼ʱ��
-      DetectHook(ChassisMotor1TOE + i);
+      if(hcan == &hcan1){ 
+        //����������ݺ꺯��
+        get_motor_measure(&motor_chassis[i], rx_data);
+        //��¼ʱ��
+        DetectHook(ChassisMotor1TOE + i);
+      } else if(hcan == &hcan2) {
+        get_motor_measure(&motor_mecanisim[i], rx_data);
+      }
+
       break;
     }
 
@@ -304,10 +399,13 @@ void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
 
   chassis_can_send_data[0] = motor1 >> 8;
   chassis_can_send_data[1] = motor1;
+
   chassis_can_send_data[2] = motor2 >> 8;
   chassis_can_send_data[3] = motor2;
+
   chassis_can_send_data[4] = motor3 >> 8;
   chassis_can_send_data[5] = motor3;
+
   chassis_can_send_data[6] = motor4 >> 8;
   chassis_can_send_data[7] = motor4;
 

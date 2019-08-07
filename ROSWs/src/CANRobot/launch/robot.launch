@@ -1,0 +1,5 @@
+<launch>
+    <node name="canrobot" pkg="can-robot" type="can-robot_node" args="--test" respawn="true" output="screen"/>
+    <include file="$(find sc_localization)/launch/sc_localization.launch"/>
+    <include file="$(find simple_planner)/launch/planner.launch"/>
+</launch>
