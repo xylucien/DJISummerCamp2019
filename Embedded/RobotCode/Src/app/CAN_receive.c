@@ -83,7 +83,8 @@ extern uint16_t motor13RX;
 extern uint16_t motor14RX;
 extern uint16_t motor15RX;
 
-extern float testSetPoint;
+extern float rightSetPoint;
+extern float leftSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];
@@ -174,7 +175,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       case CANMESSAGE_ID_MECANISIM: {
         switch(subMessageId){
           case CANMESSAGE_SUBID_RIGHT_BALL_POSITION: {
-            testSetPoint = deserializeFloat(rx_data);
+            rightSetPoint = deserializeFloat(rx_data);
+            break;
+          }
+
+          case CANMESSAGE_SUBID_LEFT_BALL_POSITION: {
+            leftSetPoint = deserializeFloat(rx_data);
             break;
           }
         }

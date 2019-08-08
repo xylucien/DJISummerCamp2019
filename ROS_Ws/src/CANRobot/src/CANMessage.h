@@ -1,6 +1,11 @@
 #ifndef CANMESSAGE_H
 #define CANMESSAGE_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 
 #define CANMESSAGE_MAX_SIZE 16
@@ -41,9 +46,25 @@
 #define CANMESSAGE_SUBID_RIGHT_BALL_POSITION 0
 #define CANMESSAGE_SUBID_LEFT_BALL_POSITION 1
 
-typedef struct CANMessage {
+//No fancy IDs here
+typedef struct RawCANMessage {
+    uint32_t id;
+    void* data;
+} RawCANMessage;
+
+typedef struct CANId {
+    uint32_t baseId;
     uint8_t messageId;
+    uint8_t subId;
+} CANId;
+
+typedef struct CANMessage {
+    CANId id;
     void* data;
 } CANMessage;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
