@@ -27,6 +27,7 @@ void initMecanisimTask() {
     initializePositionPid(&testData);   
 }
 
+extern bool new8_11data;
 extern motor_measure_t motor_mecanisim[8];
 extern int16_t motor8Set;
 float testSetPoint;
@@ -34,6 +35,7 @@ float testSetPoint;
 void mecanisimTaskUpdate(void *arguments){
     for(;;){
         motor8Set = calculatePositionPid(&testData, motor_mecanisim[0].speed_rpm, motor_mecanisim[0].total_ecd, testSetPoint);
-        vTaskDelay(1);
+        new8_11data = true;
+        vTaskDelay(20);
     }
 }

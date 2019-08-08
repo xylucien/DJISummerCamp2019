@@ -146,7 +146,7 @@ class LocalPlanner{
   void FollowTraj(const geometry_msgs::PoseStamped& robot_pose,
                   const nav_msgs::Path& traj,
                   geometry_msgs::Twist& cmd_vel){
-    /*
+    
     double diff_yaw = GetYawFromOrientation(traj.poses[0].pose.orientation)
         - GetYawFromOrientation(robot_pose.pose.orientation);
 
@@ -172,8 +172,8 @@ class LocalPlanner{
     if(std::abs(diff_yaw) > max_angle_diff_){
       cmd_vel.linear.x = 0;
     }
-    */
-
+    
+    /* 
     //Test implementation 0.115
 
     geometry_msgs::PoseStamped global_robot_pose;
@@ -211,6 +211,7 @@ class LocalPlanner{
     cmd_vel.angular.z = 0;
     cmd_vel.linear.x = xMag * p_coeff_;
     cmd_vel.linear.y = yMag * p_coeff_;
+    */
 
   }
 

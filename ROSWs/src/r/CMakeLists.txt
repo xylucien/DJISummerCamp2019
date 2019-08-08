@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   nav_msgs
   tf
+  apriltag
 )
 
 

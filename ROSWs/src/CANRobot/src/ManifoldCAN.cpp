@@ -112,6 +112,7 @@ int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     msg.msg_head.ival2.tv_usec = 100000;
     msg.frame[0].can_dlc = 8;
 
+    memset(msg.frame[0].data, 0, sizeof(msg.frame[0].data));
     serializeFloat(message.data, msg.frame[0].data);
     //memset(msg.frame[0].data + 4, 0, 4);
     //memset(msg.frame[0].data, 0, sizeof(msg.frame));
