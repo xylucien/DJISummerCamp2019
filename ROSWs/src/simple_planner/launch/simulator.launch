@@ -2,9 +2,8 @@
   <param name="/use_sim_time" value="true"/>
   <arg name="map" value="summer_camp"/>
 
-  <!-- Run the map server -->
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find simple_planner)/simulator/$(arg map).yaml" respawn="false" />
-
+      <!-- Run the map server -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find simple_planner)/simulator/$(arg map).yaml" respawn="false" />
   <!-- Run the Stage Simulator -->
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simple_planner)/simulator/$(arg map).world" respawn="false" >
     <remap from="base_scan" to="scan"/> 
@@ -15,7 +14,7 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simple_planner)/rviz/$(arg map).rviz" />
 
   <node pkg="tf2_ros" type="static_transform_publisher" name="map2odom"
-        args="1.0 -1.0 0.0  0.0  0.0 0.0 map odom" />
+        args="1.050 1.050 0.0  1.57  0.0 0.0 map odom" />
 
 </launch>
  
