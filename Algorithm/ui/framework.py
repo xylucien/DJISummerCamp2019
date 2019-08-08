@@ -18,7 +18,7 @@ TURN_TIME=0
 CAPTURE_TIME=0
 PUT_TIME=0
 
-FILE_ROUTE="D:\\mydata\\pics\\RoboMaster\\"
+FILE_ROUTE="uiPic\\"
 
 
 pygame.init()
@@ -32,7 +32,7 @@ def pause(*args):
 while True:
     if TEST:
         def ImageLoad(filename):
-            global FILE_ROUTE
+            global FILE_ROUTE 
             try:
                 PIC=pygame.image.load(FILE_ROUTE+filename+".jpg").convert_alpha()
             except Exception:
