@@ -13,7 +13,7 @@
 
 using namespace std::chrono_literals;
 
-ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate, tf::TransformBroadcaster &transformBroadcaster) : rxThreadRate(rate), rosPubThreadRate(rate) {
+ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate, tf::TransformBroadcaster &transformBroadcaster, std::shared_ptr<ros::Publisher> odomPublish) : rxThreadRate(rate), rosPubThreadRate(rate) {
     this->canInterfaceName = canInterface;
 
     canTxSocket = socket(PF_CAN, SOCK_DGRAM, CAN_BCM);
@@ -62,6 +62,7 @@ ManifoldCAN::ManifoldCAN(const std::string &canInterface, double rate, tf::Trans
     }
 
     this->transformBroadcaster = transformBroadcaster;
+    this->odomPublish = odomPublish;
 }
 
 void ManifoldCAN::initialize(const ros::Rate &rxUpdateRate) {
@@ -100,6 +101,7 @@ CANId ManifoldCAN::newCanId(uint32_t baseId, uint8_t messageId, uint8_t subId) {
 int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     BCM_Msg msg;
     msg.msg_head.opcode  = TX_SETUP;
+    //std::cout << std::to_string(message.data) << " " << std::to_string(message.id) << " " << std::to_string(message.subid) << std::endl;
     msg.msg_head.can_id  = serializeId(newCanId(0x600, message.id, message.subid));
     msg.msg_head.flags   = SETTIMER|STARTTIMER|TX_CP_CAN_ID;
     msg.msg_head.nframes = 1;
@@ -108,9 +110,11 @@ int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     msg.msg_head.ival1.tv_usec = 0;
     msg.msg_head.ival2.tv_sec = 0;
     msg.msg_head.ival2.tv_usec = 100000;
-    msg.frame[0].can_dlc   = 8;
+    msg.frame[0].can_dlc = 8;
 
     serializeFloat(message.data, msg.frame[0].data);
+    //memset(msg.frame[0].data + 4, 0, 4);
+    //memset(msg.frame[0].data, 0, sizeof(msg.frame));
 
     return write(canTxSocket, &msg, sizeof(struct BCM_Msg));
 }
@@ -196,13 +200,13 @@ void ManifoldCAN::rosPubThreadUpdate() {
             if(id.messageId == CANMESSAGE_ID_ODOMETRY){
                 switch(id.subId){
                     case CANMESSAGE_SUBID_ODOM_X: {
-                        tfOdom.transform.translation.y = -deserializeFloat((uint8_t*) canMsg.data);
+                        tfOdom.transform.translation.x = deserializeFloat((uint8_t*) canMsg.data);
                         updatedX = true;
                         break;
                     }
 
                     case CANMESSAGE_SUBID_ODOM_Y: {
-                        tfOdom.transform.translation.x = deserializeFloat((uint8_t*) canMsg.data);
+                        tfOdom.transform.translation.y = deserializeFloat((uint8_t*) canMsg.data);
                         updatedY = true;
                         break;
                     }
@@ -249,6 +253,22 @@ void ManifoldCAN::updateOdom() {
         updatedX = false;
         updatedY = false;
         updatedW = false;
+
+        odom.header.frame_id = "odom";
+        odom.child_frame_id = "base_link";
+
+        odom.header.stamp = ros::Time::now();
+        odom.pose.pose.position.x = tfOdom.transform.translation.x;
+        odom.pose.pose.position.y = tfOdom.transform.translation.y;
+        odom.pose.pose.position.z = 0.0;
+
+        odom.pose.pose.orientation = q;
+
+        odom.twist.twist.linear.x = 0;
+        odom.twist.twist.linear.y = 0;
+        odom.twist.twist.angular.z = 0;
+
+        odomPublish->publish(odom);
 
         transformBroadcaster.sendTransform(tfOdom);
     }

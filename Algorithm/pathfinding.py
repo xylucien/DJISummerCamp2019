@@ -6,7 +6,7 @@ import queue
 Mymap = [[0 for i in range(9)] for i in range(7)]
 step_limit = 15
 time_limit = 40
-action = {'n':1, 'e':1, 's':1, 'w':1, 'stay!': 1, 'turn&put': 10}
+action = {'n':1, 'e':1, 's':1, 'w':1, 'stay!': 1, 'turn&put': 6}
 search_queue = queue.PriorityQueue() 
 
 best_path = []
@@ -53,22 +53,28 @@ def check_sp(r,c):
 	return False if (a==-1 and b==-1) else True
 
 def check_put(r, c):
-	return check_sp(r-1, c) or check_sp(r+1, c) or check_sp(r, c-1) or check_sp(r, c+1)
+	if r == 0:
+		return c == 1 or c == 5
+	if r == 4:
+		return c == 8
+	if r == 2:
+		return c == 0 or c == 4
+	if r == 6:
+		return c == 3 or c == 7
+	return False	
 
 def check_oppo(r,c):
-	if r == oppoR and c == oppoC:
-		return True
-	return False
+	return (r == oppoR and c == oppoC)
 
 def get_near_sp(r,c):
-	c, d = check_sp_coor(r-1, c)
-	if c == -1:
-		check_sp_coor(r+1, c)
-	if c == -1:
-		check_sp_coor(r, c-1)
-	if c == -1:
-		check_sp_coor(r-1, c)
-	return Mymap[c][d]
+	sp_x, sp_y = check_sp_coor(r-1, c)
+	if sp_x == -1:
+		sp_x, sp_y = check_sp_coor(r+1, c)
+	if sp_x == -1:
+		sp_x, sp_y = check_sp_coor(r, c-1)
+	if sp_x == -1:
+		sp_x, sp_y = check_sp_coor(r, c+1)
+	return Mymap[sp_x][sp_y], sp_x, sp_y
 
 def near_secured(r,c):
 	if r > 0:
@@ -93,15 +99,53 @@ def near_secured(r,c):
 			return True			
 	return False
 
+def check_virtual_spinfo(spInfo, r, c):
+	if r == 0:
+		if c == 2:
+			return spInfo&1, 1
+		elif c == 6:
+			return (spInfo>>1)&1, 2
+	if r == 3:
+		if c == 0:
+			return (spInfo>>2)&1, 4
+		elif c == 4:
+			return (spInfo>>3)&1, 8
+		elif c == 8:	
+			return (spInfo>>4)&1, 16
+	if r == 6:
+		if c == 2:
+			return (spInfo>>5)&1, 32
+		elif c == 6:
+			return (spInfo>>6)&1, 64
+	return -1, -1
+
+def check_virtual_pathinfo(state, r, c):
+	global initR, initC
+	r_vir, c_vir = initR, initC
+	for char_ in state:
+		if char_ == 'n':
+			r_vir-=1
+		if char_ == 's':
+			r_vir+=1
+		if char_ == 'e':
+			c_vir+=1
+		if char_ == 'w':
+			c_vir-=1		
+		if char_ == '!':
+			if r == r_vir and c == c_vir:
+				return False
+	return True
+
 def search():
 	global pcount, flag, max_point, best_path
-	
-	if pcount >= 1000000:
+	if pcount%100000 == 0:
+		print(str(int(pcount/100000)) + r'% finished')
+	if pcount >= 10000000:
 		flag = True
 		return
 	
-	(pts, (state, tleft, r, c, step, connected)) = search_queue.get()
-	
+	(pts, (state, tleft, r, c, step, connected), spInfo) = search_queue.get()
+	connected = connected or near_secured(r,c)
 	last_step = state[-1:]
 	stayed = (not (last_step == 's' or last_step == 'w' or last_step == 'e' or last_step == 'n'))
 	if check_sp(r,c) or check_oppo(r,c):
@@ -118,27 +162,34 @@ def search():
 		return
 
 	if tleft >=10 and check_put(r, c):
-		info = get_near_sp(r,c)
-		if int((info-100000)/10000) == 1:
+		info, sp_r, sp_c = get_near_sp(r,c)
+		has_put, put_id = check_virtual_spinfo(spInfo, sp_r, sp_c)
+		if int((info-100000)/10000) == 1 or (has_put!=0):
 			pass
 		else:
-			search_queue.put((pts-50, (state + '&', tleft - 10, r, c, step, connected)))
+			search_queue.put((pts-50, (state + '&', tleft - action['turn&put'], r, c, step, True), spInfo+put_id))
 
 	if tleft >=1:
 		if last_step != 's' and r > 0:
-			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'n', tleft - 1, r-1, c, step+1, stayed)))
+			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'n', tleft - action['n'], r-1, c, step+1, stayed), spInfo))
 		if last_step != 'n' and r < 6:	
-			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 's', tleft - 1, r+1, c, step+1, stayed)))	
+			search_queue.put((pts + 5 if (Mymap[r+1][c]%10==2) else pts, (state + 's', tleft - action['s'], r+1, c, step+1, stayed), spInfo))	
 		if last_step != 'w' and c < 8:
-			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'e', tleft - 1, r, c+1, step+1, stayed)))
+			search_queue.put((pts + 5 if (Mymap[r][c+1]%10==2) else pts, (state + 'e', tleft - action['e'], r, c+1, step+1, stayed), spInfo))
 		if last_step != 'e' and c > 0:	
-			search_queue.put((pts + 5 if (Mymap[r-1][c]%10==2) else pts, (state + 'w', tleft - 1, r, c-1, step+1, stayed)))
-		if last_step != '!' and (connected or near_secured(r,c)):
-			search_queue.put((pts - 15, (state + '!', tleft - 1, r, c, step, True)))
+			search_queue.put((pts + 5 if (Mymap[r][c-1]%10==2) else pts, (state + 'w', tleft - action['w'], r, c-1, step+1, stayed), spInfo))
+		if last_step != '!' and connected and check_virtual_pathinfo(state, r, c):
+			search_queue.put((pts - 15, (state + '!', tleft - action['stay!'], r, c, step, True), spInfo))
 
-search_queue.put((0,('', 40, initR, initC, 0, False)) )
+search_queue.put((0,('', 40, initR, initC, 0, False), 0))
 
+'''
+for i in range(7):
+	for j in range(9):
+		print(get_near_sp(i,j), end = ' & ')
+	print()
+	print()
+'''
 while not flag:
 	search()
-print(pcount)
-print(best_path, len(best_path), max_point)
+print(len(best_path), max_point, best_path[0])

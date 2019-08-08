@@ -33,6 +33,9 @@
 #include "chassis_task.h"
 #include "CAN_transmitTask.h"
 #include "chassis_odom_task.h"
+#include "mecanisim_task.h"
+
+#include "mecanisimCANTXTask.h"
 
 /* USER CODE END Includes */
 #include "CANMessage.h"
@@ -107,6 +110,9 @@ osThreadId referee_taskHandle;
 osThreadId chassis_taskHandle;
 osThreadId canTransmit_taskHandle;
 osThreadId chassisOdom_taskHandle;
+osThreadId mecansism_taskHandle;
+
+osThreadId mecanisimCANTX_taskhandle;
 
 /* USER CODE END PV */
 
@@ -274,12 +280,19 @@ int main(void) {
 	osThreadDef(chassis, chassis_task, osPriorityNormal + 2, 1, 256);
   chassis_taskHandle = osThreadCreate(osThread(chassis), NULL);
 
-  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh, 1, 256);
+  osThreadDef(canTransmit, canTransmitTaskLoop, osPriorityHigh + 4, 1, 256);
   canTransmit_taskHandle = osThreadCreate(osThread(canTransmit), NULL);
 
   initChassisOdom();
   osThreadDef(chassisOdom, chassisOdomUpdate, osPriorityHigh + 1, 1, 256);
   chassisOdom_taskHandle = osThreadCreate(osThread(chassisOdom), NULL);
+
+  osThreadDef(mecanisimCANTX, mecanisimCANTXTaskUpdate, osPriorityNormal, 1, 256);
+  mecanisimCANTX_taskhandle = osThreadCreate(osThread(mecanisimCANTX), NULL);
+
+  initMecanisimTask();
+  osThreadDef(mecanisimTask, mecanisimTaskUpdate, osPriorityNormal, 1, 256);
+  mecansism_taskHandle = osThreadCreate(osThread(mecanisimTask), NULL);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -1613,6 +1626,11 @@ static void MX_GPIO_Init(void) {
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+	
+	GPIOH -> ODR |= POWER1_CTRL_Pin;
+	GPIOH -> ODR |= POWER2_CTRL_Pin;
+	GPIOH -> ODR |= POWER3_CTRL_Pin;
+	GPIOH -> ODR |= POWER4_CTRL_Pin;
 
   /*Configure GPIO pin : SPI5_NSS_Pin */
   GPIO_InitStruct.Pin = SPI5_NSS_Pin;

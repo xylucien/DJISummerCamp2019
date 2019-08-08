@@ -1,0 +1,4 @@
+*.o
+MDK-ARM/JLinkLog.txt
+HAL_INFANTRY.uvguix.*
+MDK-ARM/RTE/_HAL_INFANTRY/RTE_Components.h

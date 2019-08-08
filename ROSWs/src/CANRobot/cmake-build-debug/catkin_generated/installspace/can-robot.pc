@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: can-robot
+Description: Description of can-robot
+Version: 0.0.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib 
+Requires: geometry_msgs roscpp std_msgs

@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <arm_math.h>
 
-extern motor_measure_t motor_chassis[7];
+extern motor_measure_t motor_chassis[8];
 
 double currentTime = 0;
 extern float AHRSYaw;
@@ -53,7 +53,7 @@ void chassisOdomUpdate(void const *argument){
         distanceX += (yawCos * ecdVx - yawSin * ecdVy) * 0.25f * ENCODERCODES_TO_MS;
         distanceY += (yawSin * ecdVx + yawCos * ecdVy) * 0.25f * ENCODERCODES_TO_MS;	
 				
-        vTaskDelay(1);
+        vTaskDelay(10);
     }
 
     vTaskDelete(NULL);

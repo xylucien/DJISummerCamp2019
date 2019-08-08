@@ -37,6 +37,9 @@
 #define CANMESSAGE_SUBID_AHRS_PITCH 1
 #define CANMESSAGE_SUBID_AHRS_YAW 2
 
+#define CANMESSAGE_ID_MECANISIM 6
+#define CANMESSAGE_SUBID_RIGHT_BALL_POSITION 0
+
 typedef struct CANMessage {
     uint8_t messageId;
     void* data;
