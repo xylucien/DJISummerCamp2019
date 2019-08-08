@@ -10,7 +10,7 @@ ARM_MOVE_SPD=0.005
 
 pygame.init()
 screen=pygame.display.set_mode((200,200),0,32)
-BG=pygame.image.load("D:\\mydata\\Programs\\git_try\\DJISummerCamp2019\\Algorithm\\ui\\uiPic\\CHTMTR.jpg").convert_alpha()
+BG=pygame.image.load("CHTMTR.jpg").convert_alpha()
 screen.blit(BG,(0,0))
 pygame.display.update()
 ArmMotor=0.0
