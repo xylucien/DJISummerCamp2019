@@ -1,0 +1,3 @@
+[submodule "ROS_Ws/src/robot_upstart"]
+	path = ROS_Ws/src/robot_upstart
+	url = https://github.com/clearpathrobotics/robot_upstart

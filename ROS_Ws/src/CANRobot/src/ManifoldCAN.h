@@ -80,6 +80,7 @@ public:
     void sendBuzzerDutyCycle(const std_msgs::Float32 &msg);
 
     void sendRightBall(const std_msgs::Float32 &msg);
+    void sendCenterBall(const std_msgs::Float32 &msg);
     void sendLeftBall(const std_msgs::Float32 &msg);
 
 private:

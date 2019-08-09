@@ -36,6 +36,7 @@
 
 #include "bsp_buzzer.h"
 #include "mecanisimCANRXTask.h"
+#include "PWMUtils.h"
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
@@ -71,6 +72,11 @@ float test = 0.0;
 int prevDutyCycle = 0;
 CAN_RxHeaderTypeDef rx_header;
 
+float pwmDutyCycle_1 = 0;
+float pwmDutyCycle_2 = 0;
+float pwmDutyCycle_3 = 0;
+float pwmDutyCycle_4 = 0;
+
 uint16_t setPsc;
 uint16_t setPwm;
 
@@ -84,6 +90,7 @@ extern uint16_t motor14RX;
 extern uint16_t motor15RX;
 
 extern float rightSetPoint;
+extern float centerSetPoint;
 extern float leftSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
@@ -135,14 +142,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
         switch(subMessageId){
           case CANMESSAGE_SUBID_PWM0: {
             float input = deserializeFloat(rx_data);
-            int dutyCycle = input * 1000.0f;
-
-            if(dutyCycle == prevDutyCycle){
+            
+            if(pwmDutyCycle_1 == prevDutyCycle){
               break;
             }
 
-            __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, dutyCycle);
-            prevDutyCycle = dutyCycle;
+            PWM_SetDuty(&htim2, TIM_CHANNEL_1, input);
+
+            prevDutyCycle = pwmDutyCycle_1;
             break;
           }
         }
@@ -181,6 +188,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
           case CANMESSAGE_SUBID_LEFT_BALL_POSITION: {
             leftSetPoint = deserializeFloat(rx_data);
+            break;
+          }
+
+          case CANMESSAGE_SUBID_CENTER_BALL_POSITION: {
+            centerSetPoint = deserializeFloat(rx_data);
             break;
           }
         }
@@ -445,3 +457,4 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd) {
 
   return relative_ecd;
 }
+

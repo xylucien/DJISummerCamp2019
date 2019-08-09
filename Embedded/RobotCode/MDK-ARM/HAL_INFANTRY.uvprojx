@@ -877,6 +877,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\RoboMaster_Libs\PositionPID.c</FilePath>
             </File>
+            <File>
+              <FileName>PWMUtils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\RoboMaster_Libs\PWMUtils.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

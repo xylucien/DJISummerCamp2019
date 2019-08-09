@@ -36,9 +36,9 @@
 #include "mecanisim_task.h"
 
 #include "mecanisimCANTXTask.h"
-
-/* USER CODE END Includes */
 #include "CANMessage.h"
+#include "PWMUtils.h"
+/* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -993,7 +993,7 @@ static void MX_TIM2_Init(void) {
 	
 	
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
+  sConfigOC.Pulse = PWM_DEFAULT_DUTY;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
