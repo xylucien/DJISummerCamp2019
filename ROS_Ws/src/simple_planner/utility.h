@@ -45,18 +45,23 @@ bool GetGlobalRobotPose(const std::shared_ptr<tf::TransformListener>& tf_listene
 bool TransformPose(const std::shared_ptr<tf::TransformListener>& tf_listener,
                    const std::string& target_frame,
                    const geometry_msgs::PoseStamped& input_pose,
-                   geometry_msgs::PoseStamped& output_pose){
+                   geometry_msgs::PoseStamped& output_pose,
+                   const ros::Time& target_time = ros::Time::now(),
+                   const ros::Duration& timeout = ros::Duration(0.5)){
 
-
+                  
   if (target_frame == input_pose.header.frame_id){
     output_pose = input_pose;
     return true;
   }
-
+     
   tf::Stamped<tf::Pose> input_pose_tf, output_pose_tf;
   tf::poseStampedMsgToTF(input_pose,input_pose_tf);
 
   try{
+    tf_listener->waitForTransform( target_frame, target_time, 
+                                   input_pose.header.frame_id, input_pose.header.stamp, 
+                                   input_pose.header.frame_id, timeout );
     tf_listener->transformPose( target_frame, input_pose_tf, output_pose_tf);
   }
   catch (tf::TransformException &ex) {
