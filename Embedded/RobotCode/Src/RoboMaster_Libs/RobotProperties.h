@@ -1,2 +1,2 @@
-#define AB 2//A + B
-#define WHEEL_RADIUS 0.0375f // Wheel radius
+#define AB .36//A + B  .24 + .14
+#define WHEEL_RADIUS 0.07625f // Wheel radius

@@ -101,7 +101,7 @@ CANId ManifoldCAN::newCanId(uint32_t baseId, uint8_t messageId, uint8_t subId) {
 int ManifoldCAN::sendFloatMessage(const FloatCANMessage &message) {
     BCM_Msg msg;
     msg.msg_head.opcode  = TX_SETUP;
-    std::cout << std::to_string(message.data) << " " << std::to_string(message.id) << " " << std::to_string(message.subid) << std::endl;
+    //std::cout << std::to_string(message.data) << " " << std::to_string(message.id) << " " << std::to_string(message.subid) << std::endl;
     msg.msg_head.can_id  = serializeId(newCanId(0x600, message.id, message.subid));
     msg.msg_head.flags   = SETTIMER|STARTTIMER|TX_CP_CAN_ID;
     msg.msg_head.nframes = 1;

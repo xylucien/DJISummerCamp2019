@@ -70,10 +70,11 @@ float centerSetPoint = 0;
 float leftSetPoint = 0;
 
 extern bool new8_11data;
+extern bool new12_15data;
 extern motor_measure_t motor_mecanisim[8];
 extern int16_t motor8Set;
 extern int16_t motor9Set;
-extern int16_t motor10Set;
+extern int16_t motor12Set;
 
 //Teleop Balls
 bool ballCANMode = false;
@@ -116,9 +117,10 @@ void mecanisimTaskUpdate(void *arguments){
 				}
 			
         motor8Set = calculatePositionPid(&rightBallThingie, (float32_t) motor_mecanisim[0].speed_rpm / 36.0, (float32_t) motor_mecanisim[0].total_ecd, rightNativeSetPoint);
-        motor10Set = calculatePositionPid(&centerBallThingie, (float32_t) motor_mecanisim[2].speed_rpm / 36.0, (float32_t) motor_mecanisim[2].total_ecd, centerNativeSetPoint);
+        motor12Set = calculatePositionPid(&centerBallThingie, (float32_t) motor_mecanisim[2].speed_rpm / 36.0, (float32_t) motor_mecanisim[2].total_ecd, centerNativeSetPoint);
         motor9Set = calculatePositionPid(&leftBallThingie, (float32_t) motor_mecanisim[1].speed_rpm / 36.0, (float32_t) motor_mecanisim[1].total_ecd, leftNativeSetPoint);
         new8_11data = true;
+				new12_15data = true;
 
         vTaskDelay(20);
     }
