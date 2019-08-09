@@ -7,12 +7,6 @@ void serializeFloat(float input, uint8_t *dest){
 }
 
 float deserializeFloat(uint8_t *source){
-    uint8_t output[4];
-		output[0] = source[4];
-		output[1] = source[5];
-		output[2] = source[6];
-		output[3] = source[7];
-
 		float num;
     memcpy(&num, source, sizeof(float));
     return num;
