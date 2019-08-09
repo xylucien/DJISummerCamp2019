@@ -150,7 +150,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>ST-LINKIII-KEIL_SWO</Key>
-          <Name>-U54FF6C065066505118500387 -O2254 -SF4000 -C0 -A0 -I0 -HNlocalhost -HP7184 -P1 -N00("ARM CoreSight SW-DP (ARM Core") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_2048.FLM -FS08000000 -FL0200000 -FP0($$Device:STM32F427IIHx$CMSIS\Flash\STM32F4xx_2048.FLM)</Name>
+          <Name>-U3F1308003212364D434B4E00 -O2254 -SF4000 -C0 -A0 -I0 -HNlocalhost -HP7184 -P1 -N00("ARM CoreSight SW-DP (ARM Core") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_2048.FLM -FS08000000 -FL0200000 -FP0($$Device:STM32F427IIHx$CMSIS\Flash\STM32F4xx_2048.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
@@ -189,25 +189,9 @@
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>15</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134269652</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Src\RoboMaster_Libs\PositionPID.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\HAL_INFANTRY\../Src/RoboMaster_Libs/PositionPID.c\15</Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
           <LineNumber>256</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>134273096</Address>
+          <Address>134273128</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -219,11 +203,11 @@
           <Expression>\\HAL_INFANTRY\../Src/app/chassis_task.c\256</Expression>
         </Bp>
         <Bp>
-          <Number>4</Number>
+          <Number>3</Number>
           <Type>0</Type>
           <LineNumber>50</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>134270832</Address>
+          <Address>134270864</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -233,6 +217,22 @@
           <Filename>..\Src\app\CAN_transmitTask.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\HAL_INFANTRY\../Src/app/CAN_transmitTask.c\50</Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>79</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134276804</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Src\app\mecanisim_task.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\HAL_INFANTRY\../Src/app/mecanisim_task.c\79</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -350,6 +350,11 @@
           <count>22</count>
           <WinNumber>1</WinNumber>
           <ItemText>lastVx</ItemText>
+        </Ww>
+        <Ww>
+          <count>23</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>testSetPoint</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -536,12 +541,22 @@
         <Ww>
           <count>36</count>
           <WinNumber>2</WinNumber>
-          <ItemText>motor_mecanisim[0]</ItemText>
+          <ItemText>motor_mecanisim[0],0x0A</ItemText>
         </Ww>
         <Ww>
           <count>37</count>
           <WinNumber>2</WinNumber>
           <ItemText>setPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>38</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>testSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>39</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>currentBallCountRight</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>

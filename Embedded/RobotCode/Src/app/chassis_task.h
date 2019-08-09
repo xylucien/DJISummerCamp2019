@@ -35,11 +35,11 @@
 //ѡ�����״̬ ����ͨ����
 #define MODE_CHANNEL 0
 //ң����ǰ��ҡ�ˣ�max 660��ת���ɳ���ǰ���ٶȣ�m/s���ı���
-#define CHASSIS_VX_RC_SEN 0.0015f
+#define CHASSIS_VX_RC_SEN 0.00135f
 //ң��������ҡ�ˣ�max 660��ת���ɳ��������ٶȣ�m/s���ı���
-#define CHASSIS_VY_RC_SEN 0.0015f
+#define CHASSIS_VY_RC_SEN 0.00135f
 
-#define CHASSIS_WZ_RC_SEN 0.0005f
+#define CHASSIS_WZ_RC_SEN 0.00045f
 
 #define CHASSIS_ACCEL_X_NUM 0.1066666667f
 #define CHASSIS_ACCEL_Y_NUM 0.2333333333f
