@@ -191,7 +191,7 @@
           <Type>0</Type>
           <LineNumber>256</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>134273128</Address>
+          <Address>134272992</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -207,7 +207,7 @@
           <Type>0</Type>
           <LineNumber>50</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>134270864</Address>
+          <Address>134270724</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -217,22 +217,6 @@
           <Filename>..\Src\app\CAN_transmitTask.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\HAL_INFANTRY\../Src/app/CAN_transmitTask.c\50</Expression>
-        </Bp>
-        <Bp>
-          <Number>4</Number>
-          <Type>0</Type>
-          <LineNumber>79</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134276804</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Src\app\mecanisim_task.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\HAL_INFANTRY\../Src/app/mecanisim_task.c\79</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -355,6 +339,26 @@
           <count>23</count>
           <WinNumber>1</WinNumber>
           <ItemText>testSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>24</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>rightNativeSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>25</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>centerNativeSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>26</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>leftNativeSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>27</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>rightNativeSetPoint</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -563,7 +567,7 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>vx_set[0]</ItemText>
+          <ItemText>rightNativeSetPoint</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>

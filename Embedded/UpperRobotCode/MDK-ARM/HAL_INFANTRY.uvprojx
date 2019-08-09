@@ -48,7 +48,7 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>C:\Users\Botbusters\Documents\Temp\</OutputDirectory>
+          <OutputDirectory>C:\Users\Botbusters\Documents\Temp2\</OutputDirectory>
           <OutputName>HAL_INFANTRY</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
@@ -883,11 +883,6 @@
           <GroupName>app</GroupName>
           <Files>
             <File>
-              <FileName>calibrate_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\app\calibrate_task.c</FilePath>
-            </File>
-            <File>
               <FileName>CAN_receive.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\app\CAN_receive.c</FilePath>
@@ -903,19 +898,9 @@
               <FilePath>..\Src\app\detect_task.c</FilePath>
             </File>
             <File>
-              <FileName>INS_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\app\INS_task.c</FilePath>
-            </File>
-            <File>
               <FileName>led_trigger_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\app\led_trigger_task.c</FilePath>
-            </File>
-            <File>
-              <FileName>chassis_odom_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\app\chassis_odom_task.c</FilePath>
             </File>
             <File>
               <FileName>remote_control.c</FileName>
@@ -926,16 +911,6 @@
               <FileName>user_lib.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\app\user_lib.c</FilePath>
-            </File>
-            <File>
-              <FileName>chassis_behaviour.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\app\chassis_behaviour.c</FilePath>
-            </File>
-            <File>
-              <FileName>chassis_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\app\chassis_task.c</FilePath>
             </File>
             <File>
               <FileName>CRC8_CRC16.c</FileName>
@@ -962,11 +937,6 @@
         <Group>
           <GroupName>robot_move</GroupName>
           <Files>
-            <File>
-              <FileName>chassis_control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\robot_move\chassis_control.c</FilePath>
-            </File>
             <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>

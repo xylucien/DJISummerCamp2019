@@ -3,5 +3,6 @@
 
 extern void initMecanisimTask(void);
 extern void mecanisimTaskUpdate(void *arguments);
+extern void sendBallCANMessage(void);
 
 #endif

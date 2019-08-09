@@ -4,6 +4,4 @@
 extern void initMecanisimTask(void);
 extern void mecanisimTaskUpdate(void *arguments);
 
-extern void updateMotors(void);
-
 #endif

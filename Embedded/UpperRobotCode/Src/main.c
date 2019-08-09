@@ -28,6 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "mecanisim_task.h"
 
 /* USER CODE END Includes */
 /* Private typedef -----------------------------------------------------------*/
@@ -199,8 +200,8 @@ int main(void) {
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_ADC3_Init();
-  //MX_CAN1_Init();
-  //MX_CAN2_Init();
+  MX_CAN1_Init();
+  MX_CAN2_Init();
   MX_RTC_Init();
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
@@ -254,9 +255,9 @@ int main(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
 
-  //initMecanisimTask();
-  //osThreadDef(mecanisimTask, mecanisimTaskUpdate, osPriorityNormal, 1, 256);
-  //mecansism_taskHandle = osThreadCreate(osThread(mecanisimTask), NULL);
+  initMecanisimTask();
+  osThreadDef(mecanisimTask, mecanisimTaskUpdate, osPriorityHigh, 1, 256);
+  mecansism_taskHandle = osThreadCreate(osThread(mecanisimTask), NULL);
 
   /* USER CODE END RTOS_THREADS */
 

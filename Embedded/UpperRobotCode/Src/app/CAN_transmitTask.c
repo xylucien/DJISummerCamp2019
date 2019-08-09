@@ -21,21 +21,11 @@
 extern CAN_HandleTypeDef hcan2;
 extern QueueHandle_t canTestTransmitQueue;
 
-extern float32_t distanceX, distanceY;
-extern fp32 INS_angle[3];
-
 void canTransmitTaskLoop(void const *argument){
     for (;;){
-        if(HAL_CAN_GetTxMailboxesFreeLevel(&MANIFOLD_CAN) > 0){
-          //Gyro
-          //canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_ROLL, AHRSRoll);
-          //canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_PITCH, AHRSPitch);
-          //canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_YAW, AHRSYaw);
-
-          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X, distanceX);
-          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y, distanceY);
-          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW, INS_angle[0]);	
-        }
+        //if(HAL_CAN_GetTxMailboxesFreeLevel(&MANIFOLD_CAN) > 0){
+				
+        //}
 				
         vTaskDelay(66);
     }

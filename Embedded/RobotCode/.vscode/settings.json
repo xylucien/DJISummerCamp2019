@@ -9,6 +9,8 @@
         "task.h": "c",
         "can_receive.h": "c",
         "mecanisim_task.h": "c",
-        "fifo.h": "c"
+        "fifo.h": "c",
+        "canutil.h": "c",
+        "stm32f4xx_hal_can_legacy.h": "c"
     }
 }

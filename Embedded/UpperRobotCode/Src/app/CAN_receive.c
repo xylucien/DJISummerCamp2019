@@ -40,8 +40,6 @@
 extern CAN_HandleTypeDef hcan1;
 extern TIM_HandleTypeDef htim2;
 
-extern QueueHandle_t canTargetVelocityQueue;
-
 rm_imu_data_t rm_imu_data;
 Twist2D targetVelocity;
 
@@ -71,14 +69,9 @@ CAN_RxHeaderTypeDef rx_header;
 uint16_t setPsc;
 uint16_t setPwm;
 
-extern uint16_t motor8RX;
-extern uint16_t motor9RX;
-extern uint16_t motor10RX;
-extern uint16_t motor11RX;
-extern uint16_t motor12RX;
-extern uint16_t motor13RX;
-extern uint16_t motor14RX;
-extern uint16_t motor15RX;
+extern float rightSetPoint;
+extern float centerSetPoint;
+extern float leftSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];
@@ -88,149 +81,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   //Get the first digit of the id
   uint8_t manifoldId = (rx_header.StdId & 0x00000F00) >> 8;
 
-  // Check for messages from the manifold
-  if (manifoldId == 6) {
-    uint8_t canMessageId = (rx_header.StdId & 0x000000F0) >> 4;
-    uint8_t subMessageId = (rx_header.StdId & 0x0000000F);
-
-    switch (canMessageId) {
-      case CANMESSAGE_ID_TARGET_VEL: {
-
-        switch (subMessageId) {
-          case CANMESSAGE_SUBID_TARGET_VX: {
-            float vX = deserializeFloat(rx_data);
-            lastVx = vX;
-            break;
-          }
-
-          case CANMESSAGE_SUBID_TARGET_VY: {
-            float vY = deserializeFloat(rx_data);
-            lastVy = vY;
-            break;
-          }
-
-          case CANMESSAGE_SUBID_TARGET_VW: {
-            float vW = deserializeFloat(rx_data);
-            lastVw = vW;
-            break;
-          }
-
-          case CANMESSAGE_SUBID_TARGET_READY: {
-            targetVelocity.vX = lastVx;
-            targetVelocity.vY = lastVy;
-            targetVelocity.w = lastVw;
-            break;
-          }
-        }
-        break;
-      }
-
-      case CANMESSAGE_ID_PWM: {
-        switch(subMessageId){
-          case CANMESSAGE_SUBID_PWM0: {
-            float input = deserializeFloat(rx_data);
-            int dutyCycle = input * 1000.0f;
-
-            if(dutyCycle == prevDutyCycle){
-              break;
-            }
-
-            __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, dutyCycle);
-            prevDutyCycle = dutyCycle;
-            break;
-          }
-        }
-        break;
-      }
-
-      case CANMESSAGE_ID_BUZZER: {
-        switch(subMessageId){
-          case CANMESSAGE_SUBID_BUZZER_DUTYCYCLE: {
-            buzzer_on(setPsc, setPwm);
-            //setPsc = deserializeFloat(rx_data);
-            break;
-          }
-
-          case CANMESSAGE_SUBID_BUZZER_FREQUENCY: {
-            setPwm = deserializeFloat(rx_data);
-            //buzzer_on(setPsc, setPwm);
-            break;
-          }
-
-          case CANMESSAGE_SUBID_BUZZER_OFF:{
-            //buzzer_off();
-            break;
-          }
-        }
-
-        break;
-      }
-    }
-  }
-
   switch (rx_header.StdId) {
-    case 0x800:{
+    case 0x700:{
+      //Ball motors
+      memcpy(&rightSetPoint, rx_data, sizeof(float));
+      memcpy(&leftSetPoint, rx_data + 4, sizeof(float));
+      //memcpy(&leftSetPoint, rx_data + 4, sizeof(float));
 			break;
-			uint32_t send_mail_box;
-      CAN_TxHeaderTypeDef txMessageHeader;
-      txMessageHeader.StdId = CAN_CHASSIS_ALL_ID;
-      txMessageHeader.IDE = CAN_ID_STD;
-      txMessageHeader.RTR = CAN_RTR_DATA;
-      txMessageHeader.DLC = 0x08;
-
-      //RX 8-11 motors
-      static uint8_t txMessage[8];
-      //8
-      txMessage[0] = rx_data[1];
-      txMessage[1] = rx_data[0];
-      //9
-      txMessage[2] = rx_data[3];
-      txMessage[3] = rx_data[2];
-      //10
-      txMessage[4] = rx_data[5];
-      txMessage[5] = rx_data[4];
-      //11
-      txMessage[6] = rx_data[7];
-      txMessage[7] = rx_data[6];
-
-      HAL_CAN_AddTxMessage(&CHASSIS_CAN, &txMessageHeader, txMessage,
-                       &send_mail_box);
-
-      break;
     }
-
-    case 0x801:{
-			break;
-			uint32_t send_mail_box;
-			
-      //RX 12-15 motors
-      CAN_TxHeaderTypeDef txMessageHeader;
-      txMessageHeader.StdId = CAN_GIMBAL_ALL_ID;
-      txMessageHeader.IDE = CAN_ID_STD;
-      txMessageHeader.RTR = CAN_RTR_DATA;
-      txMessageHeader.DLC = 0x08;
-
-      //RX 8-11 motors
-      static uint8_t txMessage[8];
-      //12
-      txMessage[0] = rx_data[1];
-      txMessage[1] = rx_data[0];
-      //13
-      txMessage[2] = rx_data[3];
-      txMessage[3] = rx_data[2];
-      //14
-      txMessage[4] = rx_data[5];
-      txMessage[5] = rx_data[4];
-      //15
-      txMessage[6] = rx_data[7];
-      txMessage[7] = rx_data[6];
-
-      HAL_CAN_AddTxMessage(&CHASSIS_CAN, &txMessageHeader, txMessage,
-                       &send_mail_box);
-                       
-      break;
-    }
-
 
 
     case CAN_3508_M1_ID:

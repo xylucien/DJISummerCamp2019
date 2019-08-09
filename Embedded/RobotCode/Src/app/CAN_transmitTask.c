@@ -37,7 +37,7 @@ void canTransmitTaskLoop(void const *argument){
           canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW, INS_angle[0]);	
         }
 				
-        vTaskDelay(60);
+        vTaskDelay(20 / portTICK_PERIOD_MS);
     }
 
     vTaskDelete(NULL);

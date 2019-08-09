@@ -53,7 +53,7 @@ void chassisOdomUpdate(void const *argument){
         distanceX += (yawCos * ecdVx - yawSin * ecdVy) * 0.25f * ENCODERCODES_TO_MS;
         distanceY += (yawSin * ecdVx + yawCos * ecdVy) * 0.25f * ENCODERCODES_TO_MS;	
 				
-        vTaskDelay(10);
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 
     vTaskDelete(NULL);
