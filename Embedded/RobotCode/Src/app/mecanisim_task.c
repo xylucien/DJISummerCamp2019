@@ -22,7 +22,7 @@ void initMecanisimTask() {
 
   rightBallThingie.positionPid = malloc(sizeof(arm_pid_instance_f32));
 
-  rightBallThingie.positionPid->Kp = 0.0008;
+  rightBallThingie.positionPid->Kp = 0.00085;
   rightBallThingie.positionPid->Ki = 0.0;
   rightBallThingie.positionPid->Kd = 0.0;
   rightBallThingie.positionLimitEnabled = false;
@@ -80,10 +80,10 @@ void mecanisimTaskUpdate(void *arguments){
 					bool downSwitch = switch_is_down(rcCtrl->rc.s[1]);
 					
 					if(previouslyUpSwitch != upSwitch && upSwitch){
-						currentBallCountRight += 1.0;
+						currentBallCountRight += 1.0f;
 					} else if (previouslyDownSwitch != downSwitch && downSwitch) {
 						//Increment left
-						currentBallCountLeft += 1.0;
+						currentBallCountLeft += 1.0f;
 					}
 					
 					previouslyUpSwitch = upSwitch;
