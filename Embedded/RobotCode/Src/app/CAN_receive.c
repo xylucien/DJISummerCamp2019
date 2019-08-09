@@ -90,6 +90,7 @@ extern uint16_t motor14RX;
 extern uint16_t motor15RX;
 
 extern float rightSetPoint;
+extern float centerSetPoint;
 extern float leftSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
@@ -187,6 +188,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
           case CANMESSAGE_SUBID_LEFT_BALL_POSITION: {
             leftSetPoint = deserializeFloat(rx_data);
+            break;
+          }
+
+          case CANMESSAGE_SUBID_CENTER_BALL_POSITION: {
+            centerSetPoint = deserializeFloat(rx_data);
             break;
           }
         }

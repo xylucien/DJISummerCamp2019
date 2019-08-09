@@ -7,8 +7,10 @@
 #include "arm_math.h"
 #include <remote_control.h>
 
-extern CAN_HandleTypeDef hcan1;
+#define C610ANGLETOCODES 819.9f
+
 PositionPIDData rightBallThingie;
+PositionPIDData centerBallThingie;
 PositionPIDData leftBallThingie;
 
 void initMecanisimTask() {
@@ -27,6 +29,21 @@ void initMecanisimTask() {
   rightBallThingie.positionPid->Kd = 0.0;
   rightBallThingie.positionLimitEnabled = false;
 
+  //Center ball thingie
+  centerBallThingie.velocityPid = malloc(sizeof(arm_pid_instance_f32));
+
+  centerBallThingie.velocityPid->Kp = 30.1;
+  centerBallThingie.velocityPid->Ki = 0.0;
+  centerBallThingie.velocityPid->Kd = 0.0;
+  centerBallThingie.maximumVelocity = 10000;
+
+  centerBallThingie.positionPid = malloc(sizeof(arm_pid_instance_f32));
+
+  centerBallThingie.positionPid->Kp = 0.00085;
+  centerBallThingie.positionPid->Ki = 0.0;
+  centerBallThingie.positionPid->Kd = 0.0;
+  centerBallThingie.positionLimitEnabled = false;
+
   //Left ball thingie
   leftBallThingie.velocityPid = malloc(sizeof(arm_pid_instance_f32));
 
@@ -37,26 +54,28 @@ void initMecanisimTask() {
 
   leftBallThingie.positionPid = malloc(sizeof(arm_pid_instance_f32));
 
-  leftBallThingie.positionPid->Kp = 0.0007;
+  leftBallThingie.positionPid->Kp = 0.00085;
   leftBallThingie.positionPid->Ki = 0.0;
   leftBallThingie.positionPid->Kd = 0.0;
   leftBallThingie.positionLimitEnabled = false;
 
   initializePositionPid(&rightBallThingie);   
+  initializePositionPid(&centerBallThingie);
   initializePositionPid(&leftBallThingie);
 }
 
+//Setpoints
+float rightSetPoint = 0;
+float centerSetPoint = 0;
+float leftSetPoint = 0;
+
 extern bool new8_11data;
 extern motor_measure_t motor_mecanisim[8];
-
 extern int16_t motor8Set;
 extern int16_t motor9Set;
+extern int16_t motor10Set;
 
-float rightSetPoint;
-float leftSetPoint;
-
-#define C610ANGLETOCODES 819.9f
-
+//Teleop Balls
 bool ballCANMode = false;
 
 bool previouslyUpSwitch = false;
@@ -68,10 +87,13 @@ float32_t currentBallCountLeft = 0;
 void mecanisimTaskUpdate(void *arguments){
     for(;;){
 				float32_t rightNativeSetPoint = 0;
+        float32_t centerNativeSetPoint = 0;
 				float32_t leftNativeSetPoint = 0;
 			
+        //Ballz
 				if(ballCANMode){
 					rightNativeSetPoint = rightSetPoint * C610ANGLETOCODES;
+          centerNativeSetPoint = centerSetPoint * C610ANGLETOCODES;
 					leftNativeSetPoint = leftSetPoint * C610ANGLETOCODES;
 				} else {
           const RC_ctrl_t* rcCtrl = get_remote_control_point();
@@ -94,9 +116,10 @@ void mecanisimTaskUpdate(void *arguments){
 				}
 			
         motor8Set = calculatePositionPid(&rightBallThingie, (float32_t) motor_mecanisim[0].speed_rpm / 36.0, (float32_t) motor_mecanisim[0].total_ecd, rightNativeSetPoint);
+        motor10Set = calculatePositionPid(&centerBallThingie, (float32_t) motor_mecanisim[2].speed_rpm / 36.0, (float32_t) motor_mecanisim[2].total_ecd, centerNativeSetPoint);
         motor9Set = calculatePositionPid(&leftBallThingie, (float32_t) motor_mecanisim[1].speed_rpm / 36.0, (float32_t) motor_mecanisim[1].total_ecd, leftNativeSetPoint);
-
         new8_11data = true;
+
         vTaskDelay(20);
     }
 }

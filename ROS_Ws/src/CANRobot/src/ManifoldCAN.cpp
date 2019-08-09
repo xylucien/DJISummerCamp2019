@@ -198,6 +198,16 @@ void ManifoldCAN::sendLeftBall(const std_msgs::Float32 &msg){
     sendFloatMessage(message);
 }
 
+void ManifoldCAN::sendCenterBall(const std_msgs::Float32 &msg) {
+    FloatCANMessage message;
+    message.id = CANMESSAGE_ID_MECANISIM;
+    message.subid = CANMESSAGE_SUBID_CENTER_BALL_POSITION;
+
+    message.data = msg.data;
+
+    sendFloatMessage(message);
+}
+
 void ManifoldCAN::rosPubThreadUpdate() {
     while(ros::ok()){
         if(!receivedCanMessages.empty()){

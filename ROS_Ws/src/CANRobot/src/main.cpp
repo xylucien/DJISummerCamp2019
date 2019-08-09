@@ -54,16 +54,15 @@ int main(int argc, char **argv) {
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X), yPub);
     can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW), odomYawPub);
 
-    //can.addRosPublisher(ManifoldCAN::newCanId(0x600, CANMESSAGE_ID_MECANISIM, CANMESSAGE_SUBID_RIGHT_BALL_POSITION), rightBallPub);
+    ros::Subscriber sub = n.subscribe("cmd_vel", 30, &ManifoldCAN::sendTargetVelocityROS, &can);
+    ros::Subscriber servoSub = n.subscribe("servo_vel", 30, &ManifoldCAN::sendTargetServoVelocity, &can);
 
-    ros::Subscriber sub = n.subscribe("cmd_vel", 1000, &ManifoldCAN::sendTargetVelocityROS, &can);
-    ros::Subscriber servoSub = n.subscribe("servo_vel", 1000, &ManifoldCAN::sendTargetServoVelocity, &can);
+    ros::Subscriber buzzerFreqSub = n.subscribe("buzzer/frequency", 30, &ManifoldCAN::sendBuzzerFrequency, &can);
+    ros::Subscriber buzzerDutyCycleSub = n.subscribe("buzzer/dutycycle", 30, &ManifoldCAN::sendBuzzerDutyCycle, &can);
 
-    ros::Subscriber buzzerFreqSub = n.subscribe("buzzer/frequency", 1000, &ManifoldCAN::sendBuzzerFrequency, &can);
-    ros::Subscriber buzzerDutyCycleSub = n.subscribe("buzzer/dutycycle", 1000, &ManifoldCAN::sendBuzzerDutyCycle, &can);
-
-    ros::Subscriber rightMecanisimSub = n.subscribe("rightBall", 1000, &ManifoldCAN::sendRightBall, &can);
-    ros::Subscriber leftMecanisimSub = n.subscribe("leftBall", 1000, &ManifoldCAN::sendLeftBall, &can);
+    ros::Subscriber rightMecanisimSub = n.subscribe("rightBall", 30, &ManifoldCAN::sendRightBall, &can);
+    ros::Subscriber centerMecanisimSub = n.subscribe("centerBall", 30, &ManifoldCAN::sendCenterBall, &can);
+    ros::Subscriber leftMecanisimSub = n.subscribe("leftBall", 30, &ManifoldCAN::sendLeftBall, &can);
 
     ros::spin();
 
