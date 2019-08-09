@@ -63,6 +63,17 @@ def check_put(r, c):
 		return c == 3 or c == 7
 	return False	
 
+def check_def(r, c):
+	if r == 0:
+		return c == 3 or c == 7
+	if r == 2:
+		return c == 8
+	if r == 4:
+		return c == 0 or c == 4
+	if r == 6:
+		return c == 1 or c == 5
+	return False
+
 def check_oppo(r,c):
 	return (r == oppoR and c == oppoC)
 
@@ -138,9 +149,9 @@ def check_virtual_pathinfo(state, r, c):
 
 def search():
 	global pcount, flag, max_point, best_path
-	if pcount%100000 == 0:
-		print(str(int(pcount/100000)) + r'% finished')
-	if pcount >= 10000000:
+	if pcount%10000 == 0:
+		print(str(int(pcount/10000)) + r'% finished')
+	if pcount >= 1000000:
 		flag = True
 		return
 	
@@ -153,13 +164,17 @@ def search():
 
 	if tleft == 0 or step == step_limit:
 		pcount+=1
+		flagg = True
+		#if not first round
+		#flagg = check_def(r,c)
+		if flagg:
 		#print(state, r, c, step, -pts)
-		if -pts > max_point:
-			best_path = []
-			max_point = -pts
-		if -pts == max_point:
-			best_path.append(state)
-		return
+			if -pts > max_point:
+				best_path = []
+				max_point = -pts
+			if -pts == max_point:
+				best_path.append(state)
+			return
 
 	if tleft >=10 and check_put(r, c):
 		info, sp_r, sp_c = get_near_sp(r,c)
