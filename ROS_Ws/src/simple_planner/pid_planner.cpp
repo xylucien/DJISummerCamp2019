@@ -117,6 +117,10 @@ class PIDPlanner{
          cmd_vel.angular.z = 0;
       }
       
+      double x = cmd_vel.linear.x;
+      cmd_vel.linear.x = -cmd_vel.linear.y;
+      cmd_vel.linear.y = x;
+      cmd_vel.angular.z*=-1.0;
       cmd_vel_pub_.publish(cmd_vel);
       
 

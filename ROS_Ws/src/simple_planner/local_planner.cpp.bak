@@ -151,14 +151,12 @@ class LocalPlanner{
       diff_yaw += 2*M_PI;
     }
 
-    ROS_INFO("%f", diff_yaw);
-
     // calculate velocity
 
     if( diff_yaw > 0 ){
-      cmd_vel.angular.z = std::min(p_coeff_*diff_yaw, .5);
+      cmd_vel.angular.z = std::min(p_coeff_*diff_yaw, 0.05);
     }else{
-      cmd_vel.angular.z = std::max(p_coeff_*diff_yaw, -.5);
+      cmd_vel.angular.z = std::max(p_coeff_*diff_yaw, -0.05);
     }
 
 
@@ -167,8 +165,6 @@ class LocalPlanner{
     if(std::abs(diff_yaw) > max_angle_diff_){
       cmd_vel.linear.x = 0;
     }
-
-    cmd_vel.angular.z = cmd_vel.angular.z  * -1.0;
   }
 
  private:

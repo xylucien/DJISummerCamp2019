@@ -7,6 +7,7 @@
 #include "cmsis_os.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal_can.h"
+#include "PWMUtils.h"
 
 #define C610ANGLETOCODES 819.9f
 
@@ -31,6 +32,13 @@ float rightSetPoint = 0.0f;
 float centerSetPoint = 0.0f;
 float leftSetPoint = 0.0f;
 
+const float maxArmSetPoint = 50.0;
+float armSetPoint = 0.0f;
+float testSetPoint;
+float servoSetPoint = 0.0f;
+
+extern TIM_HandleTypeDef htim2;
+
 void mecanisimTaskUpdate(void* arguments) {
   for (;;) {
     // Ballz
@@ -52,6 +60,9 @@ void mecanisimTaskUpdate(void* arguments) {
 
       rightSetPoint = currentBallCountRight * 90.0f;
       leftSetPoint = -currentBallCountLeft * 90.0f;
+			
+			armSetPoint = fabs(rcCtrl->rc.ch[3] / 660.0) * maxArmSetPoint;
+      servoSetPoint = (rcCtrl->rc.ch[4] / 660.0f) * 1000.0f;
     }
 
 		//rightNativeSetPoint = 1000;
@@ -59,15 +70,12 @@ void mecanisimTaskUpdate(void* arguments) {
 		//leftNativeSetPoint = 3000;
 		
     sendBallCANMessage();
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, servoSetPoint);
 
     vTaskDelay(50 / portTICK_PERIOD_MS);
   }
 }
 
-// 0-1 Right set point (codes)
-// 2-3 Center set point (codes)
-// 4-5 Left set point
-// 6-7 000000000000000
 void sendBallCANMessage() {
   uint32_t canTxMailbox;
   CAN_TxHeaderTypeDef msgHeader;
@@ -92,9 +100,9 @@ void sendBallCANMessage() {
   msgHeader.DLC = 0x08;
 
   memcpy(send_data, &centerSetPoint, sizeof(float));
-  //memcpy(send_data + sizeof(float), &centerSetPoint, sizeof(float));
+  memcpy(send_data + sizeof(float), &armSetPoint, sizeof(float));
   //memcpy(send_data + 4, &leftSetPoint, sizeof(float));
-  memset(send_data + sizeof(float), 0, sizeof(float));
+  //memset(send_data + sizeof(float), 0, sizeof(float));
 
   HAL_CAN_AddTxMessage(&hcan2, &msgHeader, (uint8_t*) &send_data,
                        &canTxMailbox);

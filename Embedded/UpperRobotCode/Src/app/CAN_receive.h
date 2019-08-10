@@ -94,12 +94,13 @@ typedef struct {
 } rm_imu_data_t;
 extern void CAN_CMD_CHASSIS_RESET_ID(void);
 
-//������̨�����������revΪ�����ֽ�
-extern void CAN_CMD_GIMBAL(int16_t yaw, int16_t pitch, int16_t shoot,
-                           int16_t rev);
 //���͵��̵����������
 extern void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
                             int16_t motor4);
+
+extern void CAN_CMD_MECANISIM(int16_t motor5, int16_t motor6, int16_t motor7,
+                     int16_t motor8);
+                  
 //����yaw���������ַ��ͨ��ָ�뷽ʽ��ȡԭʼ����
 extern const motor_measure_t *get_Yaw_Gimbal_Motor_Measure_Point(void);
 //����pitch���������ַ��ͨ��ָ�뷽ʽ��ȡԭʼ����

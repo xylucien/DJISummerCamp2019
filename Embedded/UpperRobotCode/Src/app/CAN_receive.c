@@ -59,6 +59,7 @@ static int16_t motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
   }
 
 motor_measure_t motor_chassis[8];
+
 static CAN_TxHeaderTypeDef chassis_tx_message;
 static uint8_t chassis_can_send_data[8];
 
@@ -72,6 +73,7 @@ uint16_t setPwm;
 extern float rightSetPoint;
 extern float centerSetPoint;
 extern float leftSetPoint;
+extern float armSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];
@@ -88,6 +90,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
       memcpy(&leftSetPoint, rx_data + 4, sizeof(float));
       //memcpy(&leftSetPoint, rx_data + 4, sizeof(float));
 			break;
+    }
+
+    case 0x701:{
+      memcpy(&centerSetPoint, rx_data, sizeof(float));
+      memcpy(&armSetPoint, rx_data + 4, sizeof(float));
+      break;
     }
 
 
@@ -248,6 +256,31 @@ void CAN_CMD_CHASSIS(int16_t motor1, int16_t motor2, int16_t motor3,
 
   chassis_can_send_data[6] = motor4 >> 8;
   chassis_can_send_data[7] = motor4;
+
+  HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data,
+                       &send_mail_box);
+}
+
+void CAN_CMD_MECANISIM(int16_t motor5, int16_t motor6, int16_t motor7,
+                     int16_t motor8) {
+  uint32_t send_mail_box;
+
+  chassis_tx_message.StdId = CAN_GIMBAL_ALL_ID;
+  chassis_tx_message.IDE = CAN_ID_STD;
+  chassis_tx_message.RTR = CAN_RTR_DATA;
+  chassis_tx_message.DLC = 0x08;
+
+  chassis_can_send_data[0] = motor5 >> 8;
+  chassis_can_send_data[1] = motor5;
+
+  chassis_can_send_data[2] = motor6 >> 8;
+  chassis_can_send_data[3] = motor6;
+
+  chassis_can_send_data[4] = motor7 >> 8;
+  chassis_can_send_data[5] = motor7;
+
+  chassis_can_send_data[6] = motor8 >> 8;
+  chassis_can_send_data[7] = motor8;
 
   HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data,
                        &send_mail_box);

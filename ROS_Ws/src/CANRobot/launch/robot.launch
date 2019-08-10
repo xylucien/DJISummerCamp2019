@@ -1,8 +1,5 @@
 <launch>
-    <arg name="map" value="summer_camp"/>
-
     <node name="canrobot" pkg="can-robot" type="can-robot_node" args="--test" respawn="true" output="screen"/>
     <include file="$(find sc_localization)/launch/sc_localization.launch"/>
     <include file="$(find simple_planner)/launch/planner.launch"/>
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find simple_planner)/simulator/$(arg map).yaml" respawn="false" />
 </launch>

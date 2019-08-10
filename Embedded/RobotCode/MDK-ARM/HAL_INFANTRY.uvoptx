@@ -360,6 +360,31 @@
           <WinNumber>1</WinNumber>
           <ItemText>rightNativeSetPoint</ItemText>
         </Ww>
+        <Ww>
+          <count>28</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>leftSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>29</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\HAL_INFANTRY\../Src/app/mecanisim_task.c\mecanisimTaskUpdate\lexical_1\rcCtrl-&gt;rc.ch[4]</ItemText>
+        </Ww>
+        <Ww>
+          <count>30</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>testSetPoint,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>31</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>armSetPoint</ItemText>
+        </Ww>
+        <Ww>
+          <count>32</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>servoSetPoint</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -561,6 +586,11 @@
           <count>39</count>
           <WinNumber>2</WinNumber>
           <ItemText>currentBallCountRight</ItemText>
+        </Ww>
+        <Ww>
+          <count>40</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>rcCtrl</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
