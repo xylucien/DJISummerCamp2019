@@ -25,16 +25,8 @@ initC = 0
 oppoR = 6
 oppoC = 8
 
-#temps
 pcount = 0
 flag = False
-
-'''
-def printMymap():
-	for i in range(7):
-		print(Mymap[i])
-'''
-#printMymap()
 
 def calculate_sp(r, c):
 	pass
