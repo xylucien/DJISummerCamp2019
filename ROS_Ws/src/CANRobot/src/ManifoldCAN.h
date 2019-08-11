@@ -114,6 +114,9 @@ private:
     bool updatedY = false;
     bool updatedW = false;
     float yaw = 0;
+
+    float vX, vY, vW;
+
     std::mutex odomMutex;
 
     tf::TransformBroadcaster transformBroadcaster;

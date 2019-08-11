@@ -6,8 +6,8 @@
 #include "arm_math.h"
 #include "cmsis_os.h"
 #include "stm32f4xx.h"
-#include "stm32f4xx_hal_can.h"
 #include "PWMUtils.h"
+#include "stm32f4xx_hal_can.h"
 
 #define C610ANGLETOCODES 819.9f
 
@@ -20,7 +20,7 @@ PositionPIDData leftBallThingie;
 void initMecanisimTask() { ; }
 
 // Teleop Balls
-bool ballCANMode = false;
+bool ballCANMode = true;
 
 bool previouslyUpSwitch = false;
 bool previouslyDownSwitch = false;
@@ -36,6 +36,8 @@ const float maxArmSetPoint = 50.0;
 float armSetPoint = 0.0f;
 float testSetPoint;
 float servoSetPoint = 0.0f;
+
+float cupThingieSetPoint = 0.0f;
 
 extern TIM_HandleTypeDef htim2;
 
@@ -63,14 +65,19 @@ void mecanisimTaskUpdate(void* arguments) {
 			
 			armSetPoint = fabs(rcCtrl->rc.ch[3] / 660.0) * maxArmSetPoint;
       servoSetPoint = (rcCtrl->rc.ch[4] / 660.0f) * 1000.0f;
+			
+			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, servoSetPoint);
+			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, cupThingieSetPoint);
+			
+			sendBallCANMessage();
     }
 
 		//rightNativeSetPoint = 1000;
 		//centerNativeSetPoint = 2000;
 		//leftNativeSetPoint = 3000;
 		
-    sendBallCANMessage();
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, servoSetPoint);
+    //sendBallCANMessage();
+		
 
     vTaskDelay(50 / portTICK_PERIOD_MS);
   }

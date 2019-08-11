@@ -74,6 +74,7 @@ extern float rightSetPoint;
 extern float centerSetPoint;
 extern float leftSetPoint;
 extern float armSetPoint;
+extern float cupThingieSetPoint;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];

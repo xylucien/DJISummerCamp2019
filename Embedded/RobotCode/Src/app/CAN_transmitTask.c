@@ -22,6 +22,7 @@ extern CAN_HandleTypeDef hcan2;
 extern QueueHandle_t canTestTransmitQueue;
 
 extern float32_t distanceX, distanceY;
+extern float vX, vY, vW;
 extern fp32 INS_angle[3];
 
 void canTransmitTaskLoop(void const *argument){
@@ -32,12 +33,16 @@ void canTransmitTaskLoop(void const *argument){
           //canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_PITCH, AHRSPitch);
           //canSendFloatMessage(CANMESSAGE_ID_AHRS, CANMESSAGE_SUBID_AHRS_YAW, AHRSYaw);
 
-          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X, distanceX);
-          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y, distanceY);
-          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW, INS_angle[0]);	
+          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_X, distanceX, 0);
+          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_Y, distanceY, 0);
+          canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_YAW, INS_angle[0], 0);	
+					//vTaskDelay(10 / portTICK_PERIOD_MS); 
+          
+          //canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_VXY, vX, vY);
+          //canSendFloatMessage(CANMESSAGE_ID_ODOMETRY, CANMESSAGE_SUBID_ODOM_VW, vW, 0);	
         }
 				
-        vTaskDelay(20 / portTICK_PERIOD_MS);
+        vTaskDelay(15 / portTICK_PERIOD_MS);
     }
 
     vTaskDelete(NULL);
@@ -47,13 +52,14 @@ uint32_t canTxMailbox;
 CAN_TxHeaderTypeDef msgHeader;
 uint8_t send_data[8];
 
-void canSendFloatMessage(uint8_t id, uint8_t subid, float data){
+void canSendFloatMessage(uint8_t id, uint8_t subid, float data, float data2){
     msgHeader.StdId = calculateId(id, subid);
     msgHeader.IDE = CAN_ID_STD;
     msgHeader.RTR = CAN_RTR_DATA;
     msgHeader.DLC = 0x08;
 		
 		serializeFloat(data, send_data);
+    serializeFloat(data2, send_data + 4);
 
     HAL_CAN_AddTxMessage(&MANIFOLD_CAN, &msgHeader, (uint8_t*) &send_data,
                        &canTxMailbox);

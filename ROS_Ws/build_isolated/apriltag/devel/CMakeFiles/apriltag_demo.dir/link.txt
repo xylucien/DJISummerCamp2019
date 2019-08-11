@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG  -rdynamic CMakeFiles/apriltag_demo.dir/example/apriltag_demo.c.o  -o apriltag_demo -Wl,-rpath,/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/ROS_Ws/build_isolated/apriltag/devel/lib64: lib64/libapriltag.so.3.1.0 -lpthread -lm 

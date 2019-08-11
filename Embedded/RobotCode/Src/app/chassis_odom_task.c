@@ -32,6 +32,8 @@ int32_t delta_ecd[4] = {0,0,0,0};
 float32_t ecdVx, ecdVy, ecdW;
 float32_t distanceX, distanceY;
 
+float32_t vX, vY, vW;
+
 void chassisOdomUpdate(void const *argument){
     for(;;){
         //Update ECD values
@@ -52,6 +54,19 @@ void chassisOdomUpdate(void const *argument){
 
         distanceX += (yawCos * ecdVx - yawSin * ecdVy) * 0.25f * ENCODERCODES_TO_MS;
         distanceY += (yawSin * ecdVx + yawCos * ecdVy) * 0.25f * ENCODERCODES_TO_MS;	
+
+        MecanumWheelValues values;
+        values.topRight = (((float) motor_chassis[0].speed_rpm / 60.0) / 19.0) * WHEEL_RADIUS * 6.28;
+        values.topLeft = (((float) motor_chassis[1].speed_rpm / 60.0)  / 19.0) * WHEEL_RADIUS * 6.28 ;
+        values.backLeft = (((float) motor_chassis[2].speed_rpm / 60.0) / 19.0) * WHEEL_RADIUS * 6.28;
+        values.backRight = (((float) motor_chassis[3].speed_rpm / 60.0) / 19.0) * WHEEL_RADIUS * 6.28;
+
+        Twist2D velocities;
+        mecanumKinematics(&values, AB, &velocities);
+
+        vX = velocities.vX;
+        vY = velocities.vY;
+        vW = velocities.w;
 				
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }

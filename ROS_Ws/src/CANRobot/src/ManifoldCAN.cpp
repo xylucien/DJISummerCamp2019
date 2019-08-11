@@ -223,12 +223,12 @@ void ManifoldCAN::rosPubThreadUpdate() {
             auto pub = subIdMap->second.find(id.subId);
             publisherListMutex.unlock();
 
+            //std::cout << std::to_string(id.messageId) << " " << std::to_string(id.subId) << std::endl;
+
             if(id.messageId == CANMESSAGE_ID_AHRS and id.subId == CANMESSAGE_SUBID_AHRS_YAW){
                 yaw = deserializeFloat((uint8_t*) canMsg.data);
                 updatedW = true;
-            }
-
-            if(id.messageId == CANMESSAGE_ID_ODOMETRY){
+            } else if(id.messageId == CANMESSAGE_ID_ODOMETRY){
                 switch(id.subId){
                     case CANMESSAGE_SUBID_ODOM_X: {
                         tfOdom.transform.translation.x = deserializeFloat((uint8_t*) canMsg.data);
@@ -245,11 +245,23 @@ void ManifoldCAN::rosPubThreadUpdate() {
                     case CANMESSAGE_SUBID_AHRS_YAW: {
                         yaw = deserializeFloat((uint8_t*) canMsg.data);
                         updatedW = true;
+                        break;
+                    }
+
+                    case CANMESSAGE_SUBID_ODOM_VXY: {
+                        //std::cout << "hi" << std::endl;
+                        vX = deserializeFloat((uint8_t*) canMsg.data);
+                        vY = deserializeFloat((uint8_t*) canMsg.data + 4);
+                        //std::cout << vX << ',' << vY << std::endl;
+                        break;
+                    }
+
+                    case CANMESSAGE_SUBID_ODOM_VW: {
+                        vW = deserializeFloat((uint8_t*) canMsg.data);
+                        break;
                     }
                 }
-            }
-
-            if(pub != subIdMap->second.end()){
+            } else if(pub != subIdMap->second.end()){
                 //Found element
                 //Assume everything is float32 for now
                 std_msgs::Float32 msg;
@@ -295,9 +307,9 @@ void ManifoldCAN::updateOdom() {
 
         odom.pose.pose.orientation = q;
 
-        odom.twist.twist.linear.x = 0;
-        odom.twist.twist.linear.y = 0;
-        odom.twist.twist.angular.z = 0;
+        odom.twist.twist.linear.x = vX;
+        odom.twist.twist.linear.y = vY;
+        odom.twist.twist.angular.z = vW;
 
         odomPublish->publish(odom);
 

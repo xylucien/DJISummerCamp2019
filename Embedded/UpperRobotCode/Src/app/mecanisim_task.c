@@ -63,14 +63,14 @@ void initMecanisimTask() {
   //Arm Motors
   armMotors.velocityPid = malloc(sizeof(arm_pid_instance_f32));
 
-  armMotors.velocityPid->Kp = 85.1;
-  armMotors.velocityPid->Ki = 0.00;
-  armMotors.velocityPid->Kd = 0.15;
+  armMotors.velocityPid->Kp = 220.1;
+  armMotors.velocityPid->Ki = 13.0;
+  armMotors.velocityPid->Kd = 0.05;
   armMotors.maximumVelocity = 10000;
 
   armMotors.positionPid = malloc(sizeof(arm_pid_instance_f32));
 
-  armMotors.positionPid->Kp = 0.004;
+  armMotors.positionPid->Kp = 0.00050;
   armMotors.positionPid->Ki = 0.0;
   armMotors.positionPid->Kd = 0.0;
   armMotors.positionLimitEnabled = false;

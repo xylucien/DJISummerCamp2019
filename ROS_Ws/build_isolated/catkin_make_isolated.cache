@@ -1,0 +1,2 @@
+CANRobot:apriltag:apriltag_ros/apriltag_ros:map_server:r:robot_upstart:sc_localization:simple_planner:simple_tf:usb_cam
+-G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/ROS_Ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/ROS_Ws/install_isolated

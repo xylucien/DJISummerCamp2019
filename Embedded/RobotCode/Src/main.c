@@ -38,6 +38,7 @@
 #include "mecanisimCANTXTask.h"
 #include "CANMessage.h"
 #include "PWMUtils.h"
+#include "autoMecanisim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -113,6 +114,7 @@ osThreadId chassisOdom_taskHandle;
 osThreadId mecansism_taskHandle;
 
 osThreadId mecanisimCANTX_taskhandle;
+osThreadId autoMecanisim_taskHandle;
 
 /* USER CODE END PV */
 
@@ -293,6 +295,10 @@ int main(void) {
   initMecanisimTask();
   osThreadDef(mecanisimTask, mecanisimTaskUpdate, osPriorityNormal, 1, 256);
   mecansism_taskHandle = osThreadCreate(osThread(mecanisimTask), NULL);
+
+  initAutoMecanisim();
+  osThreadDef(autoMecanisim, updateAutoMecanisim, osPriorityNormal + 3, 1, 256);
+  autoMecanisim_taskHandle = osThreadCreate(osThread(autoMecanisim), NULL);
 
   /* USER CODE END RTOS_THREADS */
 

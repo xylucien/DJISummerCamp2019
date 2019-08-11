@@ -157,7 +157,7 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>18</LineNumber>
+          <LineNumber>70</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -166,32 +166,16 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\Src\RoboMaster_Libs\PositionPID.c</Filename>
+          <Filename>..\Src\app\autoMecanisim.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>33</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\Src\app\CAN_transmitTask.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
           <LineNumber>256</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>134272992</Address>
+          <Address>134273508</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -203,20 +187,36 @@
           <Expression>\\HAL_INFANTRY\../Src/app/chassis_task.c\256</Expression>
         </Bp>
         <Bp>
+          <Number>2</Number>
+          <Type>2</Type>
+          <LineNumber>0</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>536871836</Address>
+          <ByteObject>1</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>1</ManyObjects>
+          <SizeOfObject>4</SizeOfObject>
+          <BreakByAccess>2</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename></Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\HAL_INFANTRY\../Src/app/mecanisim_task.c\armSetPoint</Expression>
+        </Bp>
+        <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>50</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>134270724</Address>
+          <LineNumber>46</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134281584</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Src\app\CAN_transmitTask.c</Filename>
+          <Filename>..\Src\app\autoMecanisim.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\HAL_INFANTRY\../Src/app/CAN_transmitTask.c\50</Expression>
+          <Expression>\\HAL_INFANTRY\../Src/app/autoMecanisim.c\46</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -591,6 +591,26 @@
           <count>40</count>
           <WinNumber>2</WinNumber>
           <ItemText>rcCtrl</ItemText>
+        </Ww>
+        <Ww>
+          <count>41</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>motor_chassis</ItemText>
+        </Ww>
+        <Ww>
+          <count>42</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>vX</ItemText>
+        </Ww>
+        <Ww>
+          <count>43</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>vY</ItemText>
+        </Ww>
+        <Ww>
+          <count>44</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>armSetPoint</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
@@ -2025,6 +2045,18 @@
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+    <File>
+      <GroupNumber>13</GroupNumber>
+      <FileNumber>105</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\Src\app\autoMecanisim.c</PathWithFileName>
+      <FilenameWithoutPath>autoMecanisim.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
   </Group>
 
   <Group>
@@ -2035,7 +2067,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>14</GroupNumber>
-      <FileNumber>105</FileNumber>
+      <FileNumber>106</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -2047,7 +2079,7 @@
     </File>
     <File>
       <GroupNumber>14</GroupNumber>
-      <FileNumber>106</FileNumber>
+      <FileNumber>107</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

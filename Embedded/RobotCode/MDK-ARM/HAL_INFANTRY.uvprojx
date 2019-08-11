@@ -962,6 +962,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\app\mecanisimCANRXTask.c</FilePath>
             </File>
+            <File>
+              <FileName>autoMecanisim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\app\autoMecanisim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
