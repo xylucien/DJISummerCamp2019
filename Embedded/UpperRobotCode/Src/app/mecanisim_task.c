@@ -29,6 +29,8 @@ void initMecanisimTask() {
   rightBallThingie.positionPid->Ki = 0.0;
   rightBallThingie.positionPid->Kd = 0.0;
   rightBallThingie.positionLimitEnabled = false;
+	
+	rightBallThingie.maximumOutput = 16380;
 
   // Center ball thingie
   centerBallThingie.velocityPid = malloc(sizeof(arm_pid_instance_f32));
@@ -45,6 +47,8 @@ void initMecanisimTask() {
   centerBallThingie.positionPid->Kd = 0.0;
   centerBallThingie.positionLimitEnabled = false;
 
+	centerBallThingie.maximumOutput = 16380;
+
   // Left ball thingie
   leftBallThingie.velocityPid = malloc(sizeof(arm_pid_instance_f32));
 
@@ -55,25 +59,29 @@ void initMecanisimTask() {
 
   leftBallThingie.positionPid = malloc(sizeof(arm_pid_instance_f32));
 
-  leftBallThingie.positionPid->Kp = 0.00085;
+  leftBallThingie.positionPid->Kp = 0.001;
   leftBallThingie.positionPid->Ki = 0.0;
   leftBallThingie.positionPid->Kd = 0.0;
   leftBallThingie.positionLimitEnabled = false;
 
+	leftBallThingie.maximumOutput = 16380;
+
   //Arm Motors
   armMotors.velocityPid = malloc(sizeof(arm_pid_instance_f32));
 
-  armMotors.velocityPid->Kp = 220.1;
-  armMotors.velocityPid->Ki = 13.0;
-  armMotors.velocityPid->Kd = 0.05;
+  armMotors.velocityPid->Kp = 195.1;
+  armMotors.velocityPid->Ki = 1.56;
+  armMotors.velocityPid->Kd = 0.00;
   armMotors.maximumVelocity = 10000;
 
   armMotors.positionPid = malloc(sizeof(arm_pid_instance_f32));
 
-  armMotors.positionPid->Kp = 0.00050;
+  armMotors.positionPid->Kp = 0.0009;
   armMotors.positionPid->Ki = 0.0;
   armMotors.positionPid->Kd = 0.0;
   armMotors.positionLimitEnabled = false;
+	
+	armMotors.maximumOutput = 16380;
 
   initializePositionPid(&rightBallThingie);
   initializePositionPid(&centerBallThingie);
@@ -107,10 +115,13 @@ void mecanisimTaskUpdate(void *arguments) {
 				&centerBallThingie, (float32_t)motor_chassis[4].speed_rpm / 36.0f,
 				(float32_t)motor_chassis[4].total_ecd, centerSetPoint * C610ANGLETOCODES);
 
-
     armMotorSet = (int16_t) calculatePositionPid(
 				&armMotors, (float32_t)motor_chassis[2].speed_rpm / 36.0f,
 				(float32_t)motor_chassis[2].total_ecd, armSetPoint * C610ANGLETOCODES);
+		
+		if(armMotorSet < -2600){
+			armMotorSet = -2600;
+		}
 
 		CAN_CMD_CHASSIS(motor0Set, motor1Set, armMotorSet, -armMotorSet);
     CAN_CMD_MECANISIM(motor4Set, 0, 0, 0);

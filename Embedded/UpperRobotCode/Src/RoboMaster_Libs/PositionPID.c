@@ -25,7 +25,17 @@ float32_t calculatePositionPid(PositionPIDData* data, float32_t currentVelocity,
     } else if(velocitySet < -data->maximumVelocity){
         velocitySet = -data->maximumVelocity;
     }
+		
+		data->previousVelocitySet = velocitySet;
 
     float32_t velocityError = velocitySet - currentVelocity;
-    return arm_pid_f32(data->velocityPid, velocityError);
+    float32_t setPoint = arm_pid_f32(data->velocityPid, velocityError);
+		
+		if(setPoint > data->maximumOutput){
+			setPoint = data->maximumOutput;
+		} else if (setPoint < -data->maximumOutput){
+			setPoint = -data->maximumOutput;
+		}
+		
+		return setPoint;
 }

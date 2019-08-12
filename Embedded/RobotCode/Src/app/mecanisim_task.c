@@ -7,6 +7,7 @@
 #include "cmsis_os.h"
 #include "stm32f4xx.h"
 #include "PWMUtils.h"
+#include "autoMecanisim.h"
 #include "stm32f4xx_hal_can.h"
 
 #define C610ANGLETOCODES 819.9f
@@ -20,7 +21,7 @@ PositionPIDData leftBallThingie;
 void initMecanisimTask() { ; }
 
 // Teleop Balls
-bool ballCANMode = true;
+bool ballCANMode = false;
 
 bool previouslyUpSwitch = false;
 bool previouslyDownSwitch = false;
@@ -28,18 +29,23 @@ bool previouslyDownSwitch = false;
 float32_t currentBallCountRight = 0;
 float32_t currentBallCountLeft = 0;
 
+//BALLS
 float rightSetPoint = 0.0f;
 float centerSetPoint = 0.0f;
 float leftSetPoint = 0.0f;
 
+//ARM
 const float maxArmSetPoint = 50.0;
 float armSetPoint = 0.0f;
-float testSetPoint;
-float servoSetPoint = 0.0f;
 
+//SERVO
+float servoSetPoint = 0.0f;
 float cupThingieSetPoint = 0.0f;
 
 extern TIM_HandleTypeDef htim2;
+
+extern AutoMecanisimGoal currentGoal;
+extern CupGrabbingSteps cupGrabStatus;
 
 void mecanisimTaskUpdate(void* arguments) {
   for (;;) {
@@ -63,13 +69,41 @@ void mecanisimTaskUpdate(void* arguments) {
       rightSetPoint = currentBallCountRight * 90.0f;
       leftSetPoint = -currentBallCountLeft * 90.0f;
 			
-			armSetPoint = fabs(rcCtrl->rc.ch[3] / 660.0) * maxArmSetPoint;
-      servoSetPoint = (rcCtrl->rc.ch[4] / 660.0f) * 1000.0f;
+			//armSetPoint = fabs(rcCtrl->rc.ch[3] / 660.0) * maxArmSetPoint;
+      //servoSetPoint = (rcCtrl->rc.ch[4] / 660.0f) * 1000.0f;
 			
-			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, servoSetPoint);
-			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, cupThingieSetPoint);
+			//__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, servoSetPoint);
+			//__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, cupThingieSetPoint);
 			
-			sendBallCANMessage();
+			uint32_t canTxMailbox;
+  CAN_TxHeaderTypeDef msgHeader;
+  uint8_t send_data[8];
+
+  msgHeader.StdId = 0x700;
+  msgHeader.IDE = CAN_ID_STD;
+  msgHeader.RTR = CAN_RTR_DATA;
+  msgHeader.DLC = 0x08;
+
+  memcpy(send_data, &rightSetPoint, sizeof(float));
+  memcpy(send_data + sizeof(float), &leftSetPoint, sizeof(float));
+  //memcpy(send_data + 4, &leftSetPoint, sizeof(float));
+  //memset(send_data + 6, 0, sizeof(float));
+
+  HAL_CAN_AddTxMessage(&hcan2, &msgHeader, (uint8_t*) &send_data,
+                       &canTxMailbox);
+			
+			float scrollWheelAngle = rcCtrl->rc.ch[4];
+			
+			if(scrollWheelAngle > 300 && currentGoal == REST){
+				currentGoal = GRABING_CUP;
+				cupGrabStatus = DROPPING_BALL;
+				
+			} else if (scrollWheelAngle < -300){
+				currentGoal = PLACE_CUP;
+
+			}
+			
+			//sendBallCANMessage();
     }
 
 		//rightNativeSetPoint = 1000;
@@ -108,10 +142,14 @@ void sendBallCANMessage() {
 
   memcpy(send_data, &centerSetPoint, sizeof(float));
   memcpy(send_data + sizeof(float), &armSetPoint, sizeof(float));
+	
+	centerSetPoint = 0;
+	
   //memcpy(send_data + 4, &leftSetPoint, sizeof(float));
   //memset(send_data + sizeof(float), 0, sizeof(float));
 
   HAL_CAN_AddTxMessage(&hcan2, &msgHeader, (uint8_t*) &send_data,
                        &canTxMailbox);
+
 }
 
