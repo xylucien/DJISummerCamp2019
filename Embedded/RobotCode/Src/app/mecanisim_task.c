@@ -4,6 +4,7 @@
 #include "CAN_receive.h"
 #include "PositionPID.h"
 #include "arm_math.h"
+#include <math.h>
 #include "cmsis_os.h"
 #include "stm32f4xx.h"
 #include "PWMUtils.h"
@@ -139,9 +140,17 @@ void sendBallCANMessage() {
   msgHeader.IDE = CAN_ID_STD;
   msgHeader.RTR = CAN_RTR_DATA;
   msgHeader.DLC = 0x08;
+	
+	const RC_ctrl_t* rcCtrl = get_remote_control_point();
+	float armSet = armSetPoint;
+	
+	if(rcCtrl->rc.ch[3] > 100 || rcCtrl->rc.ch[3] < -100){
+		float maxPoint = 60;
+		armSet = maxPoint - (fabs(rcCtrl->rc.ch[3]) / 660.0f) * maxPoint;
+	}
 
   memcpy(send_data, &centerSetPoint, sizeof(float));
-  memcpy(send_data + sizeof(float), &armSetPoint, sizeof(float));
+  memcpy(send_data + sizeof(float), &armSet, sizeof(float));
 	
 	centerSetPoint = 0;
 	

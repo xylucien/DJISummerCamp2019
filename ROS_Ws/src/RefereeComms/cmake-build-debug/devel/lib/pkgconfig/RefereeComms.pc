@@ -1,0 +1,8 @@
+prefix=/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/ROS_Ws/src/RefereeComms/cmake-build-debug/devel
+
+Name: RefereeComms
+Description: Description of RefereeComms
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/abiel/Documents/WindowsVMWare/DJISummerCamp2019/ROS_Ws/src/RefereeComms/cmake-build-debug/devel/lib 
+Requires: 
