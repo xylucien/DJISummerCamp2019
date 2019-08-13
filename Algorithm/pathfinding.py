@@ -28,9 +28,6 @@ oppoC = 8
 pcount = 0
 flag = False
 
-def calculate_sp(r, c):
-	pass
-
 def check_sp_coor(r,c):
 	if r == 0 or r == 6:
 		if c == 2 or c == 6:
