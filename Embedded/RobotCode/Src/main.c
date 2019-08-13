@@ -1019,7 +1019,9 @@ static void MX_TIM2_Init(void) {
 
   HAL_TIM_Base_Start(&htim2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 0);
+  __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, 0);
 
   /* USER CODE END TIM2_InZit 2 */
   HAL_TIM_MspPostInit(&htim2);

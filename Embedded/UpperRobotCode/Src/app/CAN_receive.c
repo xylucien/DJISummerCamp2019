@@ -75,6 +75,8 @@ extern float centerSetPoint;
 extern float leftSetPoint;
 extern float armSetPoint;
 extern float cupThingieSetPoint;
+	
+	float previousTempValue = 0;
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   uint8_t rx_data[8];
@@ -94,10 +96,19 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     }
 
     case 0x701:{
-      memcpy(&centerSetPoint, rx_data, sizeof(float));
+			
+			float temp;
+			memcpy(&temp, rx_data, sizeof(float));
+			
+			if(temp > 45){
+				centerSetPoint += 90.0;
+			}
+			
+      //memcpy(&centerSetPoint, rx_data, sizeof(float));
       memcpy(&armSetPoint, rx_data + 4, sizeof(float));
       break;
     }
+
 
 
     case CAN_3508_M1_ID:

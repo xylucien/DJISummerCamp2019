@@ -12,6 +12,11 @@ typedef struct PositionPIDData {
     bool positionLimitEnabled;
     float32_t maximumPosition;
     float32_t minimumPosition;
+	
+		float32_t maximumOutput;
+	
+		float32_t previousVelocitySet;
+	
 } PositionPIDData;
 
 extern void initializePositionPid(PositionPIDData *data);
