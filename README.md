@@ -4,16 +4,21 @@ This is the code repository for RM Summer Camp Group No.5.
 
 Team Members:
 
-Mechanical Design Direction:
-Haopeng Chang
-Yisi Liu
-Lixin Qin
-Xuan Xu
+  Mechanical Design Direction:
+    Haopeng Chang
 
-Embedded Direction:
-Abiel Fernández
-Yake Wang
+    Yisi Liu
 
-Algorithm Direction:
-Lucien Liu
-Karen Rodríguez
+    Lixin Qin
+
+    Xuan Xu
+
+  Embedded Direction:
+    Abiel Fernández
+
+    Yake Wang
+
+  Algorithm Direction:
+    Lucien Liu
+
+    Karen Rodríguez
